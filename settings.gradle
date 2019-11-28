@@ -1,0 +1,2 @@
+include ':app', ':easy-retrofit', ':easy-base', ':easy-madiastore', ':easy-camera', ':easy-dialog', ':easy-app'
+rootProject.name='EasyAndroidLibray'
