@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">easy-app</string>
+    <string name="network_01">网络连接不用</string>
 </resources>

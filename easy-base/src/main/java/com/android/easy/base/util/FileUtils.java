@@ -15,7 +15,7 @@ import java.io.OutputStream;
 /**
  *
  * @author abook23
- * @date 2014/9/22
+ * 2014/9/22
  * /cache_data/[packageName]
  */
 public class FileUtils {

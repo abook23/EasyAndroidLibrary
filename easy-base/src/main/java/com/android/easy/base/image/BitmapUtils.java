@@ -19,7 +19,7 @@ import java.io.IOException;
 /**
  *
  * @author abook23
- * @date 2014/9/23
+ * 2014/9/23
  *
  * @version 1.0
  */

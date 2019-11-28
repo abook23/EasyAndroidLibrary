@@ -14,7 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 /**
  * @author abook23@163.com
- * @date 2019/11/28
+ * 2019/11/28
  */
 public class BaseDialogFragment extends DialogFragment {
 

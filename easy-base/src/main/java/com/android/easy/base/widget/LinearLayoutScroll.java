@@ -13,7 +13,7 @@ import android.widget.ListView;
 /**
  *
  * @author abook23
- * @date 2016/5/4
+ * 2016/5/4
  */
 
 public class LinearLayoutScroll extends LinearLayout implements AbsListView.OnScrollListener, View.OnTouchListener {

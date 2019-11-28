@@ -22,7 +22,7 @@ import com.android.easy.base.widget.EditTextWatcher;
 /**
  *
  * @author abook23
- * @date 2016/9/9
+ * 2016/9/9
  */
 public class DialogEdit extends DialogFragment {
 

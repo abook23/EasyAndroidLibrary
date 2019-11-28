@@ -3,7 +3,7 @@ package com.android.easy.base.bean;
 /**
  *
  * @author abook23
- * @date 2016/9/14
+ * 2016/9/14
  */
 public class ExpChildBean {
     private Object imageUrl;

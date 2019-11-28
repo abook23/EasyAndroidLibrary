@@ -1,7 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-
-group = 'com.github.abook23'
 
 android {
     compileSdkVersion 29
@@ -37,3 +34,5 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.6'
 }
+
+//apply from: "../bintrayUpload.gradle"

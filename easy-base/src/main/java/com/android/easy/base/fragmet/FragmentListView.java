@@ -22,7 +22,7 @@ import java.util.List;
 
 
 /**
- * @author My.Y
+ * @author abook23
  */
 public class FragmentListView extends Fragment implements OnItemViewListener {
 

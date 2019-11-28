@@ -15,7 +15,7 @@ import com.android.easy.base.R;
 /**
  *
  * @author abook23
- * @date 2016/11/30
+ * 2016/11/30
  */
 
 public class ButtonProgress extends AppCompatButton {

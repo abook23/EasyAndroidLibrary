@@ -5,7 +5,7 @@ import android.widget.ImageView;
 /**
  *
  * @author abook23
- * @date 2016/11/2
+ * 2016/11/2
  */
 
 public class DisplayImageOptions {

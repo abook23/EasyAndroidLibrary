@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 /**
  *
  * @author abook23
- * @date 2015/10/21
+ * 2015/10/21
  * 正方形的 layout
  */
 public class LinearLayoutSquare extends LinearLayout {

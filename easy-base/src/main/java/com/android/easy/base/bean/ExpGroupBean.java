@@ -5,7 +5,7 @@ import java.util.List;
 /**
  *
  * @author abook23
- * @date 2016/9/14
+ * 2016/9/14
  */
 public class ExpGroupBean {
     private Object imageUrl;//

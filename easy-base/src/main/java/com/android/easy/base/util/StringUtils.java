@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author abook23
- * @date 2016/1/28
+ * 2016/1/28
  */
 public class StringUtils {
 

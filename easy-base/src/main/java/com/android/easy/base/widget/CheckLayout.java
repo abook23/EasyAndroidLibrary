@@ -18,7 +18,7 @@ import java.util.List;
 /**
  *
  * @author abook23
- * @date 2015/12/28
+ * 2015/12/28
  */
 public class CheckLayout extends LinearLayout implements Checkable {
     // checked状态

@@ -11,7 +11,7 @@ import com.android.easy.base.listener.OnNetStatusListener;
 /**
  * 时时监听网络状态
  *  2015-5-10 下午8:10:04
- * @author My.Y
+ * @author abook23
  */
 public class NetBroadcastReceiver extends BroadcastReceiver {
 

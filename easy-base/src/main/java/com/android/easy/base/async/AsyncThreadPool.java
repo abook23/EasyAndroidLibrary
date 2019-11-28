@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  *
  * @author abook23
- * @date 2016/5/27
+ * 2016/5/27
  * 1
  */
 public abstract class AsyncThreadPool<Params, Progress, Result> {
