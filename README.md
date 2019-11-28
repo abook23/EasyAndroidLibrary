@@ -1,2 +1,2 @@
-# EasyAndroidLibray
-EasyAndroidLibray
+# EasyAndroidLibrary
+EasyAndroidLibrary
