@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/EasyAndroidLibray.iml" filepath="$PROJECT_DIR$/EasyAndroidLibray.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easy-app/easy-app.iml" filepath="$PROJECT_DIR$/easy-app/easy-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easy-base/easy-base.iml" filepath="$PROJECT_DIR$/easy-base/easy-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easy-camera/easy-camera.iml" filepath="$PROJECT_DIR$/easy-camera/easy-camera.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easy-dialog/easy-dialog.iml" filepath="$PROJECT_DIR$/easy-dialog/easy-dialog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easy-madiastore/easy-madiastore.iml" filepath="$PROJECT_DIR$/easy-madiastore/easy-madiastore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easy-retrofit/easy-retrofit.iml" filepath="$PROJECT_DIR$/easy-retrofit/easy-retrofit.iml" />
+    </modules>
+  </component>
+</project>

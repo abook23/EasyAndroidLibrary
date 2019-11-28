@@ -1,0 +1,5 @@
+<resources>
+    <string name="phone_err">手机号格式错误</string>
+    <string name="id_number_err">身份证格式错误</string>
+    <string name="email_err">邮箱格式错误</string>
+</resources>
