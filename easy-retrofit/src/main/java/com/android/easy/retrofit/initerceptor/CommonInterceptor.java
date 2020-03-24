@@ -53,7 +53,7 @@ public class CommonInterceptor implements Interceptor {
         Response response = chain.proceed(compressedRequest);
 
         if (netWork) {
-            int maxAge = 60 * 60; // 有网络时 设置缓存超时时间一小时
+            int maxAge = 30 * 2; // 有网络时 设置缓存超时时间一小时
             response = response.newBuilder()
                     .removeHeader("Pragma")
                     //清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效

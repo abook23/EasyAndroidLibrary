@@ -63,6 +63,8 @@ public class LoggingInterceptor implements Interceptor {
                         params.delete(params.length() - 1, params.length());
                     }
                 }
+            } else {
+                params.append("-----------------------------------------------------------------------------------------------------------------");
             }
 
             ResponseBody responseBody = response.body();

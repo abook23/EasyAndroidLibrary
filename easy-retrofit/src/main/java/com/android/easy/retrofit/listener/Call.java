@@ -1,5 +1,7 @@
 package com.android.easy.retrofit.listener;
 
+import androidx.annotation.NonNull;
+
 import com.android.easy.retrofit.rxjava.ObserverBaseWeb;
 import com.google.gson.Gson;
 
@@ -39,7 +41,7 @@ public abstract class Call<T> extends ObserverBaseWeb<ResponseBody> {
         }
     }
 
-    public abstract void onSuccess(T t);
+    public abstract void onSuccess(@NonNull T t);
 
     private class ParameterizedTypeImpl implements ParameterizedType {
         private final Class raw;
