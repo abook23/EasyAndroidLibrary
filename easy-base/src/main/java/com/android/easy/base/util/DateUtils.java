@@ -5,12 +5,12 @@ import android.annotation.SuppressLint;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateUtils {
 
     /**
      * yyyy-MM-dd HH:mm:ss
-     *
      */
     @SuppressLint("SimpleDateFormat")
     public static String getDate() {
@@ -20,7 +20,6 @@ public class DateUtils {
 
     /**
      * yyyy-MM-dd HH:mm:ss
-     *
      */
     @SuppressLint("SimpleDateFormat")
     public static String getDate(long dataTime) {
@@ -29,7 +28,6 @@ public class DateUtils {
     }
 
     /**
-     *
      * @param dateStr
      * @return
      */
@@ -40,7 +38,6 @@ public class DateUtils {
     }
 
     /**
-     *
      * @param dataTime
      * @return
      */
@@ -51,7 +48,6 @@ public class DateUtils {
     }
 
     /**
-     *
      * @param dateType d
      * @return
      */
@@ -60,4 +56,28 @@ public class DateUtils {
         SimpleDateFormat format = new SimpleDateFormat(dateType);
         return format.format(new Date());
     }
+
+    /**
+     * @param dateType d
+     * @return
+     */
+    @SuppressLint("SimpleDateFormat")
+    public static String getDate(String dateType, long dataTime) {
+        SimpleDateFormat format = new SimpleDateFormat(dateType);
+        return format.format(dataTime);
+    }
+
+
+    public static String formatterTime(long currentPosition) {
+        SimpleDateFormat dateFormat;
+        if (currentPosition > 1000 * 60 * 60) {
+            dateFormat = new SimpleDateFormat("hh:mm:ss");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+        } else {
+            dateFormat = new SimpleDateFormat("mm:ss");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+        }
+        return dateFormat.format(new Date(currentPosition));
+    }
+
 }

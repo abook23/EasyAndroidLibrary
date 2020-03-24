@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/shape_dialog_white"
+        android:background="@drawable/shape_dialog_white_01"
         android:minHeight="180dp"
         android:orientation="vertical">
 

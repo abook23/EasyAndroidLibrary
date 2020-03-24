@@ -1,6 +1,7 @@
 package com.android.easy.base.util;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -18,9 +19,12 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
 import androidx.annotation.RequiresApi;
+import androidx.annotation.RequiresPermission;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import com.android.easy.base.listener.OnNetStatusListener;
+import com.android.easy.base.net.NetworkUtils;
 
 import java.io.File;
 import java.util.Locale;
@@ -31,13 +35,14 @@ import java.util.Locale;
 public class AndroidUtils {
     /**
      * 安装apk
-     * 如果没有android.os.Process.killProcess(android.os.Process.myPid());最后不会提示完成、打开。
+     * 如果没有android.os.Process.killProcess(android.os.Process.myPid());完最后不会提示成、打开。
      * 如果没有i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);这一步的话，最后安装好了，点打开，是不会打开新版本应用的。
      * this.finish();
      *
      * @param file 要安装的apk的目录
      */
-    public static void install(File file, Context context) {
+    @Deprecated
+    public static void install( Context context,File file) {
         if (file != null) {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
@@ -46,6 +51,43 @@ public class AndroidUtils {
             context.startActivity(intent);
             android.os.Process.killProcess(android.os.Process.myPid());
         }
+    }
+
+//    @RequiresPermission(value = "android.permission.REQUEST_INSTALL_PACKAGES")
+    public static boolean install(Context con, String filePath) {
+        try {
+            if(TextUtils.isEmpty(filePath))
+                return false;
+            File file = new File(filePath);
+            if(!file.exists()){
+                return false;
+            }
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//增加读写权限
+            }
+            intent.setDataAndType(getPathUri(con, filePath), "application/vnd.android.package-archive");
+            con.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } catch (Error error) {
+            error.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static Uri getPathUri(Context context, String filePath) {
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            String packageName = context.getPackageName();
+            uri = FileProvider.getUriForFile(context, packageName + ".fileProvider", new File(filePath));
+        } else {
+            uri = Uri.fromFile(new File(filePath));
+        }
+        return uri;
     }
 
     /**
@@ -306,12 +348,17 @@ public class AndroidUtils {
 
     /**
      * 获取手机IMEI(需要“android.permission.READ_PHONE_STATE”权限)
+     * 更多请参考 https://www.jianshu.com/p/59440efa020c
      *
      * @return 手机IMEI
      */
+    @SuppressLint("MissingPermission")
     public static String getIMEI(Context ctx) {
         TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Activity.TELEPHONY_SERVICE);
         if (tm != null) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+                return tm.getImei();
+            }
             return tm.getDeviceId();
         }
         return null;
