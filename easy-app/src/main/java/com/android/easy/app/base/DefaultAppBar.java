@@ -23,8 +23,11 @@ public class DefaultAppBar extends BaseAppBar {
     public DefaultAppBar(ViewGroup viewGroup) {
         super(viewGroup);
         mAppBarViewHolder = new AppBarViewHolder(getRootView());
-        getNavigation().setOnClickListener(v -> {
-            mOnAppBarListener.onNavigationClick(v);
+        getNavigation().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnAppBarListener.onNavigationClick(v);
+            }
         });
     }
 
@@ -66,7 +69,12 @@ public class DefaultAppBar extends BaseAppBar {
      */
     public void addBarView(View view) {
         mAppBarViewHolder.mLinearLayout.addView(view);
-        view.setOnClickListener(v -> mOnAppBarListener.onAppBarClick(v));
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnAppBarListener.onAppBarClick(v);
+            }
+        });
     }
 
     public void removeBarView(View view) {
@@ -76,7 +84,7 @@ public class DefaultAppBar extends BaseAppBar {
 
     @Override
     protected View onCreateView(ViewGroup viewGroup) {
-        return LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_default_app_bar, viewGroup, false);
+        return LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.easy_app_layout_default_app_bar, viewGroup, false);
     }
 
     public class AppBarViewHolder implements View.OnClickListener {
@@ -100,8 +108,9 @@ public class DefaultAppBar extends BaseAppBar {
 
         @Override
         public void onClick(View v) {
-            if (mOnAppBarListener != null)
+            if (mOnAppBarListener != null) {
                 mOnAppBarListener.onAppBarClick(v);
+            }
             if (v.getId() == mBack.getId()) {
                 mOnAppBarListener.onNavigationClick(v);
             }

@@ -4,30 +4,29 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 
-import com.android.easy.base.net.NetworkUtils;
-import com.android.easy.base.util.L;
-
 import java.util.List;
+import java.util.concurrent.Executors;
 
-public class BaseApplication extends Application {
+public abstract class BaseApplication extends Application {
 
-
-
+    //NetworkUtils.registerNetwork(this, this::onNetStatusListener);
     @Override
     public void onCreate() {
         super.onCreate();
         if (shouldInit()) {
             onShouldInitApp();
+            Executors.newSingleThreadExecutor().submit(new Runnable() {
+                @Override
+                public void run() {
+                    onHandleInit();
+                }
+            });
         }
     }
 
-    public void onShouldInitApp() {
-        NetworkUtils.registerNetwork(this, this::onNetStatusListener);
-    }
+    public abstract void onShouldInitApp();
 
-    public void onNetStatusListener(int netType, String netName) {
-        L.d("net-status netType:" + netType + "--netName:" + netName);
-    }
+    public abstract void onHandleInit();
 
     protected boolean shouldInit() {
         ActivityManager am = ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE));

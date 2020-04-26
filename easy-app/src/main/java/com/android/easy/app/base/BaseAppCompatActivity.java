@@ -3,12 +3,15 @@ package com.android.easy.app.base;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.os.Build;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -38,22 +41,33 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
     private View mNetworkView;
     private LinearLayout mContentViewLinearLayout;
     private boolean initAppBar = true;
+    private View rootView;
+    protected Context mContext;
 
     public void setContentView(int layoutResId, boolean initAppBar) {
         this.initAppBar = initAppBar;
         setContentView(layoutResId);
     }
 
+    public Context getContext() {
+        return this;
+    }
+
     @Override
     public void setContentView(int layoutResId) {
-        super.setContentView(R.layout.layout_content_view);
-        httpProgressView = findViewById(R.id.content_progress);
+        super.setContentView(R.layout.easy_app_layout_content_view);
+        contentLoadingView = findViewById(R.id.content_loading);
         mContentViewLinearLayout = findViewById(R.id.content_view);
+        contentLoadingView.setVisibility(View.GONE);
 //      LinearLayout.LayoutParams layoutParams =new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        mContentViewLinearLayout.addView(LayoutInflater.from(this).inflate(layoutResId, mContentViewLinearLayout, false), 0);
+        rootView = LayoutInflater.from(this).inflate(layoutResId, mContentViewLinearLayout, false);
+        mContentViewLinearLayout.addView(rootView, 0);
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         if (initAppBar) {
             addAppBar();
+        } else {
+            setStatusBarTranslucentStatus();
+            rootView.setPadding(0, getStatusBarHeight(), 0, 0);
         }
 //      setTranslucentStatus(this);
 //      setRootViewFitsSystemWindows(true);
@@ -65,16 +79,25 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
         });
     }
 
+    public void clearTranslucentStatusBarHeight() {
+        rootView.setPadding(0, 0, 0, 0);
+    }
+
     public void setAppBarTitle(String title) {
         getAppBar().setTitle(title, Color.WHITE);
     }
 
     public void showLoading(boolean b, String msg) {
-        httpProgressView.setVisibility(b ? View.VISIBLE : View.GONE);
+        contentLoadingView.setVisibility(b ? View.VISIBLE : View.GONE);
         if (!b) {
             return;
         }
-        httpProgressView.setOnTouchListener((v, event) -> true);
+        contentLoadingView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
         TextView textView = findViewById(R.id.content_progress_text);
         textView.setText(msg);
     }
@@ -97,8 +120,10 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
     }
 
     public void setStatusBarTranslucentStatus() {
-        setTranslucentStatus(this);
-        mBaseAppBar.getRootView().setPadding(0, getStatusBarHeight(), 0, 0);
+        setTranslucentStatus();
+        if (mBaseAppBar != null) {
+            mBaseAppBar.getRootView().setPadding(0, getStatusBarHeight(), 0, 0);
+        }
     }
 
     private void addAppBar() {
@@ -150,18 +175,21 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
     }
 
     public int getNetworkLayout() {
-        return R.layout.layout_network_status;
+        return R.layout.easy_app_layout_network_status;
     }
 
-    private void showNetworkStatus(boolean b) {
+    private void showNetworkStatus(final boolean b) {
         if (b && mNetworkView == null) {
             mNetworkView = LayoutInflater.from(this).inflate(getNetworkLayout(), mContentViewLinearLayout, false);
         }
-        runOnUiThread(() -> {
-            if (b) {
-                mContentViewLinearLayout.addView(mNetworkView, 0);
-            } else {
-                mContentViewLinearLayout.removeView(mNetworkView);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (b) {
+                    mContentViewLinearLayout.addView(mNetworkView, 0);
+                } else {
+                    mContentViewLinearLayout.removeView(mNetworkView);
+                }
             }
         });
     }
@@ -196,8 +224,8 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
         }
     }
 
-    public static void setTranslucentStatus(Activity activity) {
-        setTranslucentStatus(activity, Color.TRANSPARENT);
+    public void setTranslucentStatus() {
+        setTranslucentStatus(Color.TRANSPARENT);
     }
 
 
@@ -205,10 +233,10 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
      * 设置状态栏透明
      */
     @TargetApi(19)
-    public static void setTranslucentStatus(Activity activity, @ColorInt int statusBarColor) {
+    public void setTranslucentStatus( @ColorInt int statusBarColor) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色
-            Window window = activity.getWindow();
+            Window window = getWindow();
             View decorView = window.getDecorView();
             //两个 flag 要结合使用，表示让应用的主体内容占用系统状态栏的空间
             int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
@@ -218,11 +246,16 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
             //导航栏颜色也可以正常设置
             window.setNavigationBarColor(Color.TRANSPARENT);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window window = activity.getWindow();
+            Window window = getWindow();
             WindowManager.LayoutParams attributes = window.getAttributes();
             int flagTranslucentStatus = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
             attributes.flags |= flagTranslucentStatus;
             window.setAttributes(attributes);
+        }
+
+        //黑色字体
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
     }
 
@@ -243,7 +276,7 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
         }
     }
 
-    private int getStatusBarHeight() {
+    public int getStatusBarHeight() {
         Resources resources = getResources();
         int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
         int height = resources.getDimensionPixelSize(resourceId);
@@ -289,5 +322,17 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
+    }
+
+    public void toFullscreen() {
+        getAppBar().getRootView().setVisibility(View.GONE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//横屏
+    }
+
+    public void clearFullscreen() {
+        getAppBar().getRootView().setVisibility(View.VISIBLE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);// 取消全屏
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 }

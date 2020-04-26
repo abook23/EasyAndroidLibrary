@@ -26,7 +26,7 @@ public interface Call {
      * @param size    当前量
      * @param maxSize 总大小
      */
-    void onSize(float size, float maxSize);
+    void onSize(long size, long maxSize);
 
     /**
      * 失败

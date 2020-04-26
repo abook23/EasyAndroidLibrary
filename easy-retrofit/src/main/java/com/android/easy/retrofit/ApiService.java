@@ -56,22 +56,22 @@ public class ApiService {
     private List<Interceptor> interceptorList = new ArrayList<>();
 
     public static ApiService init(Context applicationContext, String baseUrl) {
-        AppUtils.initial(applicationContext.getApplicationContext(),baseUrl);
+        AppUtils.initial(applicationContext.getApplicationContext(), baseUrl);
         SERVICE = new ApiService();
         SERVICE.baseUrl = baseUrl;
         return SERVICE;
     }
 
     public static ApiService init(Context applicationContext, String baseUrl, @RawRes int... cerIds) {
-        AppUtils.initial(applicationContext.getApplicationContext(),baseUrl);
+        AppUtils.initial(applicationContext.getApplicationContext(), baseUrl);
         SERVICE = new ApiService();
         SERVICE.baseUrl = baseUrl;
         SERVICE.mCertificates = cerIds;
         return SERVICE;
     }
 
-    public void addInterceptor(Interceptor interceptor) {
-        interceptorList.add(interceptor);
+    public static void addInterceptor(Interceptor interceptor) {
+        SERVICE.interceptorList.add(interceptor);
     }
 
     private Retrofit retrofit() {
@@ -105,8 +105,9 @@ public class ApiService {
         }
         if (mCertificates != null && mCertificates.length > 0) {//https (自定义证书)
             SSLSocketFactory sslSocketFactory = SSLSocketManger.getSSLSocketFactory(AppUtils.getApplicationContext(), mCertificates);
-            if (sslSocketFactory != null)
+            if (sslSocketFactory != null) {
                 builder.socketFactory(sslSocketFactory);
+            }
         }
         for (Interceptor interceptor : interceptorList) {
             builder.addInterceptor(interceptor);
@@ -114,14 +115,16 @@ public class ApiService {
         return builder;
     }
 
-    public void setTimeOut(long readTimeOut, int connectTimeOut) {
+    public ApiService setTimeOut(long readTimeOut, int connectTimeOut) {
         setTimeOut(readTimeOut, connectTimeOut, TimeUnit.SECONDS);
+        return this;
     }
 
-    public void setTimeOut(long readTimeOut, int connectTimeOut, TimeUnit timeUnit) {
+    public ApiService setTimeOut(long readTimeOut, int connectTimeOut, TimeUnit timeUnit) {
         this.readTimeOut = readTimeOut;
         this.connectTimeOut = connectTimeOut;
         this.timeUnit = timeUnit;
+        return this;
     }
 
     public static Retrofit getRetrofit() {
@@ -142,8 +145,9 @@ public class ApiService {
     public static <T> void post(String url, Map<String, Object> params, Call<T> call) {
         FormBody.Builder builder = new FormBody.Builder();
         for (Map.Entry<String, Object> entry : params.entrySet()) {
-            if (entry.getValue() != null)
+            if (entry.getValue() != null) {
                 builder.add(entry.getKey(), String.valueOf(entry.getValue()));
+            }
         }
         ApiService.create(Api.class)
                 .post(url, builder.build())

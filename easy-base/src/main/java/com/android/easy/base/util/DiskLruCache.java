@@ -61,7 +61,7 @@ import java.util.concurrent.TimeUnit;
  * 0} and {@code Integer.MAX_VALUE} bytes in length.
  *
  * <p>The cache stores its data in a directory on the filesystem. This
- * directory must be exclusive to the cache; the cache may delete or overwrite
+ * directory must be exclusive to the cache; the cache may easy_app_delete or overwrite
  * files from its directory. It is an error for multiple processes to use the
  * same cache directory at the same time.
  *
@@ -248,7 +248,7 @@ public final class DiskLruCache implements Closeable {
     }
 
     /**
-     * Recursively delete everything in {@code dir}.
+     * Recursively easy_app_delete everything in {@code dir}.
      */
     // TODO: this should specify paths as Strings rather than as Files
     public static void deleteContents(File dir) throws IOException {
@@ -261,7 +261,7 @@ public final class DiskLruCache implements Closeable {
                 deleteContents(file);
             }
             if (!file.delete()) {
-                throw new IOException("failed to delete file: " + file);
+                throw new IOException("failed to easy_app_delete file: " + file);
             }
         }
     }
@@ -640,7 +640,7 @@ public final class DiskLruCache implements Closeable {
         for (int i = 0; i < valueCount; i++) {
             File file = entry.getCleanFile(i);
             if (!file.delete()) {
-                throw new IOException("failed to delete " + file);
+                throw new IOException("failed to easy_app_delete " + file);
             }
             size -= entry.lengths[i];
             entry.lengths[i] = 0;
@@ -705,7 +705,7 @@ public final class DiskLruCache implements Closeable {
     }
 
     /**
-     * Closes the cache and deletes all of its stored values. This will delete
+     * Closes the cache and deletes all of its stored values. This will easy_app_delete
      * all files in the cache directory including files that weren't created by
      * the cache.
      */

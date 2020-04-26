@@ -13,13 +13,12 @@ import androidx.appcompat.widget.AppCompatButton;
 import com.android.easy.base.R;
 
 /**
- *
  * @author abook23
  * 2016/11/30
  */
 
 public class ButtonProgress extends AppCompatButton {
-    private int mMax, mProgress;
+    private long mMax, mProgress;
     private Paint mPaint;
     private int mWidth;
     private float mRadius;
@@ -81,11 +80,12 @@ public class ButtonProgress extends AppCompatButton {
         canvas.drawRoundRect(new RectF(rect), mRadius, mRadius, mPaint);
     }
 
-    public void setMax(int max) {
-        mMax = max;
+    public void setMax(long max) {
+        if (mMax != max)
+            mMax = max;
     }
 
-    public void setProgress(int progress) {
+    public void setProgress(long progress) {
         if (progress > mMax)
             mProgress = mMax;
         if (mProgress != progress) {

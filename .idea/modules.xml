@@ -2,14 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/EasyAndroidLibray.iml" filepath="$PROJECT_DIR$/EasyAndroidLibray.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/easy-app/easy-app.iml" filepath="$PROJECT_DIR$/easy-app/easy-app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/easy-base/easy-base.iml" filepath="$PROJECT_DIR$/easy-base/easy-base.iml" />
-      <module fileurl="file://$PROJECT_DIR$/easy-camera/easy-camera.iml" filepath="$PROJECT_DIR$/easy-camera/easy-camera.iml" />
-      <module fileurl="file://$PROJECT_DIR$/easy-dialog/easy-dialog.iml" filepath="$PROJECT_DIR$/easy-dialog/easy-dialog.iml" />
-      <module fileurl="file://$PROJECT_DIR$/easy-madiastore/easy-madiastore.iml" filepath="$PROJECT_DIR$/easy-madiastore/easy-madiastore.iml" />
-      <module fileurl="file://$PROJECT_DIR$/easy-retrofit/easy-retrofit.iml" filepath="$PROJECT_DIR$/easy-retrofit/easy-retrofit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EasyAndroidLibray.iml" filepath="$PROJECT_DIR$/EasyAndroidLibray.iml" group="EasyAndroidLibray" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="EasyAndroidLibray/app" />
+      <module fileurl="file://$PROJECT_DIR$/easy-app/easy-app.iml" filepath="$PROJECT_DIR$/easy-app/easy-app.iml" group="EasyAndroidLibray/easy-app" />
+      <module fileurl="file://$PROJECT_DIR$/easy-base/easy-base.iml" filepath="$PROJECT_DIR$/easy-base/easy-base.iml" group="EasyAndroidLibray/easy-base" />
+      <module fileurl="file://$PROJECT_DIR$/easy-camera/easy-camera.iml" filepath="$PROJECT_DIR$/easy-camera/easy-camera.iml" group="EasyAndroidLibray/easy-camera" />
+      <module fileurl="file://$PROJECT_DIR$/easy-dialog/easy-dialog.iml" filepath="$PROJECT_DIR$/easy-dialog/easy-dialog.iml" group="EasyAndroidLibray/easy-dialog" />
+      <module fileurl="file://$PROJECT_DIR$/easy-madiastore/easy-madiastore.iml" filepath="$PROJECT_DIR$/easy-madiastore/easy-madiastore.iml" group="EasyAndroidLibray/easy-madiastore" />
+      <module fileurl="file://$PROJECT_DIR$/easy-retrofit/easy-retrofit.iml" filepath="$PROJECT_DIR$/easy-retrofit/easy-retrofit.iml" group="EasyAndroidLibray/easy-retrofit" />
     </modules>
   </component>
 </project>

@@ -1,2 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.easy.app" />
+    package="com.android.easy.app" >
+
+    <application>
+        <activity android:name=".base.BaseAppCompatListActivity" />
+    </application>
+</manifest>

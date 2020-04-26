@@ -9,9 +9,25 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
 
 public abstract class Call<T> extends ObserverBaseWeb<ResponseBody> {
+
+    @Override
+    public void onSubscribe(Disposable d) {
+        super.onSubscribe(d);
+    }
+
+    @Override
+    public void onComplete() {
+        super.onComplete();
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        super.onError(e);
+    }
 
     @Override
     public void onNext(ResponseBody responseBody) {

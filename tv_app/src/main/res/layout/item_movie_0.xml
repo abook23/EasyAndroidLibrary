@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="4dp"
+    android:layout_marginTop="18dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginBottom="18dp"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.abook23.tv.widget.ImageViewH
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/test_image" />
+        <TextView
+            android:id="@+id/score"
+            android:text="9.1"
+            android:layout_gravity="right"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:layout_margin="8dp"
+            android:background="@drawable/bg_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="变形金刚"
+        android:textColor="@color/text_color"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:textSize="12sp"
+        android:lines="2"
+        android:text="@string/movie_content" />
+
+</LinearLayout>

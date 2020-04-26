@@ -60,6 +60,7 @@ public class DownloadFile {
         }
         final String parent = FileUtils.getDowloadDir(AppUtils.getApplicationContext());
         final String fileName = mUrl.substring(mUrl.lastIndexOf("/") + 1);
+        //.download(mUrl,"bytes=" + startByte + "-");断点续传
         FileService.getInit().create(Api.class, mOnDownloadListener).download(mUrl)
                 .map(new Function<ResponseBody, File>() {
                     @Override

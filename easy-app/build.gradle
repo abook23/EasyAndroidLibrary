@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -21,23 +21,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-    }
-
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.appcompat:appcompat:1.1.0'
+//    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    api 'androidx.recyclerview:recyclerview:1.1.0'
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.49'
 
-    implementation 'com.abook23:easy-base:1.0'
-    implementation 'com.abook23:easy-retrofit:1.0'
+//    api 'com.abook23:easy-base:1.1'
+//    api 'com.abook23:easy-retrofit:1.1'
+    api project(path: ':easy-base')
+    api project(path: ':easy-retrofit')
+    implementation 'com.android.support:design:29.0.0'
 }
 
-apply from: "../bintrayUpload.gradle"
+//apply from: "../bintrayUpload.gradle"
+

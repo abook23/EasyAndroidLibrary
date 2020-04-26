@@ -28,17 +28,19 @@ public abstract class BaseFragment extends HttpFragment {
 
     protected abstract int getLayoutId();
 
+    protected abstract void initView(@NonNull View rootView);
+
     /**
      * 加载数据
      */
-    abstract void lazyLoadData();
-
-    abstract void initView(View view);
+    protected abstract void lazyLoadData();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(getLayoutId(), container, false);
+        if (rootView == null) {
+            rootView = inflater.inflate(getLayoutId(), container, false);
+        }
         return rootView;
     }
 
@@ -60,6 +62,7 @@ public abstract class BaseFragment extends HttpFragment {
     public void onResume() {
         super.onResume();
         if (!isHidden() && isResumed()) {
+            lazyLoadData();
         }
     }
 
