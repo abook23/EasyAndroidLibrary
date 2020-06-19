@@ -8,7 +8,7 @@ import okhttp3.Response;
 
 /**
  * @author abook23@163.com
- * @date 2020/03/31
+ * 2020/03/31
  */
 public abstract class TokenInterceptor implements Interceptor {
     private String token;
