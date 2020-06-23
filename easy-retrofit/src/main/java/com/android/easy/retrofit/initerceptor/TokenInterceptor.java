@@ -18,12 +18,11 @@ public abstract class TokenInterceptor implements Interceptor {
         if (token == null) {
             token = getToken();
         }
-        Request request = chain.request()
-                .newBuilder()
-                .addHeader(getHeaderTokenName(), token)
-                .build();
-
-        Response response = chain.proceed(request);
+        Request.Builder builder = chain.request().newBuilder();
+        if (token != null) {
+            builder.addHeader(getHeaderTokenName(), token);
+        }
+        Response response = chain.proceed(builder.build());
         if (testResponse(response)) {
             toLogin();
         }
