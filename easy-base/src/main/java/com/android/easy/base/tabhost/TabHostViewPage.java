@@ -127,7 +127,7 @@ public class TabHostViewPage<T extends TabHostViewPage.TabHostBean> implements T
         private List<T> tabHostBeanList;
 
         MyViewPagerAdapter(FragmentManager fm, List<T> tabHostBeanList) {
-            super(fm);
+            super(fm,FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             this.tabHostBeanList = tabHostBeanList;
         }
 
