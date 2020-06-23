@@ -35,15 +35,20 @@ public abstract class Call<T> extends ObserverBaseWeb<ResponseBody> {
             Gson gson = new Gson();
             String jsonStr = responseBody.string();
             Type type = getClass().getGenericSuperclass();
-            Type[] types = ((ParameterizedType) type).getActualTypeArguments();
+            ParameterizedType parameterizedType =  (ParameterizedType) type;
+            Type[] types = parameterizedType.getActualTypeArguments();
             T result;
             if (types[0] instanceof Class) {
                 Class<T> c = (Class<T>) types[0];
-                result = gson.fromJson(jsonStr, c);
+                if ("String".equals(c.getSimpleName())){
+                    result = (T) jsonStr;
+                }else {
+                    result = gson.fromJson(jsonStr, c);
+                }
             } else {
-                Type type1 = ((ParameterizedType) types[0]).getRawType();
+                Type rawType = ((ParameterizedType) types[0]).getRawType();
                 Type[] type2 = ((ParameterizedType) types[0]).getActualTypeArguments();
-                Type ty = new ParameterizedTypeImpl((Class) type1, new Type[]{type2[0]});
+                Type ty = new ParameterizedTypeImpl((Class)rawType,type2,null);
                 result = gson.fromJson(jsonStr, ty);
             }
             try {//避免一些异常操作，退出app
@@ -59,18 +64,21 @@ public abstract class Call<T> extends ObserverBaseWeb<ResponseBody> {
 
     public abstract void onSuccess(@NonNull T t);
 
-    private class ParameterizedTypeImpl implements ParameterizedType {
-        private final Class raw;
-        private final Type[] args;
 
-        public ParameterizedTypeImpl(Class raw, Type[] args) {
+    public static class ParameterizedTypeImpl implements ParameterizedType {
+        private final Class<?> raw;
+        private final Type[] args;
+        private final Type owner;
+
+        public ParameterizedTypeImpl(Class<?> raw, Type[] args, Type owner) {
             this.raw = raw;
-            this.args = args != null ? args : new Type[0];
+            this.args = args;
+            this.owner = owner;
         }
 
         @Override
         public Type[] getActualTypeArguments() {
-            return args;
+            return args.clone();
         }
 
         @Override
@@ -80,7 +88,7 @@ public abstract class Call<T> extends ObserverBaseWeb<ResponseBody> {
 
         @Override
         public Type getOwnerType() {
-            return null;
+            return owner;
         }
     }
 }
