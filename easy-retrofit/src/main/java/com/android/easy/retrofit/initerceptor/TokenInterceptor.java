@@ -24,6 +24,7 @@ public abstract class TokenInterceptor implements Interceptor {
         }
         Response response = chain.proceed(builder.build());
         if (testResponse(response)) {
+            token = null;
             toLogin();
         }
 //      return chain.proceed(request);
