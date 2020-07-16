@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.android.easy.retrofit.rxjava.ObserverBaseWeb;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -35,21 +36,28 @@ public abstract class Call<T> extends ObserverBaseWeb<ResponseBody> {
             Gson gson = new Gson();
             String jsonStr = responseBody.string();
             Type type = getClass().getGenericSuperclass();
-            ParameterizedType parameterizedType =  (ParameterizedType) type;
+            ParameterizedType parameterizedType = (ParameterizedType) type;
             Type[] types = parameterizedType.getActualTypeArguments();
             T result;
-            if (types[0] instanceof Class) {
-                Class<T> c = (Class<T>) types[0];
-                if ("String".equals(c.getSimpleName())){
-                    result = (T) jsonStr;
-                }else {
-                    result = gson.fromJson(jsonStr, c);
+            try {
+                if (types[0] instanceof Class) {
+                    Class<T> c = (Class<T>) types[0];
+                    if ("String".equals(c.getSimpleName())) {
+                        result = (T) jsonStr;
+                    } else {
+                        result = gson.fromJson(jsonStr, c);
+                    }
+                } else {
+                    Type rawType = ((ParameterizedType) types[0]).getRawType();
+                    Type[] type2 = ((ParameterizedType) types[0]).getActualTypeArguments();
+                    Type ty = new ParameterizedTypeImpl((Class) rawType, type2, null);
+                    result = gson.fromJson(jsonStr, ty);
                 }
-            } else {
-                Type rawType = ((ParameterizedType) types[0]).getRawType();
-                Type[] type2 = ((ParameterizedType) types[0]).getActualTypeArguments();
-                Type ty = new ParameterizedTypeImpl((Class)rawType,type2,null);
-                result = gson.fromJson(jsonStr, ty);
+            } catch (Exception e) {
+                //json 解析出错 避免一些异常操作，退出app
+                e.printStackTrace();
+                onError(e);
+                return;
             }
             try {//避免一些异常操作，退出app
                 onSuccess(result);
