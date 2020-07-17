@@ -14,26 +14,23 @@ import androidx.core.content.ContextCompat;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-/**
- * @author abook23
- */
+
 public abstract class BaseFragment extends HttpFragment {
 
     private static final int KEY_requestCode = 100;
     private OnPermissionsListener mOnPermissionsListener;
     protected View rootView;
     private boolean isViewInitiated;
-    private boolean isVisibleToUser;
     private boolean isDataInitiated;
 
     protected abstract int getLayoutId();
 
     protected abstract void initView(@NonNull View rootView);
 
-    /**
-     * 加载数据
-     */
-    protected abstract void lazyLoadData();
+
+    protected abstract void onOneLoadData();
+
+    protected abstract void onVisibleLoadData();
 
     @Nullable
     @Override
@@ -58,33 +55,31 @@ public abstract class BaseFragment extends HttpFragment {
         loadData();
     }
 
+    public void loadData() {
+        if (isViewInitiated && !isDataInitiated) {
+            isDataInitiated = true;
+            onOneLoadData();
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         if (!isHidden() && isResumed()) {
-            lazyLoadData();
+            onVisibleLoadData();
         }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        this.isVisibleToUser = isVisibleToUser;
         if (isVisibleToUser) {
-            lazyLoadData();
-        }
-    }
-
-
-    public void loadData() {
-        if (isViewInitiated && isVisibleToUser && !isDataInitiated) {
-            isDataInitiated = true;
-            lazyLoadData();
+            onVisibleLoadData();
         }
     }
 
     //权限判断和申请
-    public void requestPermissions(String[] permissions, OnPermissionsListener onPermissionsListener) {
+    public void requestPermissions(String[] permissions,OnPermissionsListener onPermissionsListener) {
         //逐个判断是否还有未通过的权限
         mOnPermissionsListener = onPermissionsListener;
         boolean checkPermission = true;

@@ -21,7 +21,6 @@ import java.util.Map;
 
 /**
  * @author abook23@163.com
- * @date 2020/04/02
  */
 public abstract class BaseAppCompatListActivity<T, M> extends BaseAppCompatActivity {
 

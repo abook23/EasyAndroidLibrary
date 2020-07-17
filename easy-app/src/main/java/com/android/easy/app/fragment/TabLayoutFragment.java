@@ -18,19 +18,20 @@ import com.android.easy.app.R;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author abook23@163.com
- *  2019/12/04
+ * 2019/12/04
  */
 public class TabLayoutFragment extends Fragment {
 
     public static final int MODE_SCROLLABLE = 0;//滑动
     public static final int MODE_FIXED = 1;//平均分布
 
-    private Map<String, Fragment> mFragmentMap;
+    private Map<String, Fragment> mFragmentMap = new HashMap<>();
     private boolean isVisibleToUser;
     private View rootView;
 
@@ -40,6 +41,11 @@ public class TabLayoutFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     public int paddingTop = 0;
+    private List<View> mTabViewIconViews;
+
+    public static TabLayoutFragment newInstance() {
+        return newInstance(new HashMap<String, Fragment>(), 0);
+    }
 
     public static TabLayoutFragment newInstance(Map<String, Fragment> fragmentMap) {
         return newInstance(fragmentMap, 0);
@@ -51,6 +57,16 @@ public class TabLayoutFragment extends Fragment {
         fragment.paddingTop = paddingTop;
         return fragment;
     }
+
+
+    public void addFragment(View tabViewIcon, Fragment fragment) {
+        if (mTabViewIconViews == null) {
+            mTabViewIconViews = new ArrayList<>();
+        }
+        mTabViewIconViews.add(tabViewIcon);
+        mFragmentMap.put(mFragmentMap.size() + "table", fragment);
+    }
+
 
     private void setFragments(Map<String, Fragment> fragmentMap) {
         mFragmentMap = fragmentMap;
@@ -72,8 +88,8 @@ public class TabLayoutFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (rootView == null) {
             rootView = LayoutInflater.from(getContext()).inflate(R.layout.easy_app_fragment_tab_layout, container, false);
-            if (paddingTop>0){
-                rootView.setPadding(0,paddingTop,0,0);
+            if (paddingTop > 0) {
+                rootView.setPadding(0, paddingTop, 0, 0);
             }
             tabLayout = rootView.findViewById(R.id.tabLayout);
             viewPager = rootView.findViewById(R.id.viewPager);
@@ -102,8 +118,12 @@ public class TabLayoutFragment extends Fragment {
             fragments.add(entry.getValue());
             titles.add(entry.getKey());
         }
+        if (mTabViewIconViews != null) {//自定义图标
+            for (int i = 0; i < mTabViewIconViews.size(); i++) {
+                tabLayout.getTabAt(i).setCustomView(mTabViewIconViews.get(i));
+            }
+        }
         viewPager.setAdapter(new TableLayoutViewPage(getChildFragmentManager(), titles, fragments, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
-
         tabLayout.setTabMode(tableMode);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -127,8 +147,8 @@ public class TabLayoutFragment extends Fragment {
             }
         });
         tabLayout.setupWithViewPager(viewPager);
-    }
 
+    }
 
     public class TableLayoutViewPage extends FragmentPagerAdapter {
 
