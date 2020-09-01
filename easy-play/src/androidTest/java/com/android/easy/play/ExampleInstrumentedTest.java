@@ -1,4 +1,4 @@
-package com.android.easy.app;
+package com.android.easy.play;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.android.easy.app.test", appContext.getPackageName());
+        assertEquals("com.android.easy.play.test", appContext.getPackageName());
     }
 }
