@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="1px">
+
+    <com.android.easy.mediastore.widget.SquareFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000">
+
+        <ImageView
+            android:id="@+id/mediaImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/cameraView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/camera_t"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/mediaCheckedImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:padding="8dp"
+            android:src="@mipmap/check" />
+
+        <LinearLayout
+            android:id="@+id/audioView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:src="@mipmap/audio" />
+
+            <com.android.easy.mediastore.widget.TextViewMarquee
+                android:id="@+id/audioName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:text="xxx.mp3"
+                android:textColor="#ffff" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iconVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_gravity="bottom"
+            android:layout_margin="8dp"
+            android:src="@mipmap/video" />
+
+        <TextView
+            android:id="@+id/videoTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="8dp"
+            android:text="00:00"
+            android:textColor="#ffff" />
+
+    </com.android.easy.mediastore.widget.SquareFrameLayout>
+
+
+</FrameLayout>

@@ -3,23 +3,28 @@ package com.android.easy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.AdapterView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.easy.mediastore.MediaStoreActivity;
 import com.android.easy.ui.DownloadActivity;
+import com.android.easy.ui.GridAdapter;
 import com.android.easy.ui.ListActivity;
+import com.android.easy.ui.ListViewActivity;
+import com.android.easy.ui.LoginActivity;
 import com.android.easy.ui.MarkdownActivity;
+import com.android.easy.ui.dialog.DialogActivity;
 import com.android.easy.ui.http.HttpActivity;
 
 /**
  * @author My.Y
  */
 public class MainActivity extends AppCompatActivity {
+
+    GridAdapter mGridAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,57 +35,29 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         Object[][] data = new Object[][]{
-                {"http/retrofit2", "http.md", HttpActivity.class},
-                {"上传/下载", "DownloadActivity.md", DownloadActivity.class},
-                {"list", "listActivity.md", ListActivity.class},
-                {"TEST", "test.md", HttpActivity.class},
+                {"http/retrofit2", HttpActivity.class, "http.md"},
+                {"上传/下载", DownloadActivity.class, "DownloadActivity.md"},
+                {"list", ListActivity.class, "listActivity.md"},
+                {"相册", MediaStoreActivity.class},
+                {"TEST", HttpActivity.class, "test.md"},
+                {"LoginActivity", LoginActivity.class},
+                {"ListViewActivity", ListViewActivity.class},
+                {"EasyDialog", DialogActivity.class},
         };
 
-        recyclerView.setAdapter(new MyAdapter(data));
-    }
-
-
-    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHoder> {
-        Object[][] data;
-
-        public MyAdapter(Object[][] data) {
-            this.data = data;
-        }
-
-        @NonNull
-        @Override
-        public MyAdapter.MyViewHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new MyViewHoder(View.inflate(parent.getContext(), R.layout.item_main, null));
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull MyViewHoder holder, int position) {
-            holder.mTextView.setText((String) data[position][0]);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        recyclerView.setAdapter(mGridAdapter = new GridAdapter(data));
+        mGridAdapter.addItemClick(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (data[position].length < 3) {
+                    Intent intent = new Intent(getApplicationContext(), (Class<?>) data[position][1]);
+                    startActivity(intent);
+                } else {
                     Intent intent = new Intent(getApplicationContext(), MarkdownActivity.class);
-                    intent.putExtra("filePath", (String) data[position][1]);
+                    intent.putExtra("filePath", (String) data[position][2]);
                     startActivity(intent);
                 }
-            });
-        }
-
-
-        @Override
-        public int getItemCount() {
-            return data.length;
-        }
-
-
-        class MyViewHoder extends RecyclerView.ViewHolder {
-
-            public TextView mTextView;
-
-            public MyViewHoder(@NonNull View itemView) {
-                super(itemView);
-                mTextView = itemView.findViewById(R.id.text);
             }
-        }
+        });
     }
 }

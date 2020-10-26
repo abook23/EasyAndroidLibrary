@@ -1,5 +1,7 @@
 package com.android.easy.ui;
 
+import androidx.annotation.NonNull;
+
 import com.android.easy.R;
 import com.android.easy.app.base.BaseAppCompatListActivity;
 import com.android.easy.data.ResponseBean;
@@ -21,18 +23,18 @@ public class ListActivity extends BaseAppCompatListActivity<ResponseBean<List<Us
     }
 
     @Override
-    public String getURL() {
+    public String getApiUrl() {
         return null;
     }
 
     @Override
-    public void setParams(Map<String, Object> params) {
+    public void setParams(@NonNull Map<String, Object> params) {
 
     }
 
     @Override
-    public List<UserInfo> onResponseData(ResponseBean<List<UserInfo>> userInfoResponseBean) {
-        return userInfoResponseBean.data;
+    public List<UserInfo> onResponseData( ResponseBean<List<UserInfo>> listResponseBean) {
+        return listResponseBean.data;
     }
 
     @Override

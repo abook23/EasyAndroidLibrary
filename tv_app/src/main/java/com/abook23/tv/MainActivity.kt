@@ -1,9 +1,10 @@
 package com.abook23.tv
 
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTabHost
-import androidx.viewpager.widget.ViewPager
 import com.abook23.tv.ben.AppConfig
 import com.abook23.tv.ben.AppVersion
 import com.abook23.tv.ben.ResponseBen
@@ -14,13 +15,9 @@ import com.android.easy.app.HttpCall
 import com.android.easy.app.base.BaseAppCompatActivity
 import com.android.easy.app.fragment.TabLayoutFragment
 import com.android.easy.app.fragment.UpgradeAppDialogFragment
-import com.android.easy.base.adapter.base.BaseViewHolder
 import com.android.easy.base.spf.SharedPreferencesUtils
-import com.android.easy.base.tabhost.TabHostViewPage
-import com.android.easy.base.tabhost.TabHostViewPagerAdapter
 import com.android.easy.base.util.AndroidUtils
-import com.android.easy.base.util.L
-import java.util.*
+import com.google.android.material.tabs.TabLayout
 
 class MainActivity : BaseAppCompatActivity() {
 
@@ -28,9 +25,7 @@ class MainActivity : BaseAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main, false)
         clearTranslucentStatusBarHeight()
-        var t = System.currentTimeMillis();
         initApp()
-        L.d((System.currentTimeMillis() - t).toString() + "ms")
     }
 
     fun initApp() {
@@ -60,31 +55,65 @@ class MainActivity : BaseAppCompatActivity() {
     }
 
     fun initUI(data: List<AppConfig>) {
-        val map1 = mutableMapOf<String, Fragment>()
-        val map2 = mutableMapOf<String, Fragment>()
+        val list1 = mutableListOf<TabLayoutFragment.TabLayoutItem>()
+        val list2 = mutableListOf<TabLayoutFragment.TabLayoutItem>()
         data.forEach {
             if (it.type.toInt() == 0) {
-                map1.put(it.name, MainFragment1.newInstance(it))
+                list1.add(TabLayoutFragment.TabLayoutItem(it.name, 0, MainFragment1.newInstance(it)))
             }
             if (it.type.toInt() == 1) {
-                map2.put(it.name, MainFragment2.newInstance(it))
+                list2.add(TabLayoutFragment.TabLayoutItem(it.name, 0, MainFragment2.newInstance(it)))
             }
         }
         val statusBarHeight = getStatusBarHeight()
 
-        val tabHostBeans = ArrayList<TabHostViewPage.TabHostBean>()
-        tabHostBeans.add(TabHostViewPage.TabHostBean("首页", R.drawable.bg_table_host_0, TabLayoutFragment.newInstance(map1, statusBarHeight)))
-        tabHostBeans.add(TabHostViewPage.TabHostBean("频道", R.drawable.bg_table_host_1, TabLayoutFragment.newInstance(map2, statusBarHeight)))
-        tabHostBeans.add(TabHostViewPage.TabHostBean("我", R.drawable.bg_table_host_2, MainFragment3.newInstance()))
+        val datas = ArrayList<TabLayoutFragment.TabLayoutItem>()
+        datas.add(TabLayoutFragment.TabLayoutItem("首页", R.drawable.bg_table_host_0, getSubTableLayoutFragment(list1)))
+        datas.add(TabLayoutFragment.TabLayoutItem("频道", R.drawable.bg_table_host_1, getSubTableLayoutFragment(list2)))
+        datas.add(TabLayoutFragment.TabLayoutItem("我", R.drawable.bg_table_host_2, MainFragment3.newInstance()))
+        supportFragmentManager.beginTransaction().add(R.id.main_fragment, getTableLayoutFragment(datas)).commit()
+    }
 
-        val viewPager = findViewById<ViewPager>(R.id.view_pager)
-        val fragmentTabHost = findViewById<FragmentTabHost>(R.id.tabs)
-        val tabHostViewPage = TabHostViewPage<TabHostViewPage.TabHostBean>(this, fragmentTabHost, viewPager, tabHostBeans)
-        tabHostViewPage.setAdapter(object : TabHostViewPagerAdapter<TabHostViewPage.TabHostBean>(this, R.layout.item_tablehost) {
-            override fun convert(holder: BaseViewHolder, position: Int, item: TabHostViewPage.TabHostBean) {
-                holder.setText(R.id.tv_tbhost, item.title)
-                holder.setImageResource(R.id.iv_tbhost, item.resId)//如果是网络图片,继承TabHostBean 重写.
+    private fun getTableLayoutFragment(data: List<TabLayoutFragment.TabLayoutItem>): Fragment {
+        val tabLayoutFragment = TabLayoutFragment.newInstance(
+                R.layout.fragment_tab_layout, R.id.tabLayout, R.id.viewPager
+        )
+        tabLayoutFragment.setTabMode(TabLayoutFragment.MODE_FIXED)
+        tabLayoutFragment.addFragments(context, R.layout.tab_layout_item, data, object : TabLayoutFragment.Call {
+            override fun convert(tabLayoutItemView: View, item: TabLayoutFragment.TabLayoutItem, position: Int) {
+                tabLayoutItemView.findViewById<TextView>(R.id.tab_layout_item_tv).text = item.name
+                tabLayoutItemView.findViewById<ImageView>(R.id.tab_layout_item_iv).setImageResource(item.resId)
             }
         })
+        return tabLayoutFragment
+    }
+
+    private fun getSubTableLayoutFragment(data: List<TabLayoutFragment.TabLayoutItem>): Fragment {
+        val tabLayoutFragment = TabLayoutFragment.newInstance(
+                R.layout.fragment_tab_layout_top, R.id.tabLayout, R.id.viewPager
+        )
+        tabLayoutFragment.setTabMode(TabLayoutFragment.MODE_SCROLLABLE)
+        tabLayoutFragment.addFragments(context, R.layout.tab_layout_top_item, data, object : TabLayoutFragment.Call {
+            override fun convert(tabLayoutItemView: View, item: TabLayoutFragment.TabLayoutItem, position: Int) {
+                tabLayoutItemView.findViewById<TextView>(R.id.tab_layout_item_tv).text = item.name
+                tabLayoutItemView.findViewById<TextView>(R.id.tab_layout_item_tv_select).text = item.name
+            }
+        })
+        tabLayoutFragment.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(p0: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+                p0?.customView?.findViewById<View>(R.id.tab_layout_item_tv)?.visibility=View.VISIBLE
+                p0?.customView?.findViewById<View>(R.id.tab_layout_item_tv_select)?.visibility=View.GONE
+            }
+
+            override fun onTabSelected(p0: TabLayout.Tab?) {
+                p0?.customView?.findViewById<View>(R.id.tab_layout_item_tv_select)?.visibility=View.VISIBLE
+                p0?.customView?.findViewById<View>(R.id.tab_layout_item_tv)?.visibility=View.GONE
+            }
+        })
+        return tabLayoutFragment
     }
 }

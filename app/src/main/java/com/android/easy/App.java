@@ -50,13 +50,15 @@ public class App extends BaseApplication {
             @Override
             public boolean testResponse(Response response) {
                 //登录失败
-                return response.code() != 401;
+                return response.code() == 401;
             }
 
             @Override
             public void toLogin() {
                 //testResponse true 调用 toLogin, 一般为token 过期
-                getApplicationContext().startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                getApplicationContext().startActivity(intent);
             }
 
         });

@@ -17,7 +17,9 @@ import com.android.easy.R;
 import com.android.easy.URL;
 import com.android.easy.app.HttpCall;
 import com.android.easy.app.base.BaseAppCompatActivity;
+import com.android.easy.data.ResponseBean;
 import com.android.easy.data.Result;
+import com.android.easy.data.model.UserInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +72,7 @@ public class LoginActivity extends BaseAppCompatActivity {
                 return false;
             }
         });
-
+        loginButton.setEnabled(true);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,10 +86,11 @@ public class LoginActivity extends BaseAppCompatActivity {
         Map<String, Object> params = new HashMap<>();
         params.put("userName", userName);
         params.put("password", password);
-        post(URL.login, params, new HttpCall<Result<String>>() {
+        post(URL.login, params, new HttpCall<ResponseBean<UserInfo>>() {
             @Override
-            public void onSuccess(@NonNull Result<String> stringResult) {
+            public void onSuccess(@NonNull ResponseBean<UserInfo> stringResult) {
                 progressBar.setVisibility(View.GONE);
+                finish();
             }
 
             @Override

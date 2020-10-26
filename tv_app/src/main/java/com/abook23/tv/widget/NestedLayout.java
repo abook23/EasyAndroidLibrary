@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @author abook23@163.com
- *  2019/12/19
+ * 2019/12/19
  */
 public class NestedLayout extends LinearLayout implements NestedScrollingParent2 {
     int topHeight = 0;
     View topView;
-    View mRecyclerView;
+    View nestedScrollView;
 
     public NestedLayout(Context context) {
         this(context, null);
@@ -36,18 +36,18 @@ public class NestedLayout extends LinearLayout implements NestedScrollingParent2
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         topHeight = topView.getMeasuredHeight();
-        if (mRecyclerView instanceof RecyclerView && getChildCount() > 2) {
-            ViewGroup.LayoutParams layoutParams = mRecyclerView.getLayoutParams();
-            layoutParams.height = h - getPaddingTop() - getChildAt(1).getMeasuredHeight()-20;
-            mRecyclerView.setLayoutParams(layoutParams);
-        }
+
+        ViewGroup.LayoutParams layoutParams = nestedScrollView.getLayoutParams();
+        layoutParams.height = h - getPaddingTop() - getPaddingBottom() - 20;
+        nestedScrollView.setLayoutParams(layoutParams);
+
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         topView = getChildAt(0);
-        mRecyclerView = getChildAt(getChildCount() - 1);
+        nestedScrollView = getChildAt(getChildCount() - 1);
     }
 
     @Override
@@ -61,8 +61,13 @@ public class NestedLayout extends LinearLayout implements NestedScrollingParent2
     }
 
     @Override
-    public void onStopNestedScroll(@NonNull View target, int type) {
-
+    public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
+        boolean hiddenTop = dy > 0 && getScrollY() < topHeight;
+        boolean showTop = dy < 0 && getScrollY() > 0 && !ViewCompat.canScrollVertically(target, -1);
+        if (hiddenTop || showTop) {
+            scrollBy(0, dy);
+            consumed[1] = dy;
+        }
     }
 
     @Override
@@ -71,13 +76,8 @@ public class NestedLayout extends LinearLayout implements NestedScrollingParent2
     }
 
     @Override
-    public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
-        boolean hiddenTop = dy > 0 && getScrollY() < topHeight;
-        boolean showTop = dy < 0 && getScrollY() > 0 && !ViewCompat.canScrollVertically(target, -1);
-        if (hiddenTop || showTop) {
-            scrollBy(0, dy);
-            consumed[1] = dy;
-        }
+    public void onStopNestedScroll(@NonNull View target, int type) {
+
     }
 
     @Override

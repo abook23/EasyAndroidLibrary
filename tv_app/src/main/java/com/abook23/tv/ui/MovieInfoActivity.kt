@@ -1,7 +1,6 @@
 package com.abook23.tv.ui
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -12,20 +11,21 @@ import com.abook23.tv.App
 import com.abook23.tv.R
 import com.abook23.tv.URL
 import com.abook23.tv.ben.MovieBen
+import com.abook23.tv.ben.PlayData
 import com.abook23.tv.ben.PlayDataBen
 import com.abook23.tv.ben.ResponseBen
+import com.abook23.tv.ui.cache.AddCacheDialogFragment
 import com.abook23.tv.util.RoundedCornersFitStart
 import com.abook23.tv.util.SeaDataUtils
 import com.android.easy.app.HttpCall
 import com.android.easy.app.base.BaseAppCompatActivity
-import com.android.easy.base.util.SoftInputMethodUtils
+import com.android.easy.play.MovieInfo
+import com.android.easy.play.VideoFragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.activity_movie_info.*
-import kotlinx.android.synthetic.main.activity_search.*
 
 class MovieInfoActivity : BaseAppCompatActivity() {
 
@@ -46,8 +46,11 @@ class MovieInfoActivity : BaseAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_info, false)
-
         movieBen = intent.getSerializableExtra("data") as MovieBen
+        loadData()
+    }
+
+    private fun loadData() {
         requestData(movieBen.v_id)
 
         todCountText.text = movieBen.v_note
@@ -68,8 +71,9 @@ class MovieInfoActivity : BaseAppCompatActivity() {
         recyclerView0.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView0.adapter = todAdapter
         todAdapter.setOnItemClickListener { adapter, view, position ->
-            var url = adapter.getItem(position) as String
-            PlayActivity.starPlayActivity(this, movieBen.v_name, url, urls)
+            val url = adapter.getItem(position) as String
+            val playData = getPlayData(url)
+            PlayActivity.starPlayActivity(this, playData)
             movieBen.isPlay = true
             App.getDaoSession().movieBenDao.insertOrReplaceInTx(movieBen)
             collectData(1)//用户播放
@@ -80,6 +84,14 @@ class MovieInfoActivity : BaseAppCompatActivity() {
         if (playMovie != null && playMovie.isCollect) {
             collectImageView.setImageResource(R.mipmap.icon_collect1)
         }
+    }
+
+    fun getPlayData(url: String): PlayData {
+        val list = ArrayList<MovieInfo>()
+        for (index in urls.indices) {
+            list.add(MovieInfo("第${index}集", urls[index], index + 1))
+        }
+        return PlayData(movieBen.v_id, movieBen.v_name, url, list)
     }
 
     /**
@@ -95,28 +107,17 @@ class MovieInfoActivity : BaseAppCompatActivity() {
     private fun requestData(vid: Long) {
         get(URL.playData, mapOf("id" to vid), object : HttpCall<ResponseBen<PlayDataBen>>() {
             override fun onSuccess(t: ResponseBen<PlayDataBen>) {
+                urls.clear()
                 playDataBen = t.data
                 var urlMap = SeaDataUtils.formatBody(playDataBen?.body)
                 urlMap.forEach {
-                    if (it.key.endsWith("m3u8")) {
+                    if (it.key.contains("m3u8")) {
                         var m3u8url = it.value
                         m3u8url.forEach {
                             urls.add(it[1])
                         }
                         todAdapter.setNewData(urls)
                         return
-                    }
-                }
-                if (urls.size==0){
-                    urlMap.forEach {
-                        if (it.key.contains("m3u8")) {
-                            var m3u8url = it.value
-                            m3u8url.forEach {
-                                urls.add(it[1])
-                            }
-                            todAdapter.setNewData(urls)
-                            return
-                        }
                     }
                 }
             }
@@ -138,7 +139,7 @@ class MovieInfoActivity : BaseAppCompatActivity() {
     }
 
     inner class TodAdapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_tod) {
-        val sharedPreferences = applicationContext.getSharedPreferences(VideoFragment.VIDEO_PLAY_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+        val sharedPreferences = VideoFragment.getSharedPreferences(applicationContext)
         override fun convert(helper: BaseViewHolder, item: String?) {
             helper.setText(R.id.text, (helper.layoutPosition + 1).toString())
             if (sharedPreferences.contains(item)) {
@@ -160,6 +161,10 @@ class MovieInfoActivity : BaseAppCompatActivity() {
             Glide.with(mContext)
                     .load(item.v_pic)
                     .into(imageView)
+            helper.itemView.setOnClickListener {
+                movieBen = item
+                loadData()
+            }
         }
     }
 
@@ -171,5 +176,10 @@ class MovieInfoActivity : BaseAppCompatActivity() {
             collectImageView.setImageResource(R.mipmap.icon_collect)
         }
         App.getDaoSession().movieBenDao.insertOrReplaceInTx(movieBen)
+    }
+
+    fun onCacheClick(view: View) {
+        val addCacheFragment = AddCacheDialogFragment.newInstance(getPlayData(""))
+        addCacheFragment.show(supportFragmentManager, "addCacheFragment")
     }
 }

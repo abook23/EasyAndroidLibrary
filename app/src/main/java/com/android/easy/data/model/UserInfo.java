@@ -5,4 +5,5 @@ package com.android.easy.data.model;
  * @date 2020/04/02
  */
 public class UserInfo {
+    public String name;
 }

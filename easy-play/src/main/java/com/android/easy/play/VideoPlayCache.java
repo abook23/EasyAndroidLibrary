@@ -1,7 +1,6 @@
 package com.android.easy.play;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import java.io.File;
 
@@ -16,35 +15,35 @@ import java.io.File;
  * @Version: 1.0
  */
 public class VideoPlayCache {
-    private String url;
+    private static String play_url="";
 
-    public void cacheVideo(Context context, String url, OnVideoCacheListener onVideoCacheListener) {
-        this.url = url;
-        String cachePath = DownloadVideoManager.getCacheLocalPlayPath(context, url);
-//        if (new File(cachePath).exists()) {
-//            onVideoCacheListener.onBufferingUpdate(cachePath);
-//        }
+    public static void cacheVideo(Context context, String url, OnVideoCacheListener onVideoCacheListener) {
+        play_url = url;
         DownloadVideoManager.getInstance().shutdownNow();
-        DownloadVideoManager.getInstance().downloadM3U8(context, url, new DownloadVideoManager.Call() {
+        String cachePath = DownloadVideoManager.getCacheLocalPlayPath(context, url);
+        if (new File(cachePath).exists()){
+            onVideoCacheListener.onBufferingUpdate(cachePath);
+        }
+        DownloadVideoManager.getInstance().downloadFile(context, url, new DownloadVideoManager.Call() {
             @Override
             public void onStart(File file, long max) {
 
             }
 
             @Override
-            public void onProgress(int progress, long max) {
+            public void onProgress(long progress, long max) {
                 onVideoCacheListener.onBufferingUpdate(cachePath);
             }
 
             @Override
-            public void onComplete() {
+            public void onComplete(File file) {
                 onVideoCacheListener.onBufferingUpdate(cachePath);
             }
         });
     }
 
-    public void stop() {
-        DownloadVideoManager.getInstance().stop(url);
+    public static void stop(){
+        DownloadVideoManager.getInstance().stop(play_url);
     }
 
     public interface OnVideoCacheListener {

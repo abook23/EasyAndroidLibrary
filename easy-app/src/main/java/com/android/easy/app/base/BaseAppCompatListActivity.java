@@ -1,8 +1,10 @@
 package com.android.easy.app.base;
 
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
 
-import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,23 +24,45 @@ import java.util.Map;
 /**
  * @author abook23@163.com
  */
-public abstract class BaseAppCompatListActivity<T, M> extends BaseAppCompatActivity {
+public abstract class BaseAppCompatListActivity<M, T> extends BaseAppCompatActivity {
 
-    public BaseQuickAdapter mBaseQuickAdapter;
+    public BaseQuickAdapter<T, BaseViewHolder> mBaseQuickAdapter;
     public RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Map<String, Object> params = new HashMap<>();
-    private int page = 1;
+    private int mPage = 1;
+    public int mPageSize = 15;
 
+    public abstract @LayoutRes
+    int getItemLayout();
+
+    public abstract String getApiUrl();
+
+    public abstract void setParams(@NonNull Map<String, Object> params);
+
+    public abstract List<T> onResponseData(M m);
+
+    public abstract void onBaseQuickAdapterConvert(@NonNull BaseViewHolder helper, @NonNull T item);
+
+
+    /**
+     * 加载数据
+     */
+    public void loadRequestData() {
+        onRefreshParam();
+        onRequestData(params);
+    }
 
     //重新加载
-    public void onRefreshParam(Map<String, Object> params, int page) {
-        params.put("page", page);
+    public void onRefreshParam() {
+        mPage = 1;
+        params.put("page", mPage);
     }
 
     //加载更多,下一页
-    public void onLoadMoreRequestedParam(Map<String, Object> params, int page) {
-        params.put("page", page);
+    public void onLoadMoreRequestedParam() {
+        params.put("page", mPage);
+        params.put("pageSize", mPageSize);
     }
 
     @Override
@@ -50,51 +74,20 @@ public abstract class BaseAppCompatListActivity<T, M> extends BaseAppCompatActiv
 
         mRecyclerView.setAdapter(mBaseQuickAdapter = new Adapter(getItemLayout()));
         mRecyclerView.setLayoutManager(getLayoutManager());
-
+        setEmptyView(null);
         setParams(params);
         onListener();
     }
 
-    private void onListener() {
-        mBaseQuickAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+    public void setEmptyView(View view) {
+        if (view == null) {
+            view = LayoutInflater.from(getContext()).inflate(R.layout.easy_app_empty_view, mRecyclerView, false);
+        }
+        mBaseQuickAdapter.setEmptyView(view);
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onLoadMoreRequested() {
-                onLoadMoreRequestedParam(params, page);
-                onRequestData(params);
-            }
-        }, mRecyclerView);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                page = 1;
-                onRefreshParam(params, page);
-                onRequestData(params);
-            }
-        });
-    }
-
-    private void onRequestData(final Map<String, Object> params) {
-        get(getURL(), params, true, new HttpCall<T>() {
-            @Override
-            public void onSuccess(@NonNull T t) {
-                List<M> list = onResponseData(t);
-                if (list.size() > 0) {
-                    if (page == 1) {
-                        mBaseQuickAdapter.setNewData(list);
-                    } else {
-                        mBaseQuickAdapter.addData(list);
-                    }
-                    mBaseQuickAdapter.loadMoreComplete();
-                    page++;
-                } else {
-                    mBaseQuickAdapter.loadMoreEnd();
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                mBaseQuickAdapter.loadMoreFail();
+            public void onClick(View v) {
+                onRefreshParam();
             }
         });
     }
@@ -103,27 +96,86 @@ public abstract class BaseAppCompatListActivity<T, M> extends BaseAppCompatActiv
         return new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
     }
 
-    public abstract @LayoutRes
-    int getItemLayout();
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadRequestData();
+    }
 
-    public abstract String getURL();
+    private void onListener() {
+        mBaseQuickAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                onLoadMoreRequestedParam();
+                onRequestData(params);
+            }
+        }, mRecyclerView);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                onRefreshParam();
+                onRequestData(params);
+            }
+        });
+    }
 
-    public abstract void setParams(Map<String, Object> params);
+    private void onRequestData(final Map<String, Object> params) {
+        if (TextUtils.isEmpty(getApiUrl())) {
+            List<T> list = onResponseData(null);
+            notifyDataSetChanged(list);
+        } else {
+            get(getApiUrl(), params, true, new HttpCall<M>() {
+                @Override
+                public void onSuccess(@NonNull M m) {
+                    List<T> list = onResponseData(m);
+                    notifyDataSetChanged(list);
+                }
 
-    public abstract @NonNull
-    List<M> onResponseData(T t);
+                @Override
+                public void onError(Throwable e) {
+                    super.onError(e);
+                    mBaseQuickAdapter.loadMoreFail();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        }
+    }
 
-    public abstract void onBaseQuickAdapterConvert(BaseViewHolder helper, M item);
+    private void notifyDataSetChanged(List<T> list) {
+        if (list != null && list.size() > 0) {
+            if (mPage == 1) {
+                mBaseQuickAdapter.setNewData(list);
+            } else {
+                mBaseQuickAdapter.addData(list);
+            }
+            if (list.size() < mPageSize) {
+                mBaseQuickAdapter.loadMoreEnd();
+            } else {
+                mBaseQuickAdapter.loadMoreComplete();
+            }
+            mPage++;
+        } else {
+            mBaseQuickAdapter.loadMoreEnd();
+        }
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 
+    public List<T> getListData() {
+        return mBaseQuickAdapter.getData();
+    }
 
-    public class Adapter extends BaseQuickAdapter<M, BaseViewHolder> {
+    public void notifyDataSetChanged() {
+        mBaseQuickAdapter.notifyDataSetChanged();
+    }
+
+    public class Adapter extends BaseQuickAdapter<T, BaseViewHolder> {
 
         public Adapter(int layoutResId) {
             super(layoutResId);
         }
 
         @Override
-        protected void convert(@NonNull BaseViewHolder helper, M item) {
+        protected void convert(@NonNull BaseViewHolder helper, T item) {
             onBaseQuickAdapterConvert(helper, item);
         }
     }

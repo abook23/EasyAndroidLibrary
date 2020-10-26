@@ -14,16 +14,6 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * @Description: 描述
- * @Author: yangxiong
- * @E-mail: abook23@163.com
- * @CreateDate: 2020/7/28 17:13
- * @UpdateUser: 更新者：
- * @UpdateDate: 2020/7/28 17:13
- * @UpdateRemark: 更新说明：
- * @Version: 1.0
- */
 public class DownloadFileManager {
     private DownLoadBroadcast downLoadBroadcast;
     private String filePath;

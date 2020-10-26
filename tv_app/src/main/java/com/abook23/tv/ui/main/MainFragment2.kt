@@ -15,6 +15,7 @@ import com.abook23.tv.ui.SearchActivity
 import com.abook23.tv.util.RoundedCornersFitStart
 import com.android.easy.app.HttpCall
 import com.android.easy.app.base.BaseFragment
+import com.android.easy.base.util.L
 import com.android.easy.retrofit.ApiService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -56,7 +57,11 @@ class MainFragment2 : BaseFragment() {
         requestData()
     }
 
-    override fun lazyLoadData() {
+    override fun onVisibleLoadData() {
+
+    }
+
+    override fun onOneLoadData() {
 
     }
 
@@ -74,7 +79,7 @@ class MainFragment2 : BaseFragment() {
     }
 
     fun requestData() {
-        ApiService.CACHE = false
+        ApiService.CACHE = true
         get(URL.movieListType, mapOf("type" to appConfig.id), object : HttpCall<ResponseBen<List<TypeMovie>>>() {
             override fun onSuccess(t: ResponseBen<List<TypeMovie>>) {
                 typeId = t.data[0]?.typeId

@@ -9,10 +9,13 @@ import com.abook23.tv.App
 import com.abook23.tv.R
 import com.abook23.tv.ben.MovieBen
 import com.abook23.tv.dao.MovieBenDao
+import com.abook23.tv.ui.cache.CacheActivity
 import com.abook23.tv.ui.MovieInfoActivity
 import com.abook23.tv.ui.SearchActivity
 import com.abook23.tv.util.RoundedCornersFitStart
 import com.android.easy.app.base.BaseFragment
+import com.android.easy.base.util.AndroidUtils
+import com.android.easy.dialog.EasyDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -23,7 +26,9 @@ class MainFragment3 : BaseFragment() {
     var adapter1: Adapter1? = null
     var typeArray = arrayListOf(
             arrayOf("观看历史", R.mipmap.icon_history),
-            arrayOf("我的收藏", R.mipmap.icon_collect)
+            arrayOf("我的收藏", R.mipmap.icon_collect),
+            arrayOf("离线下载", R.mipmap.icon_cache),
+            arrayOf("缓存清理", R.mipmap.icon_clear_cache)
     )
 
     companion object {
@@ -45,7 +50,21 @@ class MainFragment3 : BaseFragment() {
         recyclerView1.adapter = adapter1
 
         adapter0.setOnItemClickListener { adapter, view, position ->
-            SearchActivity.starActivity(activity!!, true, -1, false, position + 1)
+            if (position==0 || position== 1){
+                SearchActivity.starActivity(activity!!, true, -1, false, position + 1)
+            }else if (position==2){
+                CacheActivity.start(context!!)
+            }else if(position==3){
+                val cacheSize = AndroidUtils.selectCacheSize(context,false)
+                EasyDialog.Builder()
+                        .title("缓存清理")
+                        .content("当前缓存:$cacheSize")
+                        .positive("确认",EasyDialog.OnClickListener { dialog, view ->
+                            AndroidUtils.selectCacheSize(context,true)
+                        })
+                        .build()
+                        .show(childFragmentManager)
+            }
         }
         adapter1?.setOnItemClickListener { adapter, view, position ->
             val movieBen = adapter1?.getItem(position)
@@ -56,12 +75,17 @@ class MainFragment3 : BaseFragment() {
 
     fun getMovieHistroy() {
         if (adapter1 != null) {
-            var movieList = App.getDaoSession().movieBenDao.queryBuilder().where(MovieBenDao.Properties.IsPlay.eq(true)).limit(10).list()
+            var movieList = App.getDaoSession().movieBenDao.queryBuilder()
+                    .where(MovieBenDao.Properties.IsPlay.eq(true)).limit(10).list()
             adapter1?.setNewData(movieList)
         }
     }
 
-    override fun lazyLoadData() {
+    override fun onVisibleLoadData() {
+
+    }
+
+    override fun onOneLoadData() {
         getMovieHistroy()
     }
 

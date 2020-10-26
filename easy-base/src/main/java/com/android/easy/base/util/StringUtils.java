@@ -1,5 +1,8 @@
 package com.android.easy.base.util;
 
+import android.content.Context;
+import android.text.format.Formatter;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -141,5 +144,9 @@ public class StringUtils {
         String a = number.substring(0, 3);
         String b = number.substring(number.length() - 4);
         return a + "****" + b;
+    }
+
+    public static String formatFileSize(Context context, long sizeBytes) {
+        return Formatter.formatFileSize(context, sizeBytes);
     }
 }

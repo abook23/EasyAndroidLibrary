@@ -3,10 +3,12 @@ package com.android.easy.play;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.PointF;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -24,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +48,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
     /**
      * 播放所有播放url
      */
-    private List<String> urls = new ArrayList<>();
+//    private List<String> urls = new ArrayList<>();
+    private List<MovieInfo> movieData = new ArrayList<>();
     /**
      * 加载中
      */
@@ -97,20 +101,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
 
     private int bufIndex = -1;
     private float bufCount = 0f;
-    private SharedPreferences mSharedPreferences;
 
     public final static String VIDEO_PLAY_SHARED_PREFERENCES = "video_play_shared_preferences";
     private String videoName;
     private SurfaceView surfaceView;
     private int videoParentViewWidth, videoParentViewHeight;
-    private boolean isCachePlay = true;
 
     private View.OnClickListener onScreenOrientationClickListener;
-    private OnMediaPlayerListener mOnMediaPlayerListener;
-    private VideoPlayCache videoPlayCache;
+    private OnVideoFragmentListener mOnVideoFragmentListener;
     private int mOrientation;
     private OrientationEventListener mOrientationEventListener;
-
 
 
     public VideoFragment() {
@@ -120,30 +120,24 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         return VideoFragment.newInstance(videoName, playUrl, new ArrayList<>());
     }
 
-    public static VideoFragment newInstance(String videoName, String playUrl, List<String> urls) {
+    public static VideoFragment newInstance(String videoName, String playUrl, List<MovieInfo> data) {
         VideoFragment fragment = new VideoFragment();
         fragment.videoName = videoName;
         fragment.playUrl = playUrl;
-        if (urls == null) {
-            urls = new ArrayList<>();
-        }
-        fragment.urls = urls;
+        fragment.movieData = data;
         return fragment;
     }
 
-    private SharedPreferences getSharedPreferences() {
-        if (mSharedPreferences == null) {
-            mSharedPreferences = getContext().getSharedPreferences(VIDEO_PLAY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        }
-        return mSharedPreferences;
+    public static SharedPreferences getSharedPreferences(Context context) {
+        return context.getSharedPreferences(VIDEO_PLAY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     public void addScreenOrientationClickListener(View.OnClickListener onClickListener) {
         onScreenOrientationClickListener = onClickListener;
     }
 
-    public void setOnMediaPlayerListener(OnMediaPlayerListener onMediaPlayerListener) {
-        mOnMediaPlayerListener = onMediaPlayerListener;
+    public void setOnVideoFragmentListener(OnVideoFragmentListener onVideoFragmentListener) {
+        mOnVideoFragmentListener = onVideoFragmentListener;
     }
 
     @Override
@@ -164,16 +158,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
             videoNameTextView.setText(videoName);
             dialogFrameLayout.setVisibility(View.GONE);
 
-            if (urls != null && !urls.isEmpty()) {
+            if (movieData != null && !movieData.isEmpty()) {
                 RecyclerView todRecyclerView = rootView.findViewById(R.id.todRecyclerView);
                 todRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
                 todRecyclerView.setAdapter(mTodAdapter = new TodAdapter());
-                mTodAdapter.setData(urls);
+                mTodAdapter.setData(movieData);
                 /**
                  * 选集
                  */
                 mTodAdapter.setOnItemClickListener((viewHolder, position) -> {
-                    play(urls.get(position));
+                    play(movieData.get(position).getUrl());
                     dialogFrameLayout.setVisibility(View.GONE);
                 });
             } else {
@@ -226,11 +220,39 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
                 }
             });
             addOrientationEventListener();
+            setOnTouchListener(rootView);
         }
         return rootView;
     }
 
-    private void addOrientationEventListener(){
+    private void setOnTouchListener(View rootView) {
+        rootView.setOnTouchListener(new View.OnTouchListener() {
+            private PointF downPoint;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    downPoint = new PointF(event.getX(), event.getY());
+                } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    float x = event.getX() - downPoint.x;
+                    float y = event.getY() - downPoint.y;
+                    if (Math.abs(y) < 10) {//只往左右
+                        if (x >= 20) {//向右
+                            mSeekBar.setProgress(mSeekBar.getProgress() + 500);
+                            mMediaPlayer.seekTo(mSeekBar.getProgress());
+                        } else if (x < -20) {//向左
+                            mSeekBar.setProgress(mSeekBar.getProgress() - 500);
+                            mMediaPlayer.seekTo(mSeekBar.getProgress());
+                        }
+                    }
+
+                }
+                return false;
+            }
+        });
+    }
+
+    private void addOrientationEventListener() {
         mOrientationEventListener = new OrientationEventListener(getContext()) {
             @Override
             public void onOrientationChanged(int orientation) {
@@ -238,10 +260,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
                     orientation = (orientation + 45) / 90 * 90 % 360;
                     if (orientation != mOrientation) {
                         mOrientation = orientation;
-                        if (mOrientation == 90){
-                            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-                        }else if (mOrientation == 270){
-                            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                        try {
+                            if (mOrientation == 90) {
+                                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                            } else if (mOrientation == 270) {
+                                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                            }
+                        } catch (Exception e) {
                         }
                     }
                 }
@@ -267,6 +292,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         if (!isLockView) {//是否锁屏
             //seekBarLinearLayout
             setVisibilityView(b, pauseView/*暂停*/, appBarLinearLayout/*标题等*/, positionTime/*播放时间*/, durationTime/*片长时间*/, screenOrientationView/*横屏按钮*/, seekBarBottomView);
+            mOnVideoFragmentListener.onSettingVisibilityView(b);
         }
         setVisibilityView(b, mSeekBar/*播放进度*/, lockView/*锁屏按钮*/);
         if (b) {
@@ -334,6 +360,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
     public void onPause() {
         super.onPause();
         pause();
+        if (mOnVideoFragmentListener != null && mMediaPlayer != null && mMediaPlayer.getDuration() > 0) {
+            mOnVideoFragmentListener.onMediaPlayer(playUrl, mMediaPlayer.getCurrentPosition(), mMediaPlayer.getDuration());
+        }
     }
 
     @Override
@@ -341,15 +370,12 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         if (mTimer != null) {
             mTimer.cancel();
         }
-        if (videoPlayCache != null) {
-            videoPlayCache.stop();
-        }
-
         if (mMediaPlayer != null) {
             stop();
             release();
             IjkMediaPlayer.native_profileEnd();
         }
+        VideoPlayCache.stop();
         super.onDestroy();
     }
 
@@ -393,13 +419,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
     }
 
 
-    public void setUrls(List<String> urls) {
-        if (urls == null) {
-            return;
-        }
-        this.urls = urls;
-    }
-
     public void mediaPlayer(String url) {
         if (url == null) {
             return;
@@ -411,7 +430,12 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         playUrl = url;
         try {
             mMediaPlayer.setDisplay(mSurfaceHolder);
-            mMediaPlayer.setDataSource(url);
+            String localPath = DownloadVideoManager.getCacheLocalPlayPath(getContext(), url);
+            if (new File(localPath).exists()) {
+                mMediaPlayer.setDataSource(localPath);
+            } else {
+                mMediaPlayer.setDataSource(url);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(getContext(), "播放失败", Toast.LENGTH_SHORT).show();
@@ -423,15 +447,15 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
          */
         mMediaPlayer.setOnPreparedListener(iMediaPlayer -> {
             log("OnPrepared");
-            long seek = getSharedPreferences().getLong(playUrl, 0);
+            long seek = getSharedPreferences(getContext()).getLong(playUrl, 0);
             mMediaPlayer.seekTo(seek);
             mMediaPlayer.start();
             mSeekBar.setMax(Integer.valueOf(iMediaPlayer.getDuration() + ""));
             showSettingView(false);
             updateTime();
 
-            for (int i = 0; i < urls.size(); i++) {
-                if (urls.get(i).equals(url)) {
+            for (int i = 0; i < movieData.size(); i++) {
+                if (movieData.get(i).getUrl().equals(url)) {
                     playPosition = i;
                     return;
                 }
@@ -482,28 +506,17 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
             completion();
             mSeekBar.setProgress(mSeekBar.getMax());
             //播放下一集
-            if (playPosition < urls.size()) {
-                play(urls.get(playPosition + 1));
+            if (movieData.size() > 1) {
+                play(movieData.get(playPosition + 1).getUrl());
             }
         });
     }
 
     //开始加载视频
     private void play(String url) {
-        if (isCachePlay && url.startsWith("http")) {
-            videoPlayCache = new VideoPlayCache();
-            videoPlayCache.cacheVideo(getContext(), url, new VideoPlayCache.OnVideoCacheListener() {
-                @Override
-                public void onBufferingUpdate(String path) {
-                    if (mMediaPlayer == null || !mMediaPlayer.isPlaying()) {
-                        mediaPlayer(path);
-                    }
-                }
-            });
-        } else {
-            mediaPlayer(url);
-        }
+        mediaPlayer(url);
     }
+
 
     /**
      * 更新播放时间和进度条
@@ -591,9 +604,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
 
 
     private void stop() {
-        if (mOnMediaPlayerListener != null && mMediaPlayer != null && mMediaPlayer.getDuration() > 0) {
-            mOnMediaPlayerListener.onMediaPlayer(playUrl, mMediaPlayer.getCurrentPosition(), mMediaPlayer.getDuration());
-        }
         if (mMediaPlayer != null && isPlaying()) {
             mMediaPlayer.stop();
             saveCurrentPosition();
@@ -604,7 +614,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
      * 保存播放进度
      */
     private void saveCurrentPosition() {
-        getSharedPreferences().edit().putLong(playUrl, getCurrentPosition()).apply();
+        getSharedPreferences(getContext()).edit().putLong(playUrl, getCurrentPosition()).apply();
     }
 
 
@@ -712,12 +722,12 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
      */
     public class TodAdapter extends RecyclerView.Adapter<TodAdapter.TodViewHolder> {
 
-        private List<String> urls = new ArrayList<>();
+        private List<MovieInfo> data = new ArrayList<>();
         public OnItemClickListener mOnItemClickListener;
 
-        public void setData(List<String> urls) {
+        public void setData(List<MovieInfo> urls) {
             if (urls != null) {
-                this.urls.addAll(urls);
+                this.data.addAll(urls);
                 notifyDataSetChanged();
             }
         }
@@ -735,7 +745,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
 
         @Override
         public void onBindViewHolder(@NonNull TodViewHolder holder, int position) {
-            holder.mTextView.setText(position + 1 + "");
+            holder.mTextView.setText(data.get(position).getNum() + "");
             if (position == playPosition) {
                 holder.mTextView.setTextColor(getResources().getColor(R.color.blue));
             } else {
@@ -748,7 +758,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
 
         @Override
         public int getItemCount() {
-            return urls.size();
+            return data.size();
         }
 
 
@@ -763,11 +773,19 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         }
     }
 
+    public void onBackPressed() {
+        if (dialogFrameLayout.getVisibility() == View.VISIBLE) {
+            dialogFrameLayout.setVisibility(View.GONE);
+        }
+    }
+
     public interface OnItemClickListener {
         void onItemClick(TodAdapter.TodViewHolder viewHolder, int position);
     }
 
-    public interface OnMediaPlayerListener {
+    public interface OnVideoFragmentListener {
         void onMediaPlayer(String url, long currentPosition, long duration);
+
+        void onSettingVisibilityView(boolean b);
     }
 }

@@ -36,16 +36,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * @Description: 描述
- * @Author: yangxiong
- * @E-mail: abook23@163.com
- * @CreateDate: 2020/7/17 14:00
- * @UpdateUser: 更新者：
- * @UpdateDate: 2020/7/17 14:00
- * @UpdateRemark: 更新说明：
- * @Version: 1.0
- */
 public class EasyDialog extends DialogFragment {
 
     private Builder mBuilder;
@@ -115,14 +105,14 @@ public class EasyDialog extends DialogFragment {
         public Builder positive(CharSequence positive, OnClickListener listener) {
             this.positive = positive;
             this.positiveClickListener = listener;
-            canceledOnTouchOutside = false;
+//            canceledOnTouchOutside = false;
             return this;
         }
 
         public Builder positiveBig(CharSequence positive, OnClickListener listener) {
             this.positiveBig = positive;
             this.positiveBigButtonClickListener = listener;
-            canceledOnTouchOutside = false;
+//            canceledOnTouchOutside = false;
             return this;
         }
 
@@ -514,7 +504,7 @@ public class EasyDialog extends DialogFragment {
 
 
     public interface OnClickListener {
-        void onClick(EasyDialog dialog, View view);
+        void onClick(@NonNull EasyDialog dialog, @NonNull View view);
     }
 
     public interface OnDownloadListener {

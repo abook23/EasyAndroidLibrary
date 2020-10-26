@@ -22,24 +22,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 
 import com.android.easy.app.R;
-import com.android.easy.base.net.NetworkUtils;
+import com.android.easy.base.net.NetworkManager;
 import com.android.easy.base.util.PermissionUtil;
 
 
 /**
  * 基类
  */
-public class BaseAppCompatActivity extends HttpAppCompatActivity implements BaseAppBar.OnAppBarListener {
+public class BaseAppCompatActivity extends HttpAppCompatActivity {
 
     private OnParameterChangeListener mOnParameterChangeListener;
     protected int REQUEST_CONTACTS = 0;
     private BaseAppBar mBaseAppBar;
 
     private View mNetworkView;
-    private LinearLayout mContentViewLinearLayout;
+    private LinearLayout mContentViewLinearLayout, mContentBottomLayout;
     private boolean initAppBar = true;
     private View rootView;
     protected Context mContext;
@@ -50,14 +51,16 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
     }
 
     public Context getContext() {
-        return this;
+        return mContext;
     }
 
     @Override
     public void setContentView(int layoutResId) {
         super.setContentView(R.layout.easy_app_layout_content_view);
+        mContext = this;
         contentLoadingView = findViewById(R.id.content_loading);
         mContentViewLinearLayout = findViewById(R.id.content_view);
+        mContentBottomLayout = findViewById(R.id.content_bottom_layout);
         contentLoadingView.setVisibility(View.GONE);
 //      LinearLayout.LayoutParams layoutParams =new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         rootView = LayoutInflater.from(this).inflate(layoutResId, mContentViewLinearLayout, false);
@@ -131,7 +134,7 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
         if (getAppBarLayout() != -1) {
             linearLayout.addView(LayoutInflater.from(this).inflate(getAppBarLayout(), linearLayout, false));
         } else {
-            mBaseAppBar = onCreateAppBar(linearLayout);
+            mBaseAppBar = onCreateAppBar(this, linearLayout);
             linearLayout.addView(mBaseAppBar.getRootView());
         }
     }
@@ -142,10 +145,8 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
      * @param viewGroup
      * @return
      */
-    public BaseAppBar onCreateAppBar(ViewGroup viewGroup) {
-        BaseAppBar baseAppBar = new DefaultAppBar(viewGroup);
-        baseAppBar.setOnAppBarListener(this);
-        return baseAppBar;
+    public BaseAppBar onCreateAppBar(Activity activity, ViewGroup viewGroup) {
+        return new DefaultAppBar(activity, viewGroup);
     }
 
     /**
@@ -159,7 +160,7 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
     }
 
     public void addNetworkListener() {
-        NetworkUtils.requestNetwork(this, new ConnectivityManager.NetworkCallback() {
+        NetworkManager.requestNetwork(this, new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
                 super.onAvailable(network);
@@ -194,12 +195,29 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
         });
     }
 
-    public void addView(View view, int index) {
-        mContentViewLinearLayout.addView(view, index);
+
+
+
+    public View addContentBottomView(@LayoutRes int layoutRes) {
+        View view = LayoutInflater.from(this).inflate(layoutRes, mContentBottomLayout, false);
+        addContentBottomView(view, 0);
+        return view;
     }
 
-    public void removeView(View view) {
-        mContentViewLinearLayout.removeView(view);
+    public void addContentBottomView(View view, int index) {
+        mContentBottomLayout.setVisibility(View.VISIBLE);
+        mContentBottomLayout.addView(view, index);
+    }
+
+
+    public View addContentView(@LayoutRes int layoutRes) {
+        return addContentView(layoutRes, 0);
+    }
+
+    public View addContentView(@LayoutRes int layoutRes, int index) {
+        View view = LayoutInflater.from(this).inflate(layoutRes, mContentBottomLayout, false);
+        mContentViewLinearLayout.addView(view, index);
+        return view;
     }
 
     /**
@@ -233,7 +251,7 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
      * 设置状态栏透明
      */
     @TargetApi(19)
-    public void setTranslucentStatus( @ColorInt int statusBarColor) {
+    public void setTranslucentStatus(@ColorInt int statusBarColor) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色
             Window window = getWindow();
@@ -281,17 +299,6 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity implements Base
         int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
         int height = resources.getDimensionPixelSize(resourceId);
         return height;
-    }
-
-
-    @Override
-    public void onNavigationClick(View view) {
-        finish();
-    }
-
-    @Override
-    public void onAppBarClick(View view) {
-
     }
 
     public interface OnParameterChangeListener {

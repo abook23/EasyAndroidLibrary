@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
@@ -11,9 +12,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        ndk {
-            abiFilters 'armeabi', 'armeabi-v7a'//, 'arm64-v8a', 'x86', 'x86_64', 'mips', 'mips64'
-        }
+//        ndk {
+//            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'mips', 'mips64'
+//        }
     }
     buildTypes {
         release {
@@ -23,7 +24,7 @@ android {
             buildConfigField("String", "BaseURL", "\"https:xxxx.com\"")
         }
         debug {
-            buildConfigField("String", "BaseURL", "\"http://192.168.11.24:8080\"")
+            buildConfigField("String", "BaseURL", "\"http://192.168.9.128:8081\"")
             buildConfigField("String", "BaseURL_localhost", "\"http://localhost\"")
 
 //            <meta-data android:name="JPUSH_APPKEY" android:value="${jpush_appkey}"/>
@@ -104,10 +105,13 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':easy-app')
+    implementation project(path: ':easy-madiastore')
+    implementation project(path: ':easy-dialog')
 
 //    implementation 'com.zzhoujay.richtext:richtext:3.0.8'
     implementation 'com.zzhoujay.markdown:markdown:1.0.5'

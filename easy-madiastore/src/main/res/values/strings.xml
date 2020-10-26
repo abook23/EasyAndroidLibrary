@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">easy-madiastore</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="video_init_msg">点击拍照 长按录像</string>
 </resources>

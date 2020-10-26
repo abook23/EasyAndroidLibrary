@@ -1,2 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.easy.madiastore" />
+    package="com.android.easy.madiastore">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <application>
+        <activity android:name="com.android.easy.mediastore.CameraVideoActivity"/>
+        <activity android:name="com.android.easy.mediastore.MediaStoreActivity" />
+        <activity android:name="com.android.easy.mediastore.MediaStoreInfoActivity" />
+    </application>
+
+</manifest>

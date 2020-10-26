@@ -9,7 +9,7 @@
         android:layout_height="45dp">
 
         <ImageView
-            android:id="@+id/toolbar_back"
+            android:id="@+id/appbar_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -17,57 +17,56 @@
             android:src="@mipmap/easy_app_icon_back_white" />
 
         <TextView
-            android:id="@+id/toolbar_title"
+            android:id="@+id/appbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="标题"
             android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="20sp" />
 
         <EditText
-            android:id="@+id/toolbar_edit"
+            android:id="@+id/appbar_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="18dp"
             android:layout_marginRight="18dp"
-            android:layout_toStartOf="@+id/toolbar_right_layout"
-            android:layout_toEndOf="@id/toolbar_back"
+            android:layout_toStartOf="@+id/appbar_right_layout"
+            android:layout_toEndOf="@id/appbar_back"
             android:background="@color/transparent"
             android:cursorVisible="false"
             android:drawableStart="@mipmap/easy_app_search_64"
             android:gravity="center"
             android:hint="请输入搜索内容"
             android:padding="5dp"
+            android:textSize="16sp"
             android:textColor="#fff"
-            android:textColorHint="#fff"
-            android:visibility="gone" />
+            android:textColorHint="#fff" />
 
         <LinearLayout
-            android:id="@+id/toolbar_right_layout"
+            android:id="@+id/appbar_right_layout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="4dp"
             android:gravity="center_vertical">
 
             <TextView
-                android:id="@+id/toolbar_right_button"
+                android:id="@+id/appbar_right_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@color/transparent"
                 android:gravity="center"
+                android:textColor="@color/white"
                 android:minWidth="58dp"
                 android:text="确定"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                android:textSize="16sp" />
 
             <ImageView
-                android:id="@+id/toolbar_right_iv"
+                android:id="@+id/appbar_right_image_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />

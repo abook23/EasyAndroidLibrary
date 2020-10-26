@@ -16,11 +16,15 @@
             <option value="$PROJECT_DIR$/easy-base" />
             <option value="$PROJECT_DIR$/easy-camera" />
             <option value="$PROJECT_DIR$/easy-dialog" />
+            <option value="$PROJECT_DIR$/easy-glide" />
             <option value="$PROJECT_DIR$/easy-madiastore" />
+            <option value="$PROJECT_DIR$/easy-play" />
             <option value="$PROJECT_DIR$/easy-retrofit" />
+            <option value="$PROJECT_DIR$/tv_app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
+        <option name="useQualifiedModuleNames" value="true" />
       </GradleProjectSettings>
     </option>
   </component>

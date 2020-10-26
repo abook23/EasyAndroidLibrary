@@ -24,7 +24,9 @@ import java.util.concurrent.Executors;
 
 /**
  * Created by abook23 on 2016/5/16.
+ * 请使用 Glide
  */
+@Deprecated
 public class ImageLoader {
 
     private final static String TAG = ImageLoader.class.toString();

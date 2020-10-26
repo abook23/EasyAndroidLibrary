@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
  *  2019/12/05
  */
 public class URL {
-    static final String BASE_URL = "http://www.abook23.com:8081";
+    static final String BASE_URL = "http://www.abook23.com:8088";
 //            static final String BASE_URL = "http://192.168.0.101:8081";
 //    static final String BASE_URL = "http://192.168.11.24:8081";
     public static final String appConfig = "/movie/appConfig";

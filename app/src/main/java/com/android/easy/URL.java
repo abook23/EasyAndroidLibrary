@@ -6,5 +6,6 @@ package com.android.easy;
  */
 public class URL {
     static final String BASE_URL = BuildConfig.BaseURL;
-    public static String login = "/user/login";
+    public static final String login = "/user/login";
+    public static final String allFriend = "/contacts/list";
 }

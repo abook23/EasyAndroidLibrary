@@ -2,6 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'org.greenrobot.greendao'
+
+//tasks.withType(JavaCompile) {
+//    options.encoding = "UTF-8"
+//}
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -10,8 +14,8 @@ android {
         applicationId "com.abook23.tv"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -57,7 +61,7 @@ android {
     }
 
     greendao {
-        schemaVersion 3
+        schemaVersion 6
         daoPackage 'com.abook23.tv.dao'
         targetGenDir 'src/main/java'
     }
@@ -67,7 +71,7 @@ android {
             def date = new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+08"))
             if (variant.buildType.name.equals('debug')) {
                 //重命名
-                outputFileName = "整点视频-dubug-${versionName}.apk"
+                outputFileName = "zdsp-dubug-${versionName}.apk"
                 gradle.buildFinished {//项目构建完成
                     copy {//复制文件
                         from new File("./build/outputs/apk/debug/" + outputFileName)
@@ -96,15 +100,20 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation 'androidx.core:core-ktx:1.3.1'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'com.android.support:design:29.0.0'
+    
     implementation project(path: ':easy-app')
+    implementation project(path: ':easy-play')
+    implementation project(path: ':easy-dialog')
 
     implementation 'androidx.multidex:multidex:2.0.1'
 

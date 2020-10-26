@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.format.Formatter;
 
 import androidx.annotation.RequiresApi;
 import androidx.annotation.RequiresPermission;
@@ -24,7 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import com.android.easy.base.listener.OnNetStatusListener;
-import com.android.easy.base.net.NetworkUtils;
+import com.android.easy.base.net.NetworkManager;
 
 import java.io.File;
 import java.util.Locale;
@@ -42,7 +43,7 @@ public class AndroidUtils {
      * @param file 要安装的apk的目录
      */
     @Deprecated
-    public static void install( Context context,File file) {
+    public static void install(Context context, File file) {
         if (file != null) {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
@@ -53,13 +54,13 @@ public class AndroidUtils {
         }
     }
 
-//    @RequiresPermission(value = "android.permission.REQUEST_INSTALL_PACKAGES")
+    @RequiresPermission(value = "android.permission.REQUEST_INSTALL_PACKAGES")
     public static boolean install(Context con, String filePath) {
         try {
-            if(TextUtils.isEmpty(filePath))
+            if (TextUtils.isEmpty(filePath))
                 return false;
             File file = new File(filePath);
-            if(!file.exists()){
+            if (!file.exists()) {
                 return false;
             }
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -71,9 +72,6 @@ public class AndroidUtils {
             con.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
-        } catch (Error error) {
-            error.printStackTrace();
             return false;
         }
         return true;
@@ -123,8 +121,11 @@ public class AndroidUtils {
 
     /**
      * 网络
+     *
+     * @deprecated See {@link NetworkManager}.
      */
-    public static boolean isNetWork(Context context) {
+    @Deprecated
+    public static boolean isNetWorkAvailable(Context context) {
         ConnectivityManager mConnectivityManager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
@@ -133,69 +134,38 @@ public class AndroidUtils {
 
     /**
      * 网络
+     *
+     * @deprecated See {@link NetworkManager}.
      */
-    public static int getNetWorkType(Context context) {
-        int netType;
-        ConnectivityManager mConnectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isAvailable()) {
-            switch (netInfo.getType()) {
-                case ConnectivityManager.TYPE_MOBILE:
-                    netType = 0;
-                    break;
-                case ConnectivityManager.TYPE_WIFI:
-                    netType = 1;
-
-                    break;
-                case ConnectivityManager.TYPE_ETHERNET:
-                    netType = 2;
-
-                    break;
-                default:
-                    netType = 3;
-
-                    break;
-            }
-        } else {
-            netType = -1;
-        }
-        return netType;
-    }
-
-    /**
-     * 网络
-     */
+    @Deprecated
     public static void getNetWorkType(Context context, OnNetStatusListener listener) {
-        int netType;
-        String netName;
-        ConnectivityManager mConnectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager mConnectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+        NetworkManager.NetworkType networkType;
         if (netInfo != null && netInfo.isAvailable()) {
             switch (netInfo.getType()) {
                 case ConnectivityManager.TYPE_MOBILE:
-                    netType = 0;
-                    netName = netInfo.getSubtypeName();
+                    networkType = NetworkManager.NetworkType.TYPE_CELLULAR;
+//                    netName = netInfo.getSubtypeName();
                     break;
                 case ConnectivityManager.TYPE_WIFI:
-                    netType = 1;
-                    netName = netInfo.getTypeName();
+                    networkType = NetworkManager.NetworkType.TYPE_WIFI;
+//                    netName = netInfo.getTypeName();
                     break;
                 case ConnectivityManager.TYPE_ETHERNET:
-                    netType = 2;
-                    netName = netInfo.getTypeName();
+                    networkType = NetworkManager.NetworkType.TYPE_ETHERNET;
                     break;
                 default:
-                    netType = 3;
-                    netName = "OtherNetWork";
+                    networkType = NetworkManager.NetworkType.TYPE_OTHER;
                     break;
             }
         } else {
-            netType = -1;
-            netName = "NoNetWork";
+            networkType = NetworkManager.NetworkType.TYPE_OTHER;
         }
-        listener.onNetStatus(netType, netName);
+        if (listener != null) {
+            listener.onNetStatus(networkType);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -232,7 +202,7 @@ public class AndroidUtils {
      * @param context
      * @param urlStr
      */
-    public static void downl(Context context, String urlStr) {
+    public static void downloadByBrowser(Context context, String urlStr) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(urlStr));
 //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -389,5 +359,43 @@ public class AndroidUtils {
         return (int) (dipValue * m + 0.5f);
     }
 
+
+    public static void settingGPS(Context context) {
+        Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        context.startActivity(intent);
+    }
+
+    public static void settingWIRELESS(Context context) {
+        Intent intent = new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+        context.startActivity(intent);
+    }
+
+    public static synchronized String selectCacheSize(Context context, boolean clear) {
+        long checkFileSize = 0;
+        checkFileSize += selectFile(context.getExternalCacheDir(), clear);
+        checkFileSize += selectFile(context.getCacheDir(), clear);
+        return Formatter.formatFileSize(context, checkFileSize);
+    }
+
+    public static void deleteFiles(File directory) {
+        selectFile(directory, true);
+    }
+
+    public static long selectFile(File file, boolean clear) {
+        long fileSize = 0;
+        if (file.isDirectory()) {
+            File[] sub_files = file.listFiles();
+            for (File sub_file : sub_files) {
+                long length = selectFile(sub_file, clear);
+                fileSize += length;
+            }
+        } else {
+            fileSize += file.length();
+            if (clear && file.isFile() && file.exists()) {
+                file.delete();
+            }
+        }
+        return fileSize;
+    }
 
 }

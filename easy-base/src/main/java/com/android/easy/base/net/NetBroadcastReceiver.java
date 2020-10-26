@@ -18,13 +18,7 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
     /**
      * filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
      */
-    public static OnNetStatusListener onNetListener;
-    private static long oldTime;
-    /**
-     * -1 NoNetWork; 0 TYPE_MOBILE; 1 TYPE_WIFI; 2 TYPE_ETHERNET; 3 OtherNetWork
-     */
-    public static int netType;
-    public static String netName;
+    private static OnNetStatusListener onNetListener;
 
 
     public static void setOnNetListener(OnNetStatusListener listener) {
@@ -33,40 +27,38 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO Auto-generated method stub
-        long time = System.currentTimeMillis();
-        if (time - oldTime < 1000) {
-            return;
-        }
-        oldTime = time;
         ConnectivityManager mConnectivityManager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+        NetworkManager.NetworkType networkType;
         if (netInfo != null && netInfo.isAvailable()) {
+            NetworkManager.isAvailable = true;
             switch (netInfo.getType()) {
                 case ConnectivityManager.TYPE_MOBILE:
-                    netType = 0;
-                    netName = netInfo.getSubtypeName();
+                    networkType = NetworkManager.NetworkType.TYPE_CELLULAR;
+//                    netName = netInfo.getSubtypeName();
                     break;
                 case ConnectivityManager.TYPE_WIFI:
-                    netType = 1;
-                    netName = netInfo.getTypeName();
+                    NetworkManager.isAvailable_wifi = true;
+                    networkType = NetworkManager.NetworkType.TYPE_WIFI;
+//                    netName = netInfo.getTypeName();
                     break;
                 case ConnectivityManager.TYPE_ETHERNET:
-                    netType = 2;
-                    netName = netInfo.getTypeName();
+                    networkType = NetworkManager.NetworkType.TYPE_ETHERNET;
+//                    netName = netInfo.getTypeName();
                     break;
                 default:
-                    netType = 3;
-                    netName = "OtherNetWork";
+                    networkType = NetworkManager.NetworkType.TYPE_OTHER;
+//                    netName = "OtherNetWork";
                     break;
             }
         } else {
-            netType = -1;
-            netName = "NoNetWork";
+            NetworkManager.isAvailable = false;
+            NetworkManager.isAvailable_wifi = false;
+            networkType = NetworkManager.NetworkType.TYPE_LOST;
         }
         if (onNetListener != null) {
-            onNetListener.onNetStatus(netType, netName);
+            onNetListener.onNetStatus(networkType);
         }
     }
 }

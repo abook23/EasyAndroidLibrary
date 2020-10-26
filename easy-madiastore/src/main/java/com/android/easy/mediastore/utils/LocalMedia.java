@@ -1,12 +1,14 @@
-package com.android.easy.madiastore;
+package com.android.easy.mediastore.utils;
 
 import android.text.TextUtils;
+
+import java.io.Serializable;
 
 /**
  * @author abook23@163.com
  *  2019/11/28
  */
-public class LocalMedia {
+public class LocalMedia implements Serializable {
     /**
      * original path
      */
@@ -31,14 +33,6 @@ public class LocalMedia {
      */
     private long duration;
     /**
-     * If the selected
-     */
-    private boolean isChecked;
-    /**
-     * If the cut
-     */
-    private boolean isCut;
-    /**
      * media position of list
      */
     public int position;
@@ -54,7 +48,7 @@ public class LocalMedia {
     /**
      * Gallery selection mode
      */
-    private int chooseModel;
+    private MediaMode mediaMode;
 
     /**
      * If the compressed
@@ -78,31 +72,29 @@ public class LocalMedia {
 
     }
 
-    public LocalMedia(String path, long duration, int chooseModel, String mimeType) {
+    public LocalMedia(String path, long duration, MediaMode mediaMode, String mimeType) {
         this.path = path;
         this.duration = duration;
-        this.chooseModel = chooseModel;
+        this.mediaMode = mediaMode;
         this.mimeType = mimeType;
     }
 
-    public LocalMedia(String path, long duration, int chooseModel, String mimeType, int width, int height, long size) {
+    public LocalMedia(String path, long duration, MediaMode mediaMode, String mimeType, int width, int height, long size) {
         this.path = path;
         this.duration = duration;
-        this.chooseModel = chooseModel;
+        this.mediaMode = mediaMode;
         this.mimeType = mimeType;
         this.width = width;
         this.height = height;
         this.size = size;
     }
 
-    public LocalMedia(String path, long duration,
-                      boolean isChecked, int position, int num, int chooseModel) {
+    public LocalMedia(String path, long duration,int position, int num, MediaMode mediaMode) {
         this.path = path;
         this.duration = duration;
-        this.isChecked = isChecked;
         this.position = position;
         this.num = num;
-        this.chooseModel = chooseModel;
+        this.mediaMode = mediaMode;
     }
 
     public String getPath() {
@@ -143,23 +135,6 @@ public class LocalMedia {
 
     public void setDuration(long duration) {
         this.duration = duration;
-    }
-
-
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public void setChecked(boolean checked) {
-        isChecked = checked;
-    }
-
-    public boolean isCut() {
-        return isCut;
-    }
-
-    public void setCut(boolean cut) {
-        isCut = cut;
     }
 
     public int getPosition() {
@@ -210,12 +185,12 @@ public class LocalMedia {
         this.height = height;
     }
 
-    public int getChooseModel() {
-        return chooseModel;
+    public MediaMode getMediaMode() {
+        return mediaMode;
     }
 
-    public void setChooseModel(int chooseModel) {
-        this.chooseModel = chooseModel;
+    public void setMediaMode(MediaMode mediaMode) {
+        this.mediaMode = mediaMode;
     }
 
     public long getSize() {

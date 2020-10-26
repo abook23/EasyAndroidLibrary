@@ -5,7 +5,6 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.abook23.tv.App
 import com.abook23.tv.R
 import com.abook23.tv.URL
 import com.abook23.tv.ben.AppConfig
@@ -38,6 +37,15 @@ class MainFragment1 : BaseFragment() {
         }
     }
 
+    override fun onVisibleLoadData() {
+
+    }
+
+    override fun onOneLoadData() {
+        L.d("onOneLoadData")
+        requestData()
+    }
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_main1
     }
@@ -50,8 +58,6 @@ class MainFragment1 : BaseFragment() {
         adapter.setOnItemClickListener { adapter, view, position ->
             SearchActivity.starActivity(activity!!, false, typeId)
         }
-        L.d("initView")
-        requestData()
     }
 
     override fun onDestroy() {
@@ -59,9 +65,6 @@ class MainFragment1 : BaseFragment() {
         ApiService.CACHE = false
     }
 
-    override fun lazyLoadData() {
-        L.d("lazyLoadData")
-    }
 
     fun requestData() {
         ApiService.CACHE = true

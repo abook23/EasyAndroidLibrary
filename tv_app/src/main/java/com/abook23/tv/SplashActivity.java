@@ -11,7 +11,7 @@ import com.android.easy.app.base.BaseAppCompatActivity;
 
 
 public class SplashActivity extends BaseAppCompatActivity {
-    private static String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
     private TextView countDownTextView;
     public int count = 3;
     private CountDownTimer mCountDownTimer;
@@ -23,12 +23,11 @@ public class SplashActivity extends BaseAppCompatActivity {
             toActivity();
             return;
         }
-        setContentView(R.layout.activity_splash,false);
+        setContentView(R.layout.activity_splash, false);
         countDownTextView = findViewById(R.id.countDownTextView);
         countDownTextView.setOnClickListener(v -> {
             toActivity();
         });
-//        FrameLayout frameLayout = findViewById(R.id.adFrameLayout);
     }
 
     @Override
@@ -36,7 +35,7 @@ public class SplashActivity extends BaseAppCompatActivity {
         super.onStart();
         App.isStart = true;
         requestPermission(PERMISSIONS, statue -> {
-          countTime();
+            countTime();
         });
 
     }
@@ -45,7 +44,7 @@ public class SplashActivity extends BaseAppCompatActivity {
         mCountDownTimer = new CountDownTimer(count * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                countDownTextView.post(() -> countDownTextView.setText("跳过 " + (--count)));
+                countDownTextView.post(() -> countDownTextView.setText("跳过 " + (millisUntilFinished / 1000 + 1)));
             }
 
             @Override
@@ -63,10 +62,6 @@ public class SplashActivity extends BaseAppCompatActivity {
         }
         startMainActivity();
         finish();
-    }
-
-    private void startLoginActivity() {
-
     }
 
     private void startMainActivity() {

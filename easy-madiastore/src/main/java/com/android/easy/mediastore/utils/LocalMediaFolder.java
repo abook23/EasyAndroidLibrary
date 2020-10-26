@@ -1,4 +1,4 @@
-package com.android.easy.madiastore;
+package com.android.easy.mediastore.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,36 +8,14 @@ import java.util.List;
  *  2019/11/28
  */
 public class LocalMediaFolder {
-    /**
-     * Folder name
-     */
+
     private String name;
-    /**
-     * Folder first path
-     */
+
     private String firstImagePath;
-    /**
-     * Folder media num
-     */
+
     private int imageNum;
-    /**
-     * If the selected num
-     */
-    private int checkedNum;
-    /**
-     * If the selected
-     */
-    private boolean isChecked;
+
     private List<LocalMedia> images = new ArrayList<LocalMedia>();
-
-
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public void setChecked(boolean checked) {
-        isChecked = checked;
-    }
 
     public String getName() {
         return name;
@@ -75,11 +53,4 @@ public class LocalMediaFolder {
         this.images = images;
     }
 
-    public int getCheckedNum() {
-        return checkedNum;
-    }
-
-    public void setCheckedNum(int checkedNum) {
-        this.checkedNum = checkedNum;
-    }
 }
