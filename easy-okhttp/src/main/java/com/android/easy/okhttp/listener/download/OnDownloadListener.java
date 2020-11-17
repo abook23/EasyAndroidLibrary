@@ -1,4 +1,4 @@
-package com.android.easy.retrofit.progress;
+package com.android.easy.okhttp.listener.download;
 
 /**
  * Created by abook23 on 2016/11/22.
@@ -6,6 +6,6 @@ package com.android.easy.retrofit.progress;
  * 进度监听
  */
 
-public interface OnUpLoadingListener {
+public interface OnDownloadListener {
     void onProgress(long bytesRead, long contentLength, boolean done);
 }
