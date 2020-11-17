@@ -2,9 +2,10 @@ package com.android.easy.retrofit;
 
 import android.content.Context;
 
+import com.android.easy.retrofit.listener.Call;
 import com.android.easy.retrofit.progress.DownloadFile;
 import com.android.easy.retrofit.progress.OnDownloadListener;
-import com.android.easy.retrofit.progress.OnUpLoadingListener;
+import com.android.easy.retrofit.progress.OnUploadingListener;
 import com.android.easy.retrofit.progress.ProgressRequestBody;
 import com.android.easy.retrofit.progress.ProgressResponseBody;
 import com.android.easy.retrofit.progress.UploadFile;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -39,24 +41,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class FileService {
 
     private String baseUrl;
-    private static FileService SERVICE;
+    private static FileService sFileService;
     public static boolean DEBUG = true;
     public static long CONNECT_TIMEOUT_SECONDS = 60;
     public static long READ_TIMEOUT_SECONDS = 600;
     public static long WRITE_TIMEOUT_SECONDS = 600;
 
     public static FileService init(Context applicationContext, String baseUrl) {
-        SERVICE = new FileService();
-        SERVICE.baseUrl = baseUrl;
+        sFileService = new FileService();
+        sFileService.baseUrl = baseUrl;
         AppUtils.initial(applicationContext);
-        return SERVICE;
+        return sFileService;
     }
 
     public static FileService getInit() {
-        if (SERVICE == null) {
+        if (sFileService == null) {
             init(AppUtils.getApplicationContext(), AppUtils.getBaseUrl());
         }
-        return SERVICE;
+        return sFileService;
     }
 
     private Retrofit.Builder getBuilder() {
@@ -69,7 +71,7 @@ public class FileService {
 
     public <T> T create(Class<T> tClass) {
         OkHttpClient.Builder builder = getOkHttpBuilder();
-        return SERVICE.getBuilder()
+        return sFileService.getBuilder()
                 .client(builder.build())
                 .build()
                 .create(tClass);
@@ -91,7 +93,7 @@ public class FileService {
                         .build();
             }
         });
-        return SERVICE.getBuilder()
+        return sFileService.getBuilder()
                 .client(builder.build())
                 .build()
                 .create(tClass);
@@ -100,7 +102,7 @@ public class FileService {
     /**
      * 创建带请求体进度(上传进度)回调的service
      */
-    public <T> T create(Class<T> tClass, final OnUpLoadingListener listener) {
+    public <T> T create(Class<T> tClass, final OnUploadingListener listener) {
         OkHttpClient.Builder builder = getOkHttpBuilder();
         //增加拦截器
         builder.addInterceptor(new Interceptor() {
@@ -113,7 +115,7 @@ public class FileService {
                 return chain.proceed(request);
             }
         });
-        return SERVICE.getBuilder()
+        return sFileService.getBuilder()
                 .client(builder.build())
                 .build()
                 .create(tClass);
@@ -126,25 +128,10 @@ public class FileService {
     }
 
     private void setTimeOut(OkHttpClient.Builder builder) {
-        builder.connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-        builder.readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-        builder.writeTimeout(WRITE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-    }
-
-    public Observable<ResponseBody> upload(String url, File... files) {
-        if (files.length == 1) {
-            return getInit().create(Api.class)
-                    .uploading(url, MultipartUtils.filesToMultipartBody(files[0]))
-                    .compose(RxJavaUtils.<ResponseBody>defaultSchedulers());
-        } else {
-            return upload(url, Arrays.asList(files));
-        }
-    }
-
-    public Observable<ResponseBody> upload(String url, List<File> files) {
-        return getInit().create(Api.class)
-                .uploading(url, MultipartUtils.filesToMultipartBody(files))
-                .compose(RxJavaUtils.<ResponseBody>defaultSchedulers());
+        TimeUnit timeUnit = TimeUnit.SECONDS;
+        builder.connectTimeout(CONNECT_TIMEOUT_SECONDS, timeUnit);
+        builder.readTimeout(READ_TIMEOUT_SECONDS, timeUnit);
+        builder.writeTimeout(WRITE_TIMEOUT_SECONDS, timeUnit);
     }
 
     public Observable<File> download(String url) {
@@ -152,28 +139,47 @@ public class FileService {
         return getInit().create(Api.class).download(url).map(new Function<ResponseBody, File>() {
 
             @Override
-            public File apply(ResponseBody responseBody) throws Exception {
+            public File apply(@NonNull ResponseBody responseBody) throws Exception {
                 return FileUtils.saveFile(responseBody.byteStream(), FileUtils.getDowloadDir(AppUtils.getApplicationContext()), fileName);
             }
         }).compose(RxJavaUtils.<File>defaultSchedulers());
     }
 
-    public static UploadFile upload(String url, File file, com.android.easy.retrofit.listener.loading.Call call) {
-        UploadFile uploadFile = new UploadFile(url, file);
-        uploadFile.setOnListener(call);
-        return uploadFile;
+    public static DownloadFile download(String url, com.android.easy.retrofit.listener.download.Call call) {
+        return new DownloadFile(url, call);
+    }
+
+    public Observable<String> upload(String url, String name, List<File> files) {
+        return getInit().create(Api.class)
+                .uploading(url, MultipartUtils.filesToMultipartBody(name, files))
+                .compose(RxJavaUtils.<ResponseBody>defaultSchedulers())
+                .map(new Function<ResponseBody, String>() {
+                    @Override
+                    public String apply(@NonNull ResponseBody responseBody) throws Exception {
+                        return responseBody.string();
+                    }
+                });
+    }
+
+    public <T> void upload(String url, String name, List<File> files, Call<T> call) {
+        getInit().create(Api.class)
+                .uploading(url, MultipartUtils.filesToMultipartBody(name, files))
+                .compose(RxJavaUtils.<ResponseBody>defaultSchedulers())
+                .subscribe(call);
+    }
+
+
+    public static UploadFile upload(String url, String name, File file, com.android.easy.retrofit.listener.loading.Call call) {
+        return new UploadFile(url, name, file, call);
+    }
+
+    public static UploadFile upload(String url, String name, List<File> files, com.android.easy.retrofit.listener.loading.Call call) {
+        return new UploadFile(url, name, files, call);
     }
 
     public static UploadFile upload(String url, Map<String, Object> params, com.android.easy.retrofit.listener.loading.Call call) {
-        UploadFile uploadFile = new UploadFile(url, params);
-        uploadFile.setOnListener(call);
-        return uploadFile;
+        return new UploadFile(url, params, call);
     }
 
-    public static DownloadFile download(String url, com.android.easy.retrofit.listener.download.Call call) {
-        DownloadFile downloadFile = new DownloadFile(url);
-        downloadFile.setCall(call);
-        downloadFile.start();
-        return downloadFile;
-    }
+
 }

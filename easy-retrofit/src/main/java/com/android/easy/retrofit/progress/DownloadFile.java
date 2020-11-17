@@ -30,12 +30,7 @@ public class DownloadFile {
     private Call mCall;
     private boolean mPause;
     private boolean cancel;
-    private String mUrl;
     private static final int KEY_SIZE = 0x02;
-
-    public void setCall(Call call) {
-        mCall = call;
-    }
 
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -50,18 +45,15 @@ public class DownloadFile {
         }
     };
 
-    public DownloadFile(String url) {
-        mUrl = url;
-    }
-
-    public void start() {
+    public DownloadFile(String url, Call call) {
+        mCall = call;
         if (mCall != null) {
             mCall.onStart();
         }
         final String parent = FileUtils.getDowloadDir(AppUtils.getApplicationContext());
-        final String fileName = mUrl.substring(mUrl.lastIndexOf("/") + 1);
+        final String fileName = url.substring(url.lastIndexOf("/") + 1);
         //.download(mUrl,"bytes=" + startByte + "-");断点续传
-        FileService.getInit().create(Api.class, mOnDownloadListener).download(mUrl)
+        FileService.getInit().create(Api.class, mOnDownloadListener).download(url)
                 .map(new Function<ResponseBody, File>() {
                     @Override
                     public File apply(ResponseBody responseBody) throws Exception {

@@ -1,5 +1,7 @@
 package com.android.easy.retorfit;
 
+import com.android.easy.retrofit.ApiService;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;

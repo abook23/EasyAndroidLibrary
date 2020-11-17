@@ -8,11 +8,6 @@ import java.util.Map;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-/**
- * Created by abook23 on 2016/11/22.
- * Versions 1.0
- */
-
 public class MultipartUtils {
 
 
@@ -28,15 +23,27 @@ public class MultipartUtils {
         return builder.build();
     }
 
-    public static MultipartBody filesToMultipartBody(List<File> files) {
+
+    public static MultipartBody filesToMultipartBody(String name, File... files) {
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        for (File file : files) {
+            if (file != null) {
+                //RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), file);
+                RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
+                builder.addFormDataPart(name, file.getName(), requestBody);
+            }
+        }
+        builder.setType(MultipartBody.FORM);
+        return builder.build();
+    }
+
+    public static MultipartBody filesToMultipartBody(String name, List<File> files) {
         MultipartBody.Builder builder = new MultipartBody.Builder();
         for (int i = 0; i < files.size(); i++) {
-            // TODO: 16-4-2  这里为了简单起见，没有判断file的类型
             File file = files.get(i);
             if (file != null) {
-//                RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), file);
                 RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
-                builder.addFormDataPart("file" + i, file.getName(), requestBody);
+                builder.addFormDataPart(name, file.getName(), requestBody);
             }
         }
         builder.setType(MultipartBody.FORM);
@@ -48,6 +55,9 @@ public class MultipartUtils {
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             String key = entry.getKey();
             Object o = entry.getValue();
+            if (o == null) {
+                continue;
+            }
             if (o instanceof File) {
                 File file = (File) o;
                 RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
@@ -60,29 +70,15 @@ public class MultipartUtils {
         return builder.build();
     }
 
-    public static MultipartBody filesToMultipartBody(File... files) {
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        for (int i = 0; i < files.length; i++) {
-            // TODO: 16-4-2  这里为了简单起见，没有判断file的类型
-            File file = files[i];
-            if (file != null) {
-                RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
-                builder.addFormDataPart("file" + i, file.getName(), requestBody);
-            }
-        }
-        builder.setType(MultipartBody.FORM);
-        return builder.build();
-    }
-
-    public static List<MultipartBody.Part> filesToMultipartBodyParts(List<File> files) {
+    public static List<MultipartBody.Part> filesToMultipartBodyParts(String name, List<File> files) {
         List<MultipartBody.Part> parts = new ArrayList<>(files.size());
         for (int i = 0; i < files.size(); i++) {
-            // TODO: 16-4-2  这里为了简单起见，没有判断file的类型
             File file = files.get(i);
             RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
-            MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+            MultipartBody.Part part = MultipartBody.Part.createFormData(name, file.getName(), requestBody);
             parts.add(part);
         }
         return parts;
     }
 }
+

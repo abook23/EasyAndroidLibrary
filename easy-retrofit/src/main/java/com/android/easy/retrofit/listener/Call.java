@@ -1,6 +1,9 @@
 package com.android.easy.retrofit.listener;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
 
 import com.android.easy.retrofit.rxjava.ObserverBaseWeb;
 import com.google.gson.Gson;
@@ -13,7 +16,25 @@ import java.lang.reflect.Type;
 import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
 
-public abstract class Call<T> extends ObserverBaseWeb<ResponseBody> {
+public abstract class Call<T> extends ObserverBaseWeb<ResponseBody> implements LifecycleObserver {
+
+    private Lifecycle mLifecycle;
+    private boolean isDestroy;
+
+    public Call(){
+
+    }
+
+    public Call(Lifecycle lifecycle) {
+        mLifecycle = lifecycle;
+        mLifecycle.addObserver(this);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    public void onDestroy(){
+        isDestroy = true;
+        mLifecycle.removeObserver(this);
+    }
 
     @Override
     public void onSubscribe(Disposable d) {
@@ -32,6 +53,9 @@ public abstract class Call<T> extends ObserverBaseWeb<ResponseBody> {
 
     @Override
     public void onNext(ResponseBody responseBody) {
+        if (isDestroy){
+            return;
+        }
         try {
             Gson gson = new Gson();
             String jsonStr = responseBody.string();
@@ -60,6 +84,9 @@ public abstract class Call<T> extends ObserverBaseWeb<ResponseBody> {
                 return;
             }
             try {//避免一些异常操作，退出app
+                if (isDestroy){
+                    return;
+                }
                 onSuccess(result);
             } catch (Exception e) {
                 e.printStackTrace();

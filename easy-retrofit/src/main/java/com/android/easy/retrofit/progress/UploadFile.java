@@ -19,6 +19,7 @@ import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 
 /**
@@ -36,18 +37,12 @@ public class UploadFile {
     private static final int KEY_START = 0x01;
     private static final int KEY_SIZE = 0x02;
 
-    public UploadFile(String url, File file) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(file.getName(), file);
-        upload(url, map);
+    public UploadFile(String url, String name, File file, Call call) {
+        upload(url, MultipartUtils.filesToMultipartBody(name, file), call);
     }
 
-    public UploadFile(String url, List<File> files) {
-        Map<String, Object> map = new HashMap<>();
-        for (File file : files) {
-            map.put(file.getName(), file);
-        }
-        upload(url, map);
+    public UploadFile(String url, String name, List<File> files, Call call) {
+        upload(url, MultipartUtils.filesToMultipartBody(name, files), call);
     }
 
     /**
@@ -56,20 +51,17 @@ public class UploadFile {
      * @param url       地址
      * @param objectMap 参数和file
      */
-    public UploadFile(String url, Map<String, Object> objectMap) {
-        upload(url, objectMap);
+    public UploadFile(String url, Map<String, Object> objectMap, Call call) {
+        upload(url, MultipartUtils.filesToMultipartBody(objectMap), call);
     }
 
-    public void setOnListener(Call call) {
+    private void upload(String url, MultipartBody multipartBody, Call call) {
         mCall = call;
-    }
-
-    private void upload(String url, Map<String, Object> objectMap) {
         if (mCall != null) {
             mCall.onStart();
             isStart = true;
         }
-        FileService.getInit().create(Api.class, new OnUpLoadingListener() {
+        FileService.getInit().create(Api.class, new OnUploadingListener() {
             @Override
             public void onProgress(long bytesRead, long contentLength, boolean done) {
                 if (!isStart && mCall != null) {
@@ -89,7 +81,7 @@ public class UploadFile {
                     throw new ResponseCodeError("cancel");
                 }
             }
-        }).uploading(url, MultipartUtils.filesToMultipartBody(objectMap))
+        }).uploading(url, multipartBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ObserverBaseWeb<ResponseBody>() {

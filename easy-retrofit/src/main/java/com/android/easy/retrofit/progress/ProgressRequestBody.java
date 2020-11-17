@@ -20,10 +20,10 @@ public class ProgressRequestBody extends RequestBody {
 
 
     private RequestBody mRequestBody;
-    private OnUpLoadingListener mListener;
+    private OnUploadingListener mListener;
     private BufferedSink bufferedSink;
 
-    public ProgressRequestBody(RequestBody requestBody, OnUpLoadingListener progressListener) {
+    public ProgressRequestBody(RequestBody requestBody, OnUploadingListener progressListener) {
         mRequestBody = requestBody;
         mListener = progressListener;
     }

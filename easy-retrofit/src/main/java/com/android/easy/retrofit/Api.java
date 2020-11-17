@@ -23,12 +23,12 @@ public interface Api {
     @POST()
     Observable<ResponseBody> uploading(@Url String url, @Body MultipartBody multipartBody);
 
+    @POST()
+    Observable<ResponseBody> uploading(@Url String url, @Body MultipartBody multipartBody, @Header("Range") String range);
+
     @Streaming
     @GET()
     Observable<ResponseBody> download(@Url() String url);
-
-    @POST()
-    Observable<ResponseBody> uploading(@Url String url, @Body MultipartBody multipartBody, @Header("Range") String range);
 
     @Streaming
     @GET()
