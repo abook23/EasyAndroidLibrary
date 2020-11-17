@@ -2,6 +2,7 @@ package com.android.easy.app.base;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.easy.app.HttpCall;
@@ -24,15 +25,17 @@ public class HttpAppCompatActivity extends AppCompatActivity {
     protected View contentLoadingView;
 
     protected <T> void get(String url, HttpCall<T> call) {
-        RetrofitHttp.get(url, new HashMap<String, Object>(), call);
+        get(url, new HashMap<String, Object>(), call);
     }
 
     protected <T> void get(String url, Map<String, Object> params, HttpCall<T> call) {
-        RetrofitHttp.get(url, params, call);
+//        RetrofitHttp.get(url, params, call);
+        RetrofitHttp.get(url, params, getLifecycle(), call);
     }
 
     protected <T> void post(String url, Map<String, Object> params, HttpCall<T> call) {
-        RetrofitHttp.post(url, params, call);
+//        RetrofitHttp.post(url, params, call);
+        RetrofitHttp.post(url, params, getLifecycle(), call);
     }
 
     /**
@@ -60,7 +63,7 @@ public class HttpAppCompatActivity extends AppCompatActivity {
 
 
     protected <T> void get(String url, Map<String, Object> params, final boolean showProgress, final HttpCall<T> call) {
-        RetrofitHttp.get(url, params, new HttpCall<T>() {
+        RetrofitHttp.get(url, params, getLifecycle(), new HttpCall<T>() {
             @Override
             public void onSubscribe(Disposable d) {
                 super.onSubscribe(d);
@@ -71,7 +74,7 @@ public class HttpAppCompatActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSuccess(T t) {
+            public void onSuccess(@NonNull T t) {
                 if (showProgress) {
                     contentLoadingView.setVisibility(View.GONE);
                 }
@@ -90,7 +93,7 @@ public class HttpAppCompatActivity extends AppCompatActivity {
     }
 
     protected <T> void post(String url, Map<String, Object> params, final boolean showProgress, final HttpCall<T> call) {
-        RetrofitHttp.post(url, params, new HttpCall<T>() {
+        RetrofitHttp.post(url, params, getLifecycle(), new HttpCall<T>() {
             @Override
             public void onSubscribe(Disposable d) {
                 super.onSubscribe(d);
@@ -101,7 +104,7 @@ public class HttpAppCompatActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSuccess(T t) {
+            public void onSuccess(@NonNull T t) {
                 if (showProgress) {
                     contentLoadingView.setVisibility(View.GONE);
                 }

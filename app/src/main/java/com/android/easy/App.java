@@ -33,34 +33,35 @@ public class App extends BaseApplication {
 
         SharedPreferencesUtils.putParam("token", IdUtils.getUUId());//假装有token
 
-        RetrofitHttp.init(getApplicationContext(), URL.BASE_URL);//网络请求初始化
-        RetrofitHttp.addInterceptor(new TokenInterceptor() {
-            @Override
-            public String getHeaderTokenName() {
-                //headerToken 名字
-                return "token";
-            }
+        RetrofitHttp
+                .init(getApplicationContext(), URL.BASE_URL)//网络请求初始化
+                .addInterceptor(new TokenInterceptor() {
+                    @Override
+                    public String getHeaderTokenName() {
+                        //headerToken 名字
+                        return "token";
+                    }
 
-            @Override
-            public String getToken() {
-                //获取token
-                return SharedPreferencesUtils.getParam("token");
-            }
+                    @Override
+                    public String getToken() {
+                        //获取token
+                        return SharedPreferencesUtils.getParam("token");
+                    }
 
-            @Override
-            public boolean testResponse(Response response) {
-                //登录失败
-                return response.code() == 401;
-            }
+                    @Override
+                    public boolean testResponse(Response response) {
+                        //登录失败
+                        return response.code() == 401;
+                    }
 
-            @Override
-            public void toLogin() {
-                //testResponse true 调用 toLogin, 一般为token 过期
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                getApplicationContext().startActivity(intent);
-            }
+                    @Override
+                    public void toLogin() {
+                        //testResponse true 调用 toLogin, 一般为token 过期
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        getApplicationContext().startActivity(intent);
+                    }
 
-        });
+                });
     }
 }

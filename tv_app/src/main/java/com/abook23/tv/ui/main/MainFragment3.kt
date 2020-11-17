@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_main3.*
 
 class MainFragment3 : BaseFragment() {
     var adapter1: Adapter1? = null
-    var typeArray = arrayListOf(
+    var typeArray= arrayListOf<Array<Any>>(
             arrayOf("观看历史", R.mipmap.icon_history),
             arrayOf("我的收藏", R.mipmap.icon_collect),
             arrayOf("离线下载", R.mipmap.icon_cache),

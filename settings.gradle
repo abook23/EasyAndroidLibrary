@@ -1,4 +1,5 @@
+rootProject.name='EasyAndroidLibray'
+include ':easy-okhttp'
 include ':easy-glide'
 include ':easy-retrofit', ':easy-base', ':easy-madiastore', ':easy-camera', ':easy-dialog', ':easy-app','app', ':tv_app'
-rootProject.name='EasyAndroidLibray'
 include ':easy-play'

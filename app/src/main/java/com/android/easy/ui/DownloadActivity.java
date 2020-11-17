@@ -9,8 +9,6 @@ import com.android.easy.R;
 import com.android.easy.app.HttpCall;
 import com.android.easy.app.base.BaseAppCompatActivity;
 import com.android.easy.base.widget.ButtonProgress;
-import com.android.easy.retrofit.ApiService;
-import com.android.easy.retrofit.FileService;
 import com.android.easy.retrofit.RetrofitHttp;
 import com.android.easy.retrofit.listener.download.Call;
 import com.android.easy.retrofit.progress.DownloadFile;

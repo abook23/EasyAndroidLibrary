@@ -229,7 +229,7 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity {
     public void requestPermission(@NonNull String[] permissions, @NonNull OnParameterChangeListener onParameterChangeListener) {
         mOnParameterChangeListener = onParameterChangeListener;
         boolean statue = PermissionUtil.requestPermission(this, permissions, REQUEST_CONTACTS);
-        onParameterChangeListener.onParameterChange(statue);
+        mOnParameterChangeListener.onParameterChange(statue);
     }
 
     @Override
