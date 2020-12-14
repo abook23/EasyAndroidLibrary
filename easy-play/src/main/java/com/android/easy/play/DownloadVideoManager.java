@@ -2,10 +2,8 @@ package com.android.easy.play;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
-import android.os.Bundle;
-
-import androidx.annotation.RequiresApi;
+import android.os.Environment;
+import android.text.format.Formatter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,25 +18,24 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * @Description: 视频文件下载
- * @Author: yangxiong
- * @E-mail: abook23@163.com
- * @CreateDate: 2020/8/4 9:22
- * @UpdateUser: 更新者：
- * @UpdateDate: 2020/8/4 9:22
- * @UpdateRemark: 更新说明：支持 m3u8文件下线 和 普通文件断点下载
- * @Version: 1.0
+ * Description: 视频文件下载
+ * Author: yangxiong
+ * E-mail: abook23@163.com
+ * CreateDate: 2020/8/4 9:22
+ * UpdateUser: 更新者：
+ * UpdateDate: 2020/8/4 9:22
+ * UpdateRemark: 更新说明：支持 m3u8文件下线 和 普通文件断点下载
+ * Version: 1.0
  */
 public class DownloadVideoManager {
 
-    private static String TYPE_M3U8 = ".m3u8";
-    private static String TYPE_COMPLETE = "Complete";
+    private static final String TYPE_M3U8 = ".m3u8";
+    private static final String TYPE_COMPLETE = "Complete";
 
     private ExecutorService executorService;
     private ConcurrentHashMap<String, HttpURLConnection> downloadConnection = new ConcurrentHashMap<>();
@@ -55,7 +52,7 @@ public class DownloadVideoManager {
 
     public void newInstanceExecutorService() {
 //        executorService = Executors.newSingleThreadExecutor();
-        executorService =  Executors.newFixedThreadPool(8);
+        executorService = Executors.newFixedThreadPool(8);
     }
 
     private DownloadVideoManager() {
@@ -77,8 +74,65 @@ public class DownloadVideoManager {
      * @return
      */
     public static String getCacheLocalPath(Context context, String url) {
-//        return context.getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath() + File.separator + Utils.getMD5(url);
-        return context.getExternalCacheDir().getPath() + File.separator + getMD5(url);
+        return getCacheLocalDir(context) + File.separator + getMD5(url);
+    }
+
+    /**
+     * 删除视频缓存
+     * @param context
+     * @param url
+     */
+    public static void delCacheVideo(Context context, String url) {
+        getInstance().getSharedPreferences(context).edit().remove(url).apply();
+        getInstance().deleteDirectory(new File(getCacheLocalPath(context, url)));
+    }
+
+    /**
+     * 删除全部视频缓存
+     * @param context
+     * @return
+     */
+    public static String clearCacheAll(Context context) {
+        getInstance().getSharedPreferences(context).edit().clear().apply();
+        long size = getInstance().deleteDirectory(new File(getCacheLocalDir(context)));
+        return Formatter.formatFileSize(context, size);
+    }
+
+
+    /**
+     * 文件缓存位置
+     *
+     * @param context
+     * @return
+     */
+    public static String getCacheLocalDir(Context context) {
+        if (!Environment.isExternalStorageRemovable() || Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            //return context.getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
+            return context.getExternalCacheDir().getPath();
+        } else {
+            return context.getCacheDir().getPath();
+        }
+    }
+
+    private long deleteDirectory(File directory) {
+        return countDirFileSize(directory, true);
+    }
+
+    private long countDirFileSize(File file, boolean del) {
+        long fileSize = 0;
+        if (file.isDirectory()) {
+            File[] sub_files = file.listFiles();
+            for (File sub_file : sub_files) {
+                long length = countDirFileSize(sub_file, del);
+                fileSize += length;
+            }
+        } else {
+            fileSize += file.length();
+            if (del && file.isFile() && file.exists()) {
+                file.delete();
+            }
+        }
+        return fileSize;
     }
 
     /**
@@ -96,7 +150,7 @@ public class DownloadVideoManager {
     public void downloadFile(Context context, String url, Call call) {
         String savePath = getCacheLocalPath(context, url);
         mSharedPreferences = getSharedPreferences(context);
-        if (downloadURL.get(url)!=null && downloadURL.get(url)) {
+        if (downloadURL.get(url) != null && downloadURL.get(url)) {
             return;
         }
         if (url.endsWith(TYPE_M3U8)) {
@@ -159,7 +213,7 @@ public class DownloadVideoManager {
                     downloadURL.put(url, true);
                     String basePath = url.substring(0, url.lastIndexOf("/") + 1);
                     File file = saveIndexM3u8uFile(url, new File(savePath));
-                    String m3u8Url = getM3U8URL(file);
+                    String m3u8Url = getM3u8URL(file);
 
                     String m3u8UrlPath = m3u8Url.substring(0, m3u8Url.lastIndexOf("/") + 1);
                     File tsFile = saveIndexM3u8uFile(basePath + m3u8Url, new File(savePath, m3u8UrlPath));
@@ -177,7 +231,7 @@ public class DownloadVideoManager {
                         }
                         call.onProgress(i + 1, tsList.size());
                     }
-                    call.onComplete( new File(savePath));
+                    call.onComplete(new File(savePath));
                     mSharedPreferences.edit().putString(url, TYPE_COMPLETE).apply();
                     downloadURL.put(url, false);
                 } catch (Exception e) {
@@ -225,7 +279,7 @@ public class DownloadVideoManager {
         return file;
     }
 
-    private String getM3U8URL(File file) throws IOException {
+    private String getM3u8URL(File file) throws IOException {
         String m3u8PUrl = null;
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line;

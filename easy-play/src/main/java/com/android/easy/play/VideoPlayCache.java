@@ -5,14 +5,14 @@ import android.content.Context;
 import java.io.File;
 
 /**
- * @Description: 描述
- * @Author: yangxiong
- * @E-mail: abook23@163.com
- * @CreateDate: 2020/8/20 11:21
- * @UpdateUser: 更新者：
- * @UpdateDate: 2020/8/20 11:21
- * @UpdateRemark: 更新说明：
- * @Version: 1.0
+ * Description: 描述
+ * Author: yangxiong
+ * E-mail: abook23@163.com
+ * CreateDate: 2020/8/20 11:21
+ * UpdateUser: 更新者：
+ * UpdateDate: 2020/8/20 11:21
+ * UpdateRemark: 更新说明：
+ * Version: 1.0
  */
 public class VideoPlayCache {
     private static String play_url="";

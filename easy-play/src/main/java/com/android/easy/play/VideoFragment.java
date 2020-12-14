@@ -40,7 +40,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
 
     private View rootView;
     private boolean mEnableMediaCodec;
-    private IMediaPlayer mMediaPlayer;
+    private IjkMediaPlayer mMediaPlayer;
+
     /**
      * 播放url
      */
@@ -167,6 +168,11 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
                  * 选集
                  */
                 mTodAdapter.setOnItemClickListener((viewHolder, position) -> {
+                    //保存播放信息
+                    if (mOnVideoFragmentListener != null && mMediaPlayer != null && mMediaPlayer.getDuration() > 0) {
+                        mOnVideoFragmentListener.onMediaPlayer(playUrl, mMediaPlayer.getCurrentPosition(), mMediaPlayer.getDuration());
+                    }
+                    //播放选集
                     play(movieData.get(position).getUrl());
                     dialogFrameLayout.setVisibility(View.GONE);
                 });
@@ -225,28 +231,48 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         return rootView;
     }
 
+    private boolean isSetSpeed;
+
     private void setOnTouchListener(View rootView) {
         rootView.setOnTouchListener(new View.OnTouchListener() {
             private PointF downPoint;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    downPoint = new PointF(event.getX(), event.getY());
-                } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    float x = event.getX() - downPoint.x;
-                    float y = event.getY() - downPoint.y;
-                    if (Math.abs(y) < 10) {//只往左右
-                        if (x >= 20) {//向右
-                            mSeekBar.setProgress(mSeekBar.getProgress() + 500);
-                            mMediaPlayer.seekTo(mSeekBar.getProgress());
-                        } else if (x < -20) {//向左
-                            mSeekBar.setProgress(mSeekBar.getProgress() - 500);
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        downPoint = new PointF(event.getX(), event.getY());
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float x = event.getX() - downPoint.x;
+                        float y = event.getY() - downPoint.y;
+                        if (Math.abs(y) < 20) {//只往左右
+                            isSettingSeekBar = true;
+                            if (x >= 20) {//向右
+                                mSeekBar.setProgress(mSeekBar.getProgress() + 1000);
+                            } else if (x < -20) {//向左
+                                mSeekBar.setProgress(mSeekBar.getProgress() - 1000);
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (isSetSpeed) {
+                            isSetSpeed = false;
+                            mMediaPlayer.setSpeed(1.0f);//恢复正常播放
+                        } else if (isSettingSeekBar) {
+                            isSettingSeekBar = false;
                             mMediaPlayer.seekTo(mSeekBar.getProgress());
                         }
-                    }
-
+                        break;
                 }
+                return false;
+            }
+        });
+        rootView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                isSetSpeed = true;
+                mMediaPlayer.setSpeed(4.0f);//4倍数播放
                 return false;
             }
         });
@@ -394,9 +420,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
 //        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "min-frames", 100);
 //        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1);
 
-        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-buffer-size", 100 * 1024);//设置缓冲区为100KB，目前我看来，多缓冲了4秒
+//        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-buffer-size", 100 * 1024);//设置缓冲区为100KB，目前我看来，多缓冲了4秒
         ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "min-frames", 100);// 视频的话，设置100帧即开始播放
-//
+
+        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "soundtouch", 1);//1变声,0不变声  倍数播放
 //        ijkMediaPlayer.setVolume(1.0f, 1.0f);
 ////
 //        setEnableMediaCodec(ijkMediaPlayer, mEnableMediaCodec);
@@ -491,7 +518,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
                 //缓存中
                 showLoading(true);
             }
-            if (what == IMediaPlayer.MEDIA_INFO_BUFFERING_END || what == IMediaPlayer.MEDIA_INFO_VIDEO_DECODED_START) {
+            if (what == IMediaPlayer.MEDIA_INFO_BUFFERING_END) {
                 //缓存完毕
                 showLoading(false);
             }
