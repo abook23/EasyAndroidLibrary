@@ -20,14 +20,14 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * @Description: 描述
- * @Author: yangxiong
- * @E-mail: abook23@163.com
- * @CreateDate: 2020/11/13 11:22
- * @UpdateUser: 更新者：
- * @UpdateDate: 2020/11/13 11:22
- * @UpdateRemark: 更新说明：
- * @Version: 1.0
+ * Description: 描述
+ * Author: yangxiong
+ * E-mail: abook23@163.com
+ * CreateDate: 2020/11/13 11:22
+ * UpdateUser: 更新者：
+ * UpdateDate: 2020/11/13 11:22
+ * UpdateRemark: 更新说明：
+ * Version: 1.0
  */
 public abstract class Call<T> implements Callback, LifecycleObserver {
 

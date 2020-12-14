@@ -28,14 +28,14 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * @Description: 描述
- * @Author: yangxiong
- * @E-mail: abook23@163.com
- * @CreateDate: 2020/10/26 16:05
- * @UpdateUser: 更新者：
- * @UpdateDate: 2020/10/26 16:05
- * @UpdateRemark: 更新说明：
- * @Version: 1.0
+ * Description: 描述
+ * Author: yangxiong
+ * E-mail: abook23@163.com
+ * CreateDate: 2020/10/26 16:05
+ * UpdateUser: 更新者：
+ * UpdateDate: 2020/10/26 16:05
+ * UpdateRemark: 更新说明：
+ * Version: 1.0
  */
 public class OkHttp {
     private static OkHttp sOkHttp;
