@@ -62,6 +62,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
+    <TextView
+        android:id="@+id/buffering_bytes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="0KB/s"
+        android:textColor="@color/blue"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/lockView"
         android:layout_width="wrap_content"
@@ -88,29 +98,31 @@
             android:id="@+id/positionTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00:00"
             android:layout_marginStart="16dp"
+            android:text="00:00"
             android:textColor="@color/white" />
 
         <LinearLayout
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
+
             <SeekBar
                 android:id="@+id/seekBar"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:paddingTop="32dp"
-                android:progress="0"
                 android:paddingBottom="2dp"
+                android:progress="0"
                 android:progressDrawable="@drawable/video_seekbar_progress"
                 android:thumb="@color/transparent" />
+
             <View
                 android:id="@+id/seekBarBottomView"
                 android:layout_width="0dp"
-                android:layout_height="8dp"/>
+                android:layout_height="8dp" />
         </LinearLayout>
 
         <TextView
@@ -130,7 +142,8 @@
     <FrameLayout
         android:id="@+id/dialogFrameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -143,6 +156,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

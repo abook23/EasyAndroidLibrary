@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.text.format.Formatter;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,11 +17,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Description: 视频文件下载
@@ -38,6 +43,7 @@ public class DownloadVideoManager {
     private static final String TYPE_COMPLETE = "Complete";
 
     private ExecutorService executorService;
+    private ScheduledExecutorService mScheduledExecutorService;
     private ConcurrentHashMap<String, HttpURLConnection> downloadConnection = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, Boolean> downloadURL = new ConcurrentHashMap<>();//主要针对 m3u8 文件
     private static DownloadVideoManager sDownloadVideoManager = new DownloadVideoManager();
@@ -49,10 +55,10 @@ public class DownloadVideoManager {
         return sDownloadVideoManager;
     }
 
-
     public void newInstanceExecutorService() {
 //        executorService = Executors.newSingleThreadExecutor();
         executorService = Executors.newFixedThreadPool(8);
+        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     }
 
     private DownloadVideoManager() {
@@ -79,6 +85,7 @@ public class DownloadVideoManager {
 
     /**
      * 删除视频缓存
+     *
      * @param context
      * @param url
      */
@@ -89,6 +96,7 @@ public class DownloadVideoManager {
 
     /**
      * 删除全部视频缓存
+     *
      * @param context
      * @return
      */
@@ -163,35 +171,54 @@ public class DownloadVideoManager {
 
     private void downloadFile(String savePath, String url, Call call) {
         executorService.execute(new Runnable() {
+            private boolean callBackProgress = false;
+            private ScheduledFuture mScheduledFuture;
+            private long countBytes = 0;
+
             @Override
             public void run() {
                 try {
-                    call.onStart(new File(savePath), 0);
                     downloadURL.put(url, true);
                     long start = mSharedPreferences.getLong(url, 0);
                     load(url, new File(savePath), start, new Call() {
                         @Override
                         public void onStart(File file, long max) {
-
+                            call.onStart(file, max);
+                            mScheduledFuture = mScheduledExecutorService.scheduleAtFixedRate(mRunnable, 0, 1000, TimeUnit.MILLISECONDS);
                         }
 
                         @Override
-                        public void onProgress(long progress, long max) {
-                            call.onProgress(progress, -1);
+                        public void onProgress(long progress, long max, long bytes) {
                             mSharedPreferences.edit().putLong(url, progress).apply();
+                            countBytes += bytes;
+                            if (callBackProgress) {//1 s 回调一次
+                                callBackProgress = false;
+                                Log.d("DownloadVideoManager","bytes:"+countBytes+"--->"+url);
+                                call.onProgress(progress, max, countBytes);
+                                countBytes = 0;
+//                                call.onProgress(progress, max, bytes);
+                            }
                         }
 
                         @Override
                         public void onComplete(File file) {
+                            call.onComplete(file);
+                            mScheduledFuture.cancel(true);
                             mSharedPreferences.edit().putString(url, TYPE_COMPLETE).apply();
                         }
                     });
-                    call.onComplete(new File(savePath));
                     downloadURL.put(url, false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
+            public Runnable mRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    callBackProgress = true;
+                }
+            };
         });
     }
 
@@ -207,8 +234,14 @@ public class DownloadVideoManager {
      */
     private void downloadM3U8(String savePath, String url, Call call) {
         executorService.execute(new Runnable() {
+
+            private boolean callBackProgress = false;
+            private ScheduledFuture mScheduledFuture;
+            private long countBytes = 0;
+
             @Override
             public void run() {
+
                 try {
                     downloadURL.put(url, true);
                     String basePath = url.substring(0, url.lastIndexOf("/") + 1);
@@ -219,18 +252,43 @@ public class DownloadVideoManager {
                     File tsFile = saveIndexM3u8uFile(basePath + m3u8Url, new File(savePath, m3u8UrlPath));
                     List<String> tsList = getM3u8urlTS(tsFile);
 
-                    call.onStart(file, tsList.size());
-
                     String tsBaseURL = basePath + m3u8UrlPath;
+                    long m3u8FileSize = tsList.size();
+                    call.onStart(file, m3u8FileSize);
                     int start = mSharedPreferences.getInt(url, 0);
+                    mScheduledFuture = mScheduledExecutorService.scheduleAtFixedRate(mRunnable, 0, 1000, TimeUnit.MILLISECONDS);
                     for (int i = start; i < tsList.size(); i++) {
-                        load(tsBaseURL + tsList.get(i), new File(savePath, m3u8UrlPath));
+                        long m3u8Progress = i + 1;
+                        load(tsBaseURL + tsList.get(i), new File(savePath, m3u8UrlPath), 0, new Call() {
+
+                            @Override
+                            public void onStart(File file, long max) {
+
+                            }
+
+                            @Override
+                            public void onProgress(long progress, long max, long bytes) {
+                                countBytes += bytes;
+                                if (callBackProgress) {//1 s 回调一次
+                                    callBackProgress = false;
+                                    Log.d("DownloadVideoManager","bytes:"+countBytes+"--->"+url);
+                                    call.onProgress(m3u8Progress, m3u8FileSize, countBytes);
+//                                    call.onProgress(m3u8Progress, m3u8FileSize, bytes);
+                                    countBytes = 0;
+                                }
+                            }
+
+                            @Override
+                            public void onComplete(File file) {
+
+                            }
+                        });
                         mSharedPreferences.edit().putInt(url, i + 1).apply();
                         if (downloadURL.get(url) == null || !downloadURL.get(url)) {
                             return;
                         }
-                        call.onProgress(i + 1, tsList.size());
                     }
+                    mScheduledFuture.cancel(true);
                     call.onComplete(new File(savePath));
                     mSharedPreferences.edit().putString(url, TYPE_COMPLETE).apply();
                     downloadURL.put(url, false);
@@ -238,6 +296,13 @@ public class DownloadVideoManager {
                     e.printStackTrace();
                 }
             }
+
+            public Runnable mRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    callBackProgress = true;
+                }
+            };
         });
     }
 
@@ -327,10 +392,7 @@ public class DownloadVideoManager {
             String fileNam = url.substring(url.lastIndexOf("/") + 1);
             connection = requestHttp(url, start);
             downloadConnection.put(url, connection);
-            long max = getContentLengthLong(connection, "content-length", -1);
-            call.onStart(savePath, max);
-            saveFile(connection.getInputStream(), savePath, fileNam, start, call);
-            call.onComplete(savePath);
+            saveFile(connection, savePath, fileNam, start, call);
             connection.disconnect();
             downloadConnection.remove(url);
         } catch (IOException e) {
@@ -368,7 +430,12 @@ public class DownloadVideoManager {
         return file;
     }
 
-    private File saveFile(InputStream input, File parent, String fileName, long start, Call call) throws IOException {
+    private File saveFile(HttpURLConnection connection, File parent, String fileName, long start, Call call) throws IOException {
+
+        long max = getContentLengthLong(connection, "content-length", -1);
+        call.onStart(parent, max);
+
+        InputStream input = connection.getInputStream();
         if (!parent.exists()) {
             parent.mkdirs();
         }
@@ -384,13 +451,13 @@ public class DownloadVideoManager {
         byte[] buffer = new byte[4 * 1024];
         while ((len = input.read(buffer)) != -1) {
             accessFile.write(buffer, 0, len);
-
             start = start + len;
-            call.onProgress(start, -1);
+            call.onProgress(start, max, len);
         }
         accessFile.close();
-
         input.close();
+
+        call.onComplete(parent);
         return file;
     }
 
@@ -437,7 +504,7 @@ public class DownloadVideoManager {
     public interface Call {
         void onStart(File file, long max);
 
-        void onProgress(long progress, long max);
+        void onProgress(long progress, long max, long bytes);
 
         void onComplete(File file);
     }
