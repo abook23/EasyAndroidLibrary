@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
@@ -36,11 +35,12 @@ public class TabLayoutFragment extends Fragment {
     private ViewPager viewPager;
     public int paddingTop = 0;
 
-    private List<View> mTabViewIconList;
-    private List<Fragment> mFragmentList = new ArrayList<>();
+    private List<TabLayoutItem> mTabLayoutItemList;
     private TabLayout.BaseOnTabSelectedListener baseOnTabSelectedListener;
 
     private int resourceLayout, tabLayoutId, viewPagerId;
+    private int tabLayoutItemResource;
+    private Call mCall;
 
     public static TabLayoutFragment newInstance(@LayoutRes int resource, @IdRes int tabLayoutId, @IdRes int viewPagerId) {
         TabLayoutFragment tabLayoutFragment = new TabLayoutFragment();
@@ -51,26 +51,14 @@ public class TabLayoutFragment extends Fragment {
     }
 
     public static TabLayoutFragment getDefaultTabLayoutFragment() {
-        TabLayoutFragment tabLayoutFragment = newInstance(R.layout.easy_app_default_fragment_tab_layout,
-                R.id.tabLayout, R.id.viewPager);
+        TabLayoutFragment tabLayoutFragment = newInstance(R.layout.easy_app_default_fragment_tab_layout, R.id.tabLayout, R.id.viewPager);
         return tabLayoutFragment;
     }
 
-    public void addFragment(View tabViewIcon, Fragment fragment) {
-        if (mTabViewIconList == null) {
-            mTabViewIconList = new ArrayList<>();
-        }
-        mTabViewIconList.add(tabViewIcon);
-        mFragmentList.add(fragment);
-    }
-
-    public void addFragments(Context context, @LayoutRes int layout, List<TabLayoutItem> datas, Call call) {
-        for (int i = 0; i < datas.size(); i++) {
-            TabLayoutItem item = datas.get(i);
-            View view = LayoutInflater.from(context).inflate(layout, null, false);
-            call.convert(view, item, i);
-            addFragment(view, item.fragment);
-        }
+    public void addFragments(Context context, @LayoutRes int layout, List<TabLayoutItem> itemList, Call call) {
+        mCall = call;
+        tabLayoutItemResource = layout;
+        mTabLayoutItemList = itemList;
     }
 
     public void setTabMode(int mode) {
@@ -97,21 +85,30 @@ public class TabLayoutFragment extends Fragment {
     }
 
     public void addOnTabSelectedListener(TabLayout.BaseOnTabSelectedListener listener) {
-       this.baseOnTabSelectedListener = listener;
+        this.baseOnTabSelectedListener = listener;
     }
 
     private void initTabLayout() {
+
+        List<Fragment> fragments = new ArrayList<>();
+        for (int i = 0; i < mTabLayoutItemList.size(); i++) {
+            TabLayoutItem item = mTabLayoutItemList.get(i);
+            fragments.add(item.fragment);
+        }
+
         addTabSelectedListener();
-        viewPager.setAdapter(new TableLayoutViewPage(getChildFragmentManager(),mFragmentList, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+        viewPager.setAdapter(new TableLayoutViewPage(getChildFragmentManager(), fragments, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
         tabLayout.setTabMode(tableMode);
 //      tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         tabLayout.setupWithViewPager(viewPager);
-        if (mTabViewIconList != null) {//自定义图标
-            for (int i = 0; i < mTabViewIconList.size(); i++) {
-                tabLayout.getTabAt(i).setCustomView(mTabViewIconList.get(i));
-            }
-        }
 
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            View view = LayoutInflater.from(getContext()).inflate(tabLayoutItemResource, tab.parent, false);
+            TabLayoutItem item = mTabLayoutItemList.get(i);
+            mCall.convert(view, item, i);
+            tabLayout.getTabAt(i).setCustomView(view);
+        }
     }
 
     private void addTabSelectedListener() {
@@ -125,7 +122,7 @@ public class TabLayoutFragment extends Fragment {
 
         private List<Fragment> mFragmentList;
 
-        public TableLayoutViewPage(@NonNull FragmentManager fm,List<Fragment> fragmentList, int behavior) {
+        public TableLayoutViewPage(@NonNull FragmentManager fm, List<Fragment> fragmentList, int behavior) {
             super(fm, behavior);
             mFragmentList = fragmentList;
         }
@@ -141,11 +138,11 @@ public class TabLayoutFragment extends Fragment {
             return mFragmentList.size();
         }
 
-//        @Nullable
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            return mTitles.get(position);
-//        }
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return null;
+        }
     }
 
     public static class TabLayoutItem {
