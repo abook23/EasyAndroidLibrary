@@ -42,7 +42,7 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity {
     private View mNetworkView;
     private LinearLayout mContentViewLinearLayout, mContentBottomLayout;
     private boolean initAppBar = true;
-    private View rootView;
+    protected View rootView;
     protected Context mContext;
 
     public void setContentView(int layoutResId, boolean initAppBar) {
@@ -57,6 +57,7 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity {
     @Override
     public void setContentView(int layoutResId) {
         super.setContentView(R.layout.easy_app_layout_content_view);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mContext = this;
         contentLoadingView = findViewById(R.id.content_loading);
         mContentViewLinearLayout = findViewById(R.id.content_view);
@@ -196,8 +197,6 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity {
     }
 
 
-
-
     public View addContentBottomView(@LayoutRes int layoutRes) {
         View view = LayoutInflater.from(this).inflate(layoutRes, mContentBottomLayout, false);
         addContentBottomView(view, 0);
@@ -226,10 +225,10 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity {
      * @param permissions
      * @param onParameterChangeListener
      */
-    public void requestPermission(@NonNull String[] permissions, @NonNull OnParameterChangeListener onParameterChangeListener) {
+    public void requestPermissions(@NonNull String[] permissions, @NonNull OnParameterChangeListener onParameterChangeListener) {
         mOnParameterChangeListener = onParameterChangeListener;
-        boolean statue = PermissionUtil.requestPermission(this, permissions, REQUEST_CONTACTS);
-        mOnParameterChangeListener.onParameterChange(statue);
+        boolean isRequestPermissions = PermissionUtil.requestPermission(this, permissions, REQUEST_CONTACTS);
+        mOnParameterChangeListener.onParameterChange(isRequestPermissions);
     }
 
     @Override
@@ -302,7 +301,7 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity {
     }
 
     public interface OnParameterChangeListener {
-        void onParameterChange(boolean statue);
+        void onParameterChange(boolean isRequestPermissions);
     }
 
     @Override
@@ -335,11 +334,35 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity {
         getAppBar().getRootView().setVisibility(View.GONE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//横屏
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
 
     public void clearFullscreen() {
         getAppBar().getRootView().setVisibility(View.VISIBLE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);// 取消全屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    public void hideSystemUI() {
+        // Set the IMMERSIVE flag.
+        // Set the content to appear under the system bars so that the content
+        // doesn't resize when the system bars hide and show.
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY//系统栏临时显示/隐藏
+//                        | View.SYSTEM_UI_FLAG_IMMERSIVE//系统栏隐藏显示
+        );
+    }
+
+    public void showSystemUI() {
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        );
     }
 }
