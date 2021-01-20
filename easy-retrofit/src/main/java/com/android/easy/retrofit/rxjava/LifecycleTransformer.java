@@ -14,22 +14,24 @@ import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * @Description: 描述
- * @Author: yangxiong
- * @E-mail: abook23@163.com
- * @CreateDate: 2020/11/16 16:33
- * @UpdateUser: 更新者：
- * @UpdateDate: 2020/11/16 16:33
- * @UpdateRemark: 更新说明：
- * @Version: 1.0
+ * Description: 描述
+ * Author: yangxiong
+ * E-mail: abook23@163.com
+ * CreateDate: 2020/11/16 16:33
+ * UpdateUser: 更新者：
+ * UpdateDate: 2020/11/16 16:33
+ * UpdateRemark: 更新说明：
+ * Version: 1.0
  */
 public class LifecycleTransformer<T> implements ObservableTransformer<T, T>, LifecycleObserver {
 
     private final Lifecycle mLifecycle;
+    private LifecycleObserver mLifecycleObserver;
     private boolean isDestroy;
 
     public LifecycleTransformer(Lifecycle lifecycle) {
         mLifecycle = lifecycle;
+        mLifecycleObserver = this;
         mLifecycle.addObserver(this);
     }
 
@@ -46,6 +48,7 @@ public class LifecycleTransformer<T> implements ObservableTransformer<T, T>, Lif
                 .takeUntil(new Predicate<T>() {
                     @Override
                     public boolean test(@NonNull T t) throws Exception {
+                        mLifecycle.removeObserver(mLifecycleObserver);
                         return isDestroy;
                     }
                 }).subscribeOn(Schedulers.io())
