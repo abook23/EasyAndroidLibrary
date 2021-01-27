@@ -87,20 +87,25 @@ public class UpgradeAppDialogFragment extends DialogFragment {
         TextView contentTextView = view.findViewById(R.id.downLoadContent);
         contentTextView.setText(content);
         mDownloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+        View easy_download_close = view.findViewById(R.id.easy_download_close);
         if (isMast) {
-            downLoadId = downLoadFile(getContext(), url);
-            downLoadButton.setText("系统升级中...");
-            downLoadButton.setEnabled(false);
-        } else {
-            downLoadButton.setOnClickListener(new View.OnClickListener() {
+            easy_download_close.setVisibility(View.GONE);
+        }else {
+            easy_download_close.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    downLoadId = downLoadFile(getContext(), url);
-                    downLoadButton.setText("系统升级中...");
-                    downLoadButton.setEnabled(false);
+                    dismiss();
                 }
             });
         }
+        downLoadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                downLoadId = downLoadFile(getContext(), url);
+                downLoadButton.setText("系统升级中...");
+                downLoadButton.setEnabled(false);
+            }
+        });
         registerBroadcast(getContext());
         mTimer.schedule(new TimerTask() {
             @Override
@@ -129,19 +134,19 @@ public class UpgradeAppDialogFragment extends DialogFragment {
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         window.setAttributes(params);
 
-        if (isMast) {
+//        if (isMast) {
             getDialog().setCancelable(false);
             getDialog().setCanceledOnTouchOutside(false);
-            getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
-                @Override
-                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        return true;
-                    }
-                    return false;
-                }
-            });
-        }
+//            getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
+//                @Override
+//                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+//                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+//                        return true;
+//                    }
+//                    return false;
+//                }
+//            });
+//        }
     }
 
     @Override
