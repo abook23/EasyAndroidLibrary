@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <base-config cleartextTrafficPermitted="true" />
+
+<!--    <domain-config>-->
+<!--        <domain includeSubdomains="true">abook23.com</domain>-->
+<!--        <pin-set expiration="2022-01-01">-->
+<!--            <pin digest="SHA-256">HTm0Yxe4b80PSxCzarYI9rD6eSkE5xw+UrtKeKwlLfU=</pin>-->
+<!--            &lt;!&ndash; backup pin &ndash;&gt;-->
+<!--            <pin digest="SHA-256">GI75anSEdkuHj05mreE0Sd9jE6dVqUIzzXRHHlZBVbI=</pin>-->
+<!--        </pin-set>-->
+<!--    </domain-config>-->
+
+
+<!--    <domain-config cleartextTrafficPermitted="false">-->
+<!--        <domain includeSubdomains="true">secure.example.com</domain>-->
+<!--    </domain-config>-->
+
+
+<!--    <network-security-config>-->
+<!--        <domain-config>-->
+<!--            <domain includeSubdomains="true">example.com</domain>-->
+<!--            <trust-anchors>-->
+<!--                <certificates src="@raw/my_ca"/>-->
+<!--            </trust-anchors>-->
+<!--        </domain-config>-->
+<!--    </network-security-config>-->
 </network-security-config>

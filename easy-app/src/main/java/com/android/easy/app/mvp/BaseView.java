@@ -2,7 +2,7 @@ package com.android.easy.app.mvp;
 
 import android.content.Context;
 
-public interface IBaseView {
+public interface BaseView {
     void showLoading();
 
     void dismissLoading();

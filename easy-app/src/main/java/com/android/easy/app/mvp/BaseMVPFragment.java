@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import com.android.easy.app.base.BaseFragment;
 
 
-public abstract class BaseMVPFragment<P extends BasePresenter> extends BaseFragment implements IBaseView {
+public abstract class BaseMVPFragment<P extends BasePresenter> extends BaseFragment implements BaseView {
 
     protected P mPresenter;
 

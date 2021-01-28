@@ -2,4 +2,5 @@
     package="com.android.easy.app" >
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 </manifest>

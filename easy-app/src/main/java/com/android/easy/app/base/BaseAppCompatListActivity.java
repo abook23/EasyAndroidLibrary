@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,7 +31,7 @@ public abstract class BaseAppCompatListActivity<M, T> extends BaseAppCompatActiv
     public RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Map<String, Object> params = new HashMap<>();
-    private int mPage = 1;
+    private int mPage = 0;
     public int mPageSize = 15;
 
     public abstract @LayoutRes
@@ -44,6 +45,9 @@ public abstract class BaseAppCompatListActivity<M, T> extends BaseAppCompatActiv
 
     public abstract void onBaseQuickAdapterConvert(@NonNull BaseViewHolder helper, @NonNull T item);
 
+    public void onAdapterViewDetachedFromWindow(@NonNull BaseViewHolder holder){
+
+    }
 
     /**
      * 加载数据
@@ -55,7 +59,7 @@ public abstract class BaseAppCompatListActivity<M, T> extends BaseAppCompatActiv
 
     //重新加载
     public void onRefreshParam() {
-        mPage = 1;
+        mPage = 0;
         params.put("page", mPage);
     }
 
@@ -68,15 +72,39 @@ public abstract class BaseAppCompatListActivity<M, T> extends BaseAppCompatActiv
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.easy_app_layout_list);
-        mRecyclerView = findViewById(R.id.recyclerView);
-        mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-
-        mRecyclerView.setAdapter(mBaseQuickAdapter = new Adapter(getItemLayout()));
+        ContentViewLayout layout = getContentViewLayout();
+        setContentView(layout.getLayoutResId());
+        mRecyclerView = findViewById(layout.getRecyclerViewId());
+        mSwipeRefreshLayout = findViewById(layout.getSwipeRefreshLayoutId());
+        mRecyclerView.setAdapter(mBaseQuickAdapter = initAdapter());
         mRecyclerView.setLayoutManager(getLayoutManager());
         setEmptyView(null);
         setParams(params);
         onListener();
+    }
+
+    public ContentViewLayout getContentViewLayout() {
+        return new ContentViewLayout() {
+            @Override
+            public int getLayoutResId() {
+                return R.layout.easy_app_layout_list;
+            }
+
+            @Override
+            public int getRecyclerViewId() {
+                return R.id.recyclerView;
+            }
+
+            @Override
+            public int getSwipeRefreshLayoutId() {
+                return R.id.swipeRefreshLayout;
+            }
+        };
+
+    }
+
+    public BaseQuickAdapter<T,BaseViewHolder> initAdapter(){
+        return new Adapter(getItemLayout());
     }
 
     public void setEmptyView(View view) {
@@ -142,12 +170,12 @@ public abstract class BaseAppCompatListActivity<M, T> extends BaseAppCompatActiv
     }
 
     private void notifyDataSetChanged(List<T> list) {
+        if (mPage == 0) {
+            mBaseQuickAdapter.setNewData(list);
+        } else {
+            mBaseQuickAdapter.addData(list);
+        }
         if (list != null && list.size() > 0) {
-            if (mPage == 1) {
-                mBaseQuickAdapter.setNewData(list);
-            } else {
-                mBaseQuickAdapter.addData(list);
-            }
             if (list.size() < mPageSize) {
                 mBaseQuickAdapter.loadMoreEnd();
             } else {
@@ -178,6 +206,23 @@ public abstract class BaseAppCompatListActivity<M, T> extends BaseAppCompatActiv
         protected void convert(@NonNull BaseViewHolder helper, T item) {
             onBaseQuickAdapterConvert(helper, item);
         }
+
+        @Override
+        public void onViewDetachedFromWindow(@NonNull BaseViewHolder holder) {
+            super.onViewDetachedFromWindow(holder);
+            onAdapterViewDetachedFromWindow(holder);
+        }
+    }
+
+    public interface ContentViewLayout {
+        @LayoutRes
+        int getLayoutResId();
+
+        @IdRes
+        int getRecyclerViewId();
+
+        @IdRes
+        int getSwipeRefreshLayoutId();
     }
 
 }

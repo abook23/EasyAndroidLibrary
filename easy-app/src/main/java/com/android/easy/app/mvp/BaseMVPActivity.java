@@ -9,22 +9,17 @@ import androidx.annotation.Nullable;
 import com.android.easy.app.base.BaseAppCompatActivity;
 
 
-public abstract class BaseMVPActivity<P extends BasePresenter> extends BaseAppCompatActivity implements IBaseView {
+public abstract class BaseMVPActivity<P extends BasePresenter> extends BaseAppCompatActivity implements BaseView {
 
     protected P mPresenter;
 
-    abstract P initPresenter();
-
-    abstract void initView();
-
-    abstract void initData();
+    public abstract P initPresenter();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = initPresenter();
-        initView();
-        initData();
+        mPresenter.attachView(this);
     }
 
     @Override

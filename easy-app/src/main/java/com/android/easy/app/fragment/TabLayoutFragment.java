@@ -101,7 +101,6 @@ public class TabLayoutFragment extends Fragment {
         tabLayout.setTabMode(tableMode);
 //      tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         tabLayout.setupWithViewPager(viewPager);
-
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             View view = LayoutInflater.from(getContext()).inflate(tabLayoutItemResource, tab.parent, false);

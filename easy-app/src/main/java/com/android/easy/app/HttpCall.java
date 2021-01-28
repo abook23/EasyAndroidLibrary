@@ -1,8 +1,6 @@
 package com.android.easy.app;
 
 
-import androidx.lifecycle.Lifecycle;
-
 import com.android.easy.retrofit.listener.Call;
 
 import io.reactivex.disposables.Disposable;
@@ -11,10 +9,6 @@ public abstract class HttpCall<T> extends Call<T> {
 
     public HttpCall(){
         super();
-    }
-
-    public HttpCall(Lifecycle lifecycle) {
-        super(lifecycle);
     }
 
     @Override

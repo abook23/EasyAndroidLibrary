@@ -1,39 +1,35 @@
 package com.android.easy.app.mvp;
 
 
-import com.android.easy.app.HttpCall;
-import com.android.easy.retrofit.ApiService;
-
 import java.lang.ref.WeakReference;
-import java.util.Map;
 
-public abstract class BasePresenter<M extends IBaseModel, V extends IBaseView> {
-    private WeakReference<V> mMvpView;
-    private M mMvpModel;
+public abstract class BasePresenter<M extends BaseModel, V extends BaseView> {
+    private WeakReference<V> mView;
+    protected M mModel;
 
 
-    public BasePresenter(M mvpModel) {
-        mMvpModel = mvpModel;
+    public BasePresenter(M model) {
+        mModel = model;
     }
 
     public void attachView(V view) {
-        mMvpView = new WeakReference<>(view);
+        mView = new WeakReference<>(view);
     }
 
     public void detachView() {
-        if (mMvpView != null) {
-            mMvpView.clear();
-            mMvpView = null;
+        if (mView != null) {
+            mView.clear();
+            mView = null;
         }
-        this.mMvpModel = null;
+        this.mModel = null;
     }
 
     public V getView() {
-        return mMvpView == null ? null : mMvpView.get();
+        return mView == null ? null : mView.get();
     }
 
     public M getModule() {
-        return mMvpModel;
+        return mModel;
     }
 
     public void showLoading() {
@@ -46,14 +42,6 @@ public abstract class BasePresenter<M extends IBaseModel, V extends IBaseView> {
 
     public void showToast(String msg) {
         getView().showToast(msg);
-    }
-
-    protected <T> void get(String url, Map<String, Object> params, HttpCall<T> call) {
-        ApiService.get(url, params, call);
-    }
-
-    protected <T> void post(String url, Map<String, Object> params, HttpCall<T> call) {
-        ApiService.post(url, params, call);
     }
 
 }

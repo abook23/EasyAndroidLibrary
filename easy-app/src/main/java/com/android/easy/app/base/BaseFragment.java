@@ -52,6 +52,11 @@ public abstract class BaseFragment extends HttpFragment {
             initView(view);
         }
         isViewInitiated = true;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         loadData();
     }
 

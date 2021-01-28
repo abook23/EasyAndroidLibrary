@@ -15,21 +15,33 @@
         android:orientation="vertical"
         android:padding="18dp">
 
-        <TextView
-            android:id="@+id/downLoadTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="你有新的版本"
-            android:textColor="@color/text_color"
-            android:textSize="22sp" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/downLoadTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="你有新的版本"
+                android:textColor="@color/text_color"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:id="@+id/easy_download_close"
+                android:layout_gravity="end"
+                android:layout_width="20dp"
+                android:src="@mipmap/easy_app_ic_deldete"
+                android:layout_height="20dp" />
+        </FrameLayout>
 
         <ProgressBar
             android:id="@+id/downLoadProgressBar"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"/>
+            android:layout_marginTop="18dp" />
 
         <TextView
             android:id="@+id/downLoadContent"
