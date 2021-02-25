@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.cache.CacheSub2Activity"></activity>
+        <activity android:name=".ui.cache.CacheSub2Activity"/>
         <activity android:name=".ui.cache.CacheActivity" />
         <activity android:name=".ui.cache.CacheSubActivity" />
         <activity android:name=".MainActivity" />

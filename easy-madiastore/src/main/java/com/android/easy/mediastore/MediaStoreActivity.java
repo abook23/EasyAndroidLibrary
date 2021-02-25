@@ -27,7 +27,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.android.easy.madiastore.R;
+import com.android.easy.mediastore.R;
 import com.android.easy.mediastore.utils.LocalMedia;
 import com.android.easy.mediastore.utils.LocalMediaFolder;
 import com.android.easy.mediastore.utils.LocalMediaLoader;
@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 /**
- * @author My.Y
+ * author My.Y
  */
 public class MediaStoreActivity extends AppCompatActivity implements LocalMediaLoader.LocalMediaLoadListener {
 

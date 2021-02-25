@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 /**
  * 自定义布局解决键盘弹出挡住输入框的问题
  *
- * @author abook23
+ * author abook23
  * 2015/7/8
  * 在使用 本控件的Activity 中调用 键盘刷新见面
  * getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);

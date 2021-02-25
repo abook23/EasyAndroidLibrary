@@ -5,7 +5,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  *  2019/12/09
  */
 @Entity

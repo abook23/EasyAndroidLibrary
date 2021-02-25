@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.abook23.tv.ben.CacheVideoBean" />
+
+        <variable
+            name="vPic"
+            type="String" />
+
+        <variable
+            name="bytes"
+            type="String" />
+
+        <variable
+            name="viewModel"
+            type="com.abook23.tv.ui.cachesub.CacheSubViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <CheckBox
+            android:id="@+id/checkBoxButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:button="@drawable/bg_radio_01"
+            android:checked="@{viewModel.checked}"
+            android:padding="4dp"
+            android:visibility="@{viewModel.checkButtonVisibility ?View.VISIBLE:View.GONE}" />
+
+        <com.abook23.tv.widget.ImageViewH
+            android:id="@+id/imageView"
+            android:layout_width="95dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/test_image"
+            app:image_url="@{vPic}" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="变形金刚"
+                android:textColor="@color/text_color"
+                android:textSize="16sp"
+                app:text="@{String.format(@string/movie_tod_num,(item.v_num + 1))}" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.00%"
+                    android:textSize="12sp"
+                    app:text="@{viewModel.getRate(item.download_progress,item.download_max)}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textSize="12sp"
+                    android:text="@{bytes}" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00%"
+                android:textSize="12sp"
+                app:text="@{String.format(@string/movie_tod_play_progress,viewModel.getRate2f(item.play_rate))}" />
+
+
+        </LinearLayout>
+
+        <com.android.easy.base.widget.ButtonProgress
+            android:id="@+id/buttonProgress"
+            android:layout_width="86dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center_vertical"
+            android:onClick="@{(v)->viewModel.downloadPause(v,item)}"
+            android:text="@{viewModel.formatterDownloadStatus(item)}"
+            app:progress="@{item.download_progress}"
+            app:max="@{item.download_max}"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</layout>

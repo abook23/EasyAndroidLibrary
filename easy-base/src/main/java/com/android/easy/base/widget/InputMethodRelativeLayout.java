@@ -7,7 +7,7 @@ import android.util.DisplayMetrics;
 import android.widget.RelativeLayout;
 
 /**
- * @author abook23
+ * author abook23
  *         自定义布局解决键盘弹出挡住输入框的问题
  *         请使用 KeyboardListenRelativeLayout
  */
@@ -78,7 +78,7 @@ public class InputMethodRelativeLayout extends RelativeLayout {
     /**
      * 大小改变的内部接口
      *
-     * @author junjun
+     * author junjun
      */
     public interface OnSizeChangedListenner {
         void onSizeChange(boolean paramBoolean, int w, int h);

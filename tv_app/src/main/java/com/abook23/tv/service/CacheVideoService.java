@@ -18,14 +18,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * @Description: 描述
- * @Author: yangxiong
- * @E-mail: abook23@163.com
- * @CreateDate: 2020/8/13 21:19
- * @UpdateUser: 更新者：
- * @UpdateDate: 2020/8/13 21:19
- * @UpdateRemark: 更新说明：
- * @Version: 1.0
+ * Description: 描述
+ * Author: yangxiong
+ * E-mail: abook23@163.com
+ * CreateDate: 2020/8/13 21:19
+ * UpdateUser: 更新者：
+ * UpdateDate: 2020/8/13 21:19
+ * UpdateRemark: 更新说明：
+ * Version: 1.0
  */
 public class CacheVideoService extends Service {
     private ConcurrentMap<String, DownloadVideoManager.Call> downloadListener = new ConcurrentHashMap<>();
@@ -60,6 +60,14 @@ public class CacheVideoService extends Service {
         downloadListener.put(url, call);
     }
 
+    public void removeListener(String url){
+        downloadListener.remove(url);
+    }
+
+    public void clearListener(){
+        downloadListener.clear();
+    }
+
 
     public void download(String url, long v_id, int vNum) {
         CacheVideoBean cacheVideoBean = App.getDaoSession().getCacheVideoBeanDao().load(url);
@@ -73,17 +81,18 @@ public class CacheVideoService extends Service {
             }
 
             @Override
-            public void onProgress(long progress, long max) {
+            public void onProgress(long progress, long max,long bytes) {
                 saveCacheVideo(url, max, progress, progress == max);
                 DownloadVideoManager.Call call = downloadListener.get(url);
                 if (call != null) {
-                    call.onProgress(progress, max);
+                    call.onProgress(progress, max,bytes);
                 }
             }
 
             @Override
             public void onComplete(File file) {
                 saveCacheVideo(url, 0, 0, true);
+                downloadListener.remove(url);
             }
         });
     }

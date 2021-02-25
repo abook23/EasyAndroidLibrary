@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config>
+        <domain includeSubdomains="true">abook23.com</domain>
+        <pin-set expiration="2022-01-01">
+            <pin digest="SHA-256">HTm0Yxe4b80PSxCzarYI9rD6eSkE5xw+UrtKeKwlLfU=</pin>
+            <!-- backup pin -->
+            <pin digest="SHA-256">GI75anSEdkuHj05mreE0Sd9jE6dVqUIzzXRHHlZBVbI=</pin>
+        </pin-set>
+    </domain-config>
+</network-security-config>

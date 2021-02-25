@@ -8,8 +8,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * @author abook23
- * @version 1.0
+ * author abook23
+ * version 1.0
  * 2015年9月14日10:23:49
  * AES 加密/解密 256位
  */

@@ -32,8 +32,8 @@ import java.util.Arrays;
 import java.util.concurrent.Semaphore;
 
 /**
- * @author My
- * @date 2019-9-23
+ * author My
+ * date 2019-9-23
  * 相机管理
  */
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

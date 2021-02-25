@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import com.android.easy.R;
 import com.android.easy.URL;
 import com.android.easy.app.base.BaseListFragment;
-import com.android.easy.data.model.UserInfo;
+import com.android.easy.data.bean.UserInfo;
 import com.chad.library.adapter.base.BaseViewHolder;
 
 import java.util.List;

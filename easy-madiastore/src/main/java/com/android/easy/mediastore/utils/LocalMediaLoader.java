@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  * 2019/11/28
  */
 public class LocalMediaLoader implements Handler.Callback {

@@ -1,4 +1,4 @@
-package com.android.easy.data.model;
+package com.android.easy.data.bean;
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository

@@ -4,21 +4,23 @@ package com.android.easy.base.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
- * @author abook23 2015年9月6日 11:24:07
- * @version 1.0
+ * author abook23 2015年9月6日 11:24:07
+ * version 1.0
  */
 public class Encode{
 
     /**
      * 静态加密方法
      *
-     * @param codeType 传入加密方式 MD5 || SHA
+     * @param codeType 传入加密方式 MD5 || SHA || SHA-256
      * @param content  传入加密的内容
      * @return 返回加密结果
      */
@@ -66,4 +68,34 @@ public class Encode{
         }
         return value;
     }
+
+
+    public static String getSHA256(String str){
+        MessageDigest messageDigest;
+        String encodestr = "";
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(str.getBytes("UTF-8"));
+            encodestr = byte2Hex(messageDigest.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return encodestr;
+    }
+
+    private static String byte2Hex(byte[] bytes){
+        StringBuffer stringBuffer = new StringBuffer();
+        String temp = null;
+        for (int i=0;i<bytes.length;i++){
+            temp = Integer.toHexString(bytes[i] & 0xFF);
+            if (temp.length()==1){
+                stringBuffer.append("0");
+            }
+            stringBuffer.append(temp);
+        }
+        return stringBuffer.toString();
+    }
+
 }

@@ -38,13 +38,13 @@ public class DateUtils {
     }
 
     /**
-     * @param dataTime
+     * @param dateTime
      * @return
      */
     @SuppressLint("SimpleDateFormat")
-    public static String getYMDDate(long dataTime) {
+    public static String getYMDDate(long dateTime) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return format.format(dataTime);
+        return format.format(dateTime);
     }
 
     /**

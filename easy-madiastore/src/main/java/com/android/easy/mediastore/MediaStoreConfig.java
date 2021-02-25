@@ -3,8 +3,8 @@ package com.android.easy.mediastore;
 import com.android.easy.mediastore.utils.MediaMode;
 
 /**
- * @author abook23@163.com
- * @date 2020/04/30
+ * author abook23@163.com
+ * date 2020/04/30
  */
 public class MediaStoreConfig {
 

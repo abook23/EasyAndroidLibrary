@@ -19,7 +19,7 @@ import java.io.FileOutputStream;
 /**
  * 相机管理
  *
- * @author My.Y
+ * author My.Y
  */
 public abstract class CameraManager {
     public static final int PREVIEW_SIZE_1080P = 1080;

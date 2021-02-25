@@ -18,10 +18,10 @@ import java.io.IOException;
 
 /**
  *
- * @author abook23
+ * author abook23
  * 2014/9/23
  *
- * @version 1.0
+ * version 1.0
  */
 public class BitmapUtils {
 

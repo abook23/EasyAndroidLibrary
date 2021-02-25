@@ -34,7 +34,7 @@ public class SplashActivity extends BaseAppCompatActivity {
     protected void onStart() {
         super.onStart();
         App.isStart = true;
-        requestPermission(PERMISSIONS, statue -> {
+        requestPermissions(PERMISSIONS, statue -> {
             countTime();
         });
 

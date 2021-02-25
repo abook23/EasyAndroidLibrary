@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author abook23 2015-9-6 14:47:27
- * @version 2.0
+ * author abook23 2015-9-6 14:47:27
+ * version 2.0
  */
 public class JsonUtils {
     private static Gson gson;

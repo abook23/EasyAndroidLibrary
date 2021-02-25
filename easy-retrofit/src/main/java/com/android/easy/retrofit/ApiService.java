@@ -18,6 +18,7 @@ import com.android.easy.retrofit.util.FileUtils;
 import com.android.easy.retrofit.util.MultipartUtils;
 
 import java.io.File;
+import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import javax.net.ssl.SSLSocketFactory;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import okhttp3.Cache;
+import okhttp3.CertificatePinner;
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -98,6 +100,7 @@ public class ApiService {
         for (Interceptor interceptor : interceptorList) {
             builder.addInterceptor(interceptor);
         }
+//        builder.certificatePinner(new CertificatePinner.Builder().add("https://www.abook23.com","sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=").build());
         return builder;
     }
 

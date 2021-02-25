@@ -29,6 +29,7 @@ android {
 
 //            <meta-data android:name="JPUSH_APPKEY" android:value="${jpush_appkey}"/>
 //            manifestPlaceholders = [
+//                    jpush_appkey    : "Z6v2nv73pg8fIZb7azJcEA",
 //                    GETUI_APP_ID    : "Z6v2nv73pg8fIZb7azJcEA",
 //                    GETUI_APP_KEY   : "Fxm6IVxs39AhqrC74ukSZ9",
 //                    GETUI_APP_SECRET: "Lta2gMgZyK8R0vwQp3uSt3"
@@ -95,6 +96,10 @@ android {
                 }
             }
         }
+    }
+
+    dataBinding{
+        enabled true
     }
 }
 

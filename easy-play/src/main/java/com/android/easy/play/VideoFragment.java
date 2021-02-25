@@ -6,6 +6,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.PointF;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -108,7 +111,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
     private int mOrientation;
     private OrientationEventListener mOrientationEventListener;
     private boolean isStartTrackingSeekBar;
-
 
     public VideoFragment() {
     }
@@ -197,7 +199,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
 
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
-                    isStartTrackingSeekBar =true;
+                    isStartTrackingSeekBar = true;
                 }
 
                 @Override
@@ -225,8 +227,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         }
         return rootView;
     }
-
-
 
     public boolean isLockView() {
         return isLockView;
@@ -332,19 +332,15 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         if (url == null) {
             return;
         }
+        pauseView.setImageResource(R.mipmap.icon_pause);
         showLoading(true);
         stop();
         release();
         createPlayer();
-        playUrl = url;
+
         try {
             mMediaPlayer.setDisplay(mSurfaceHolder);
-            String localPath = DownloadVideoManager.getCacheLocalPlayPath(getContext(), url);
-            if (new File(localPath).exists()) {
-                mMediaPlayer.setDataSource(localPath);
-            } else {
-                mMediaPlayer.setDataSource(url);
-            }
+            mMediaPlayer.setDataSource(url);
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(getContext(), "播放失败", Toast.LENGTH_SHORT).show();
@@ -356,19 +352,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
          */
         mMediaPlayer.setOnPreparedListener(iMediaPlayer -> {
             log("OnPrepared");
-            long seek = getSharedPreferences(getContext()).getLong(playUrl, 0);
+            long seek = getLastCurrentPosition();
             mMediaPlayer.seekTo(seek);
             mMediaPlayer.start();
             mSeekBar.setMax((int) iMediaPlayer.getDuration());
             durationTime.setText(DateUtils.formatterTime(mSeekBar.getMax()));
             showSettingView(false);
             updateTime();
-            for (int i = 0; i < movieData.size(); i++) {
-                if (movieData.get(i).getUrl().equals(url)) {
-                    playPosition = i;
-                    return;
-                }
-            }
         });
         /**
          * 视频参数
@@ -382,13 +372,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
          * 缓冲
          */
         mMediaPlayer.setOnBufferingUpdateListener((iMediaPlayer, i) -> {
-            log("BufferingUpdate" + i);
-            if (i != bufIndex) {
-                bufIndex = i;
-                bufCount = 0f;
-            }
-            bufCount += 0.05;
-            float position = (i + bufCount) / 100 * mSeekBar.getMax();
+            log("BufferingUpdate:" + i + "%");
+            float position = (i + 1) / 100f * iMediaPlayer.getDuration();
             mSeekBar.setSecondaryProgress((int) position);
         });
         mMediaPlayer.setOnInfoListener((iMediaPlayer, what, i1) -> {
@@ -405,24 +390,38 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         });
         mMediaPlayer.setOnErrorListener((iMediaPlayer, i, i1) -> {
             log("播放错误");
+            playNext();
             return false;
         });
         //播放完成
         mMediaPlayer.setOnCompletionListener(iMediaPlayer -> {
             completion();
-            mSeekBar.setProgress(mSeekBar.getMax());
-            //播放下一集
-            if (movieData.size() > 1) {
-                MovieInfo movieInfo = movieData.get(playPosition + 1);
-                play(movieInfo.getName(), movieInfo.getUrl());
+            //本地播放,未缓存足够
+            if (iMediaPlayer.getCurrentPosition() < iMediaPlayer.getDuration()) {
+                //切换到 外网播放
+                mediaPlayer(playUrl);
+            } else {
+                mSeekBar.setProgress(mSeekBar.getMax());
+                playNext();
             }
         });
     }
 
     //开始加载视频
     private void play(String name, String url) {
+        playUrl = url;
         videoNameTextView.setText(videoName + " " + name);
-        mediaPlayer(url);
+        String localPath = DownloadVideoManager.getCacheLocalPlayPath(getContext(), url);
+        String playUrl = new File(localPath).exists() ? localPath : url;
+        mediaPlayer(playUrl);
+    }
+
+    //播放下一集
+    public void playNext() {
+        if (movieData.size() > 1) {
+            MovieInfo movieInfo = movieData.get(playPosition + 1);
+            play(movieInfo.getName(), movieInfo.getUrl());
+        }
     }
 
 
@@ -499,6 +498,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         getSharedPreferences(getContext()).edit().putLong(playUrl, getCurrentPosition()).apply();
     }
 
+    private long getLastCurrentPosition() {
+        for (int i = 0; i < movieData.size(); i++) {
+            if (movieData.get(i).getUrl().equals(playUrl)) {
+                playPosition = i;
+                break;
+            }
+        }
+        return getSharedPreferences(getContext()).getLong(playUrl, 0);
+    }
+
 
     /**
      * 重置
@@ -537,7 +546,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
 
     public int getCurrentPositionInt() {
         int i = (int) getCurrentPosition();
-        Log.d("getCurrentPositionInt",i+"");
+        Log.d("getCurrentPositionInt", i + "");
         return i;
     }
 
@@ -591,12 +600,14 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
 
     /**
      * 触摸事件处理
+     *
      * @param rootView
      */
     private void setOnTouchListener(View rootView) {
         rootView.setOnTouchListener(new View.OnTouchListener() {
             private PointF downPoint;
             private int currentPosition = 0;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -607,13 +618,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
                         float x = event.getX() - downPoint.x;
                         float y = event.getY() - downPoint.y;
                         if (Math.abs(y) < 20) {//只往左右
-                            if (Math.abs(x)>20){
+                            if (Math.abs(x) > 20) {
                                 if (x >= 20) {//向右
                                     currentPosition = 1000;
                                 } else if (x < -20) {//向左
                                     currentPosition = -1000;
                                 }
-                                int progress = mSeekBar.getProgress()+currentPosition;
+                                int progress = mSeekBar.getProgress() + currentPosition;
                                 mSeekBar.setProgress(progress);
                                 mMediaPlayer.seekTo(mSeekBar.getProgress());
                             }

@@ -234,11 +234,14 @@ public class BaseAppCompatActivity extends HttpAppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (PermissionUtil.verifyPermissions(this, permissions, grantResults)) {
-            mOnParameterChangeListener.onParameterChange(true);
-        } else {
-            mOnParameterChangeListener.onParameterChange(false);
+        if (mOnParameterChangeListener!=null){
+            if (PermissionUtil.verifyPermissions(this, permissions, grantResults)) {
+                mOnParameterChangeListener.onParameterChange(true);
+            } else {
+                mOnParameterChangeListener.onParameterChange(false);
+            }
         }
+
     }
 
     public void setTranslucentStatus() {

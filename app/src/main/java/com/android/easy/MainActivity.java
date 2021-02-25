@@ -20,7 +20,7 @@ import com.android.easy.ui.dialog.DialogActivity;
 import com.android.easy.ui.http.HttpActivity;
 
 /**
- * @author My.Y
+ * author My.Y
  */
 public class MainActivity extends AppCompatActivity {
 

@@ -11,7 +11,7 @@ import androidx.annotation.IdRes;
 import androidx.core.app.NotificationCompat;
 
 /**
- * @author abook23
+ * author abook23
  */
 public class Notifications {
 

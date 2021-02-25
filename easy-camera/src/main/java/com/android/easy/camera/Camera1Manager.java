@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * @author My
- * @date 2017/12/13
+ * author My
+ * date 2017/12/13
  * 相机管理
  */
 public class Camera1Manager extends CameraManager implements Camera.PreviewCallback {

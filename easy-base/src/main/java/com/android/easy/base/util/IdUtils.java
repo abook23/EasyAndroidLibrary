@@ -4,7 +4,7 @@ import java.util.UUID;
 
 /**
  * Id生成策略
- * @author Administrator
+ * author Administrator
  *
  */
 public class IdUtils {

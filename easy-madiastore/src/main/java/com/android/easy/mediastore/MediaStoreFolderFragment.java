@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.easy.madiastore.R;
+import com.android.easy.mediastore.R;
 import com.android.easy.mediastore.utils.LocalMediaFolder;
 import com.bumptech.glide.Glide;
 

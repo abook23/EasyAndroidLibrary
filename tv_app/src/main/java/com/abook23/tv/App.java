@@ -25,7 +25,7 @@ import com.android.easy.base.util.L;
 import com.android.easy.retrofit.ApiService;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  * 2019/12/05
  */
 public class App extends BaseApplication {

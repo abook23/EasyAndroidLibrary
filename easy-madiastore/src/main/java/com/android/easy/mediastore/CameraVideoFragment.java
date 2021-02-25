@@ -39,7 +39,7 @@ import androidx.fragment.app.Fragment;
 import com.android.easy.camera.CameraManager;
 import com.android.easy.camera.CameraView;
 import com.android.easy.camera.OnCameraListener;
-import com.android.easy.madiastore.R;
+import com.android.easy.mediastore.R;
 import com.android.easy.mediastore.utils.AutoFocusManager;
 import com.android.easy.mediastore.utils.PermissionUtil;
 import com.android.easy.mediastore.widget.VideoProgress;

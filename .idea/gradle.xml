@@ -22,6 +22,7 @@
             <option value="$PROJECT_DIR$/easy-play" />
             <option value="$PROJECT_DIR$/easy-retrofit" />
             <option value="$PROJECT_DIR$/tv_app" />
+            <option value="$PROJECT_DIR$/tv_app_mvvm" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

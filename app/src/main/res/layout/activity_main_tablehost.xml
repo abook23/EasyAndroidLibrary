@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+val tabHostBeans = ArrayList<TabHostViewPage.TabHostBean>()
+        tabHostBeans.add(TabHostViewPage.TabHostBean("首页", R.drawable.bg_table_host_0, TabLayoutFragment.newInstance(map1, statusBarHeight)))
+        tabHostBeans.add(TabHostViewPage.TabHostBean("频道", R.drawable.bg_table_host_1, TabLayoutFragment.newInstance(map2, statusBarHeight)))
+        tabHostBeans.add(TabHostViewPage.TabHostBean("我", R.drawable.bg_table_host_2, MainFragment3.newInstance()))
+
+        val viewPager = findViewById<ViewPager>(R.id.view_pager)
+        val fragmentTabHost = findViewById<FragmentTabHost>(R.id.tabs)
+        val tabHostViewPage = TabHostViewPage<TabHostViewPage.TabHostBean>(this, fragmentTabHost, viewPager, tabHostBeans)
+        tabHostViewPage.setAdapter(object : TabHostViewPagerAdapter<TabHostViewPage.TabHostBean>(this, R.layout.item_tablehost) {
+            override fun convert(holder: BaseViewHolder, position: Int, item: TabHostViewPage.TabHostBean) {
+                holder.setText(R.id.tv_tbhost, item.title)
+                holder.setImageResource(R.id.iv_tbhost, item.resId)//如果是网络图片,继承TabHostBean 重写.
+            }
+        })
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@id/tabs"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.fragment.app.FragmentTabHost
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0" />
+    </androidx.fragment.app.FragmentTabHost>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

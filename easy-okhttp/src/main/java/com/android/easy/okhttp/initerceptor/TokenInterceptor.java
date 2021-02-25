@@ -7,7 +7,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  * 2020/03/31
  */
 public abstract class TokenInterceptor implements Interceptor {

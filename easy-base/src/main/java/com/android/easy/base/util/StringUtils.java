@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author abook23
+ * author abook23
  * 2016/1/28
  */
 public class StringUtils {

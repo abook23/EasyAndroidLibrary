@@ -18,8 +18,7 @@ import com.android.easy.URL;
 import com.android.easy.app.HttpCall;
 import com.android.easy.app.base.BaseAppCompatActivity;
 import com.android.easy.data.ResponseBean;
-import com.android.easy.data.Result;
-import com.android.easy.data.model.UserInfo;
+import com.android.easy.data.bean.UserInfo;
 
 import java.util.HashMap;
 import java.util.Map;

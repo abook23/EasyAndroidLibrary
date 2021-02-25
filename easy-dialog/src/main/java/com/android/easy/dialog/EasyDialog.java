@@ -43,7 +43,7 @@ public class EasyDialog extends DialogFragment {
     private TextView mProgressBar_percentage;
     private TextView mProgressBar_description;
     private EasyDialog mEasyDialog;
-
+    private OnViewCreatedListener mOnViewCreatedListener;
     public RecyclerView mRecyclerView;
     private TextView mContent;
     private EditText editText;
@@ -51,6 +51,12 @@ public class EasyDialog extends DialogFragment {
 
     private EasyDialog(Builder builder) {
         this.mBuilder = builder;
+    }
+
+
+    public EasyDialog setOnViewCreatedListener(OnViewCreatedListener onViewCreatedListener) {
+        mOnViewCreatedListener = onViewCreatedListener;
+        return this;
     }
 
     public static class Builder {
@@ -192,7 +198,6 @@ public class EasyDialog extends DialogFragment {
             return this;
         }
 
-
         public EasyDialog build() {
             return new EasyDialog(this);
         }
@@ -296,6 +301,9 @@ public class EasyDialog extends DialogFragment {
         addEditTextView(view);
 
         addDownloadFile(positiveView, negativeView);
+
+        if (mOnViewCreatedListener != null)
+            mOnViewCreatedListener.onViewCreated(this, view);
 
     }
 
@@ -509,6 +517,10 @@ public class EasyDialog extends DialogFragment {
 
     public interface OnDownloadListener {
         void onComplete(EasyDialog dialog, String filePath);
+    }
+
+    public interface OnViewCreatedListener {
+        void onViewCreated(EasyDialog dialog, View view);
     }
 
     @RequiresPermission(value = Manifest.permission.REQUEST_INSTALL_PACKAGES)

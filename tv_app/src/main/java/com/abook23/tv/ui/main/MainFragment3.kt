@@ -60,6 +60,7 @@ class MainFragment3 : BaseFragment() {
                         .title("缓存清理")
                         .content("当前缓存:$cacheSize")
                         .positive("确认",EasyDialog.OnClickListener { dialog, view ->
+                            dialog.dismiss()
                             AndroidUtils.selectCacheSize(context,true)
                         })
                         .build()

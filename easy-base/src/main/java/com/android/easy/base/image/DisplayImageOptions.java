@@ -4,7 +4,7 @@ import android.widget.ImageView;
 
 /**
  *
- * @author abook23
+ * author abook23
  * 2016/11/2
  */
 

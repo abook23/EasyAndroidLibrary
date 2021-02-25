@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * @author abook23@163.com
- * @date 2020/05/08
+ * author abook23@163.com
+ * date 2020/05/08
  */
 public class RecyclerItemTouchHelperCallback extends ItemTouchHelper.Callback {
 

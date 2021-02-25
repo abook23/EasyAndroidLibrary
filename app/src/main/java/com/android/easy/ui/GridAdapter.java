@@ -13,14 +13,14 @@ import com.android.easy.R;
 import com.android.easy.ui.dialog.DialogActivity;
 
 /**
- * @Description: 描述
- * @Author: yangxiong
- * @E-mail: abook23@163.com
- * @CreateDate: 2020/7/28 15:01
- * @UpdateUser: 更新者：
- * @UpdateDate: 2020/7/28 15:01
- * @UpdateRemark: 更新说明：
- * @Version: 1.0
+ * Description: 描述
+ * Author: yangxiong
+ * E-mail: abook23@163.com
+ * CreateDate: 2020/7/28 15:01
+ * UpdateUser: 更新者：
+ * UpdateDate: 2020/7/28 15:01
+ * UpdateRemark: 更新说明：
+ * Version: 1.0
  */
 public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MyViewHolder> {
     Object[][] data;

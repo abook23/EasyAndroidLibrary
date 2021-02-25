@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  *  2019/11/28
  */
 public class LocalMediaFolder {

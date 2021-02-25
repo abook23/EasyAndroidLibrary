@@ -14,7 +14,7 @@ import java.io.OutputStream;
 
 /**
  *
- * @author abook23
+ * author abook23
  * 2014/9/22
  * /cache_data/[packageName]
  */
@@ -341,7 +341,7 @@ public class FileUtils {
     /**
      * 写入本地速度监听
      *
-     * @author abook23
+     * author abook23
      */
     public interface OnOutputStreamListener {
         /**

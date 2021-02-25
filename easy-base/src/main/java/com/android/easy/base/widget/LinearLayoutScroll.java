@@ -12,7 +12,7 @@ import android.widget.ListView;
 
 /**
  *
- * @author abook23
+ * author abook23
  * 2016/5/4
  */
 

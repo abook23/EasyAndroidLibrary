@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  * 2019/12/04
  */
 public class TabLayoutFragment extends Fragment {

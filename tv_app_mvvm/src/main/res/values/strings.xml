@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">整点视频</string>
+
+    <string name="default_text">text</string>
+    <string name="movie_content">Facebook宣布续订《节哀顺变》第二季，该剧由伊丽莎白·奥尔森、凯莉·玛丽·陈、珍妮·麦克蒂尔、约翰·艾德坡等主演，詹姆斯·庞索特执导。首季故事讲述年轻寡妇Leigh Gibbs(奥尔森饰)一边处理失去丈夫的悲痛，一边与过去重新建立关系。</string>
+    <string name="precision_1f">%.1f</string>
+    <string name="movie_v_score">%.1f分</string>
+    <string name="movie_type">%1s/%2s/%3s</string>
+    <string name="movie_tod_size">更新到第%s集</string>
+    <string name="movie_tod_num">第%s集</string>
+    <string name="movie_tod_download_progress">已缓存%.2f%s</string>
+    <string name="movie_tod_play_progress">已看至%s</string>
+    <string name="pause">暂停</string>
+    <string name="start">开始</string>
+</resources>

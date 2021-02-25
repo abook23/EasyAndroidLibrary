@@ -12,7 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  * 2019/12/19
  */
 public class NestedLayout extends LinearLayout implements NestedScrollingParent2 {

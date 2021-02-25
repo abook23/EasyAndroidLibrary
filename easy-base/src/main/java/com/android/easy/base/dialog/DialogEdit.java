@@ -21,7 +21,7 @@ import com.android.easy.base.widget.EditTextWatcher;
 
 /**
  *
- * @author abook23
+ * author abook23
  * 2016/9/9
  */
 public class DialogEdit extends DialogFragment {

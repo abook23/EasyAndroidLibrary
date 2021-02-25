@@ -5,12 +5,13 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  *  2019/12/04
  */
-public class ImageViewV extends ImageView {
+public class ImageViewV extends AppCompatImageView {
     public ImageViewV(Context context) {
         super(context);
     }

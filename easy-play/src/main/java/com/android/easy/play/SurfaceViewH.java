@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.SurfaceView;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  *  2019/12/06
  */
 public class SurfaceViewH extends SurfaceView {

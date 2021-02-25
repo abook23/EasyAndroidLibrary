@@ -8,7 +8,7 @@ import android.widget.TextView;
 /**
  * 校验
  *
- * @author abook23
+ * author abook23
  * 2015-5-28 下午2:38:09
  */
 public class TextUtils extends StringUtils {

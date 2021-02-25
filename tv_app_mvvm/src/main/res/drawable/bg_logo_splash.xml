@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 底层白色 -->
+    <item>
+        <shape>
+            <size
+                android:width="240dp"
+                android:height="400dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    <!-- 顶层Logo居中 -->
+    <item android:bottom="40dp">
+        <bitmap
+            android:gravity="bottom"
+            android:src="@mipmap/logo_01" />
+    </item>
+</layer-list>

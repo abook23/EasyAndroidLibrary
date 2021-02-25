@@ -19,7 +19,7 @@ import java.util.Queue;
 /**
  * 手势图片控件
  *
- * @author clifford  PinchImageView
+ * author clifford  PinchImageView
  */
 public class PinchImageView extends ImageView {
 

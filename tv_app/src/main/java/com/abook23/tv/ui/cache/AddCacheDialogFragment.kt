@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.abook23.tv.App
@@ -77,7 +78,7 @@ class AddCacheDialogFragment : DialogFragment() {
         recyclerView.layoutManager = GridLayoutManager(context, 5)
         recyclerView.adapter = adapter
         adapter.setOnItemClickListener { adapter, view, position ->
-            view.findViewById<TextView>(R.id.text).setTextColor(context!!.getColor(R.color.blue))
+            view.findViewById<TextView>(R.id.text).setTextColor(ContextCompat.getColor(context!!,R.color.blue))
             cacheVideoService?.download(playData.movieInfos[position].url, playData.videoId, position)
         }
     }
@@ -99,17 +100,17 @@ class AddCacheDialogFragment : DialogFragment() {
                 progressBar.visibility = View.VISIBLE
                 progressBar.max = cacheVideoBean.download_max.toInt()
                 progressBar.progress = cacheVideoBean.download_progress.toInt()
-                textView.setTextColor(mContext.getColor(R.color.blue))
+                textView.setTextColor(ContextCompat.getColor(mContext,R.color.blue))
             } else {
                 progressBar.visibility = View.GONE
-                textView.setTextColor(mContext.getColor(R.color.white))
+                textView.setTextColor(ContextCompat.getColor(mContext,R.color.white))
             }
             cacheVideoService?.addListener(item.url, object : DownloadVideoManager.Call {
                 override fun onComplete(file: File) {
 
                 }
 
-                override fun onProgress(progress: Long, max: Long) {
+                override fun onProgress(progress: Long, max: Long,bytes:Long) {
                     progressBar.progress = progress.toInt()
                     progressBar.progress = max.toInt()
                 }
@@ -120,5 +121,10 @@ class AddCacheDialogFragment : DialogFragment() {
 
             })
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cacheVideoService?.clearListener()
     }
 }

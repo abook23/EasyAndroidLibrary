@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.easy.madiastore.R;
+import com.android.easy.mediastore.R;
 
 public class CameraVideoActivity extends AppCompatActivity {
 

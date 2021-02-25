@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author abook23
+ * author abook23
  */
 public class FragmentExpListView extends Fragment implements ExpandableListViewCheckAdapter.OnCheckAllListener {
 

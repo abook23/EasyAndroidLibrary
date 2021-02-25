@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
-import com.android.easy.madiastore.R;
+import com.android.easy.mediastore.R;
 import com.android.easy.play.VideoFragment;
 
 public class PlayVideoFragment extends Fragment {

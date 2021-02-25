@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.android.easy.madiastore.R;
+import com.android.easy.mediastore.R;
 
 public class VideoProgress extends View implements View.OnClickListener {
 

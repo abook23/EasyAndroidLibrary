@@ -13,8 +13,8 @@ import com.android.easy.ui.LoginActivity;
 import okhttp3.Response;
 
 /**
- * @author abook23@163.com
- * @date 2020/03/31
+ * author abook23@163.com
+ * date 2020/03/31
  */
 public class App extends BaseApplication {
     @Override

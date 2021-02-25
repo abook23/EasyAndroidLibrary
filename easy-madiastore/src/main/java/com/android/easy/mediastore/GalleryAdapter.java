@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.easy.madiastore.R;
+import com.android.easy.mediastore.R;
 import com.android.easy.mediastore.utils.LocalMedia;
 import com.bumptech.glide.Glide;
 
@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author abook23@163.com
- * @date 2020/04/30
+ * author abook23@163.com
+ * date 2020/04/30
  */
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHold> {
 

@@ -14,6 +14,7 @@ import com.abook23.tv.ben.MovieBen
 import com.abook23.tv.ben.PlayData
 import com.abook23.tv.dao.CacheVideoBeanDao
 import com.abook23.tv.service.CacheVideoService
+import com.abook23.tv.ui.MovieInfoActivity
 import com.abook23.tv.ui.PlayActivity
 import com.android.easy.app.base.BaseAppCompatListActivity
 import com.android.easy.base.util.AndroidUtils
@@ -23,6 +24,7 @@ import com.android.easy.play.DownloadVideoManager
 import com.android.easy.play.MovieInfo
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseViewHolder
+import kotlinx.android.synthetic.main.activity_cache_sub2.*
 import java.io.File
 
 class CacheSubActivity : BaseAppCompatListActivity<List<CacheVideoBean>, CacheVideoBean>() {
@@ -36,7 +38,6 @@ class CacheSubActivity : BaseAppCompatListActivity<List<CacheVideoBean>, CacheVi
     var cacheVideoService: CacheVideoService? = null
 
     companion object {
-        @JvmStatic
         fun start(context: Context, movieBen: MovieBen) {
             val starter = Intent(context, CacheSubActivity::class.java)
                     .putExtra("data", movieBen)
@@ -44,10 +45,10 @@ class CacheSubActivity : BaseAppCompatListActivity<List<CacheVideoBean>, CacheVi
         }
     }
 
+    //R.layout.activity_cache_sub2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         movieBen = intent.getSerializableExtra("data") as MovieBen
-
         defaultAppBar.setTitle(movieBen.v_name)
         defaultAppBar.setAppbarRightView("管理", object : View.OnClickListener {
             override fun onClick(v: View?) {
@@ -62,7 +63,27 @@ class CacheSubActivity : BaseAppCompatListActivity<List<CacheVideoBean>, CacheVi
         })
         addBottomView()
         cacheVideoService = App.getCacheVideoService()
+        floatingButton.setOnClickListener {
+            MovieInfoActivity.starPlayActivity(this,movieBen)
+        }
     }
+
+    override fun getContentViewLayout(): ContentViewLayout {
+        return object : ContentViewLayout {
+            override fun getLayoutResId(): Int {
+                return R.layout.activity_cache_sub2
+            }
+
+            override fun getRecyclerViewId(): Int {
+                return R.id.recyclerView
+            }
+
+            override fun getSwipeRefreshLayoutId(): Int {
+                return R.id.swipeRefreshLayout
+            }
+        }
+    }
+
 
     override fun getItemLayout(): Int {
         return R.layout.item_cache_video_sub
@@ -125,7 +146,7 @@ class CacheSubActivity : BaseAppCompatListActivity<List<CacheVideoBean>, CacheVi
                 buttonProgress.text = "完成"
             }
 
-            override fun onProgress(progress: Long, max: Long) {
+            override fun onProgress(progress: Long, max: Long,bytes:Long) {
                 runOnUiThread {
                     text1.text = "已缓存${getRate(progress.toFloat(), max.toFloat())}"
                     buttonProgress.setMax(item.download_max)
@@ -192,16 +213,23 @@ class CacheSubActivity : BaseAppCompatListActivity<List<CacheVideoBean>, CacheVi
 
     fun deleteCache() {
         if (checkAll) {
-            App.getDaoSession().cacheVideoBeanDao.deleteAll()
-            AndroidUtils.deleteFiles(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES))
+            val cacheVideoBeans = App.getDaoSession().cacheVideoBeanDao.queryBuilder()
+                    .where(CacheVideoBeanDao.Properties.V_id.eq(movieBen.v_id)).list()
+            cacheVideoBeans.forEach {
+                App.getDaoSession().cacheVideoBeanDao.delete(it)
+                DownloadVideoManager.delCacheVideo(context, it.url)//某个电影
+            }
         } else {
             checkSet.forEach {
-                val cacheVideoBean = it
-                App.getDaoSession().cacheVideoBeanDao.delete(cacheVideoBean)
-                val videoPath = DownloadVideoManager.getCacheLocalPath(context, cacheVideoBean.url)
-                AndroidUtils.deleteFiles(File(videoPath))
+                App.getDaoSession().cacheVideoBeanDao.delete(it)
+                DownloadVideoManager.delCacheVideo(context, it.url)//某个电影
             }
         }
         loadRequestData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cacheVideoService?.clearListener()
     }
 }

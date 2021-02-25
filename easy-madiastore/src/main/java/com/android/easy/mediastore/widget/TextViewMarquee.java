@@ -7,8 +7,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 /**
- * @author abook23@163.com
- * @date 2020/05/08
+ * author abook23@163.com
+ * date 2020/05/08
  */
 public class TextViewMarquee extends TextView {
     public TextViewMarquee(Context context) {

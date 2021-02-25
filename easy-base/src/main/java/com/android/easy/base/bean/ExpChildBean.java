@@ -2,7 +2,7 @@ package com.android.easy.base.bean;
 
 /**
  *
- * @author abook23
+ * author abook23
  * 2016/9/14
  */
 public class ExpChildBean {

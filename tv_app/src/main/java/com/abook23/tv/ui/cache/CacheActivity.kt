@@ -3,7 +3,6 @@ package com.abook23.tv.ui.cache
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -14,13 +13,11 @@ import com.abook23.tv.ben.MovieBen
 import com.abook23.tv.dao.CacheVideoBeanDao
 import com.abook23.tv.util.RoundedCornersFitStart
 import com.android.easy.app.base.BaseAppCompatListActivity
-import com.android.easy.base.util.AndroidUtils
 import com.android.easy.dialog.EasyDialog
 import com.android.easy.play.DownloadVideoManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.chad.library.adapter.base.BaseViewHolder
-import java.io.File
 
 class CacheActivity : BaseAppCompatListActivity<List<MovieBen>, MovieBen>() {
     private var checkButtonVisibility = false
@@ -72,7 +69,7 @@ class CacheActivity : BaseAppCompatListActivity<List<MovieBen>, MovieBen>() {
             vids += it.v_id.toString() + ","
         }
         if (vids.isNotEmpty()) {
-            var  where = "where _id in (${vids.substring(0, vids.length - 1)}) "
+            var where = "where _id in (${vids.substring(0, vids.length - 1)}) "
             return App.getDaoSession().movieBenDao.queryRaw(where)
         }
         return ArrayList()
@@ -105,7 +102,7 @@ class CacheActivity : BaseAppCompatListActivity<List<MovieBen>, MovieBen>() {
         checkBoxButton.isChecked = checkAll
 
         helper.itemView.setOnClickListener {
-            CacheSub2Activity.start(context, item)
+            CacheSubActivity.start(context, item)
         }
     }
 
@@ -140,15 +137,14 @@ class CacheActivity : BaseAppCompatListActivity<List<MovieBen>, MovieBen>() {
     fun deleteCache() {
         if (checkAll) {
             App.getDaoSession().cacheVideoBeanDao.deleteAll()
-            AndroidUtils.deleteFiles(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES))
+            DownloadVideoManager.clearCacheAll(context)//所有电影
         } else {
             checkSet.forEach {
                 val cacheVideoBeans = App.getDaoSession().cacheVideoBeanDao.queryBuilder()
                         .where(CacheVideoBeanDao.Properties.V_id.eq(it.v_id)).list()
                 cacheVideoBeans.forEach {
                     App.getDaoSession().cacheVideoBeanDao.delete(it)
-                    val videoPath = DownloadVideoManager.getCacheLocalPath(context, it.url)
-                    AndroidUtils.deleteFiles(File(videoPath))
+                    DownloadVideoManager.delCacheVideo(context, it.url)//某个电影
                 }
             }
         }

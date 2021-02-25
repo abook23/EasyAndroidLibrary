@@ -13,7 +13,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import com.android.easy.base.R;
 
 /**
- * @author abook23
+ * author abook23
  * 2016/11/30
  */
 

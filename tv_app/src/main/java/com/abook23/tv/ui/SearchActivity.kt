@@ -24,7 +24,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 import kotlinx.android.synthetic.main.activity_search.*
 
 /**
- *@author abook23@163.com
+ *author abook23@163.com
  * 2019/12/08
  */
 class SearchActivity : BaseAppCompatActivity() {

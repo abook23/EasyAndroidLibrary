@@ -13,9 +13,9 @@ import com.android.easy.mediastore.MediaStoreConfig;
 import com.android.easy.mediastore.utils.LocalMedia;
 
 /**
- * @author：luck
- * @date：2019-10-21 17:10
- * @describe：资源处理工具类
+ * author：luck
+ * date2019-10-21 17:10
+ * describe：资源处理工具类
  */
 public class MediaUtils {
 

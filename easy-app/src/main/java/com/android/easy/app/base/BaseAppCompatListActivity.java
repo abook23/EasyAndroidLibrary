@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  */
 public abstract class BaseAppCompatListActivity<M, T> extends BaseAppCompatActivity {
 

@@ -8,6 +8,7 @@ import com.android.easy.retrofit.util.AppUtils;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -40,6 +41,9 @@ public abstract class ObserverBaseWeb<T> implements Observer<T> {
             error = "连接异常";
         } else if (e instanceof SocketTimeoutException) {
             error = "连接超时";
+        } else if (e instanceof UnknownHostException) {
+            error = "网络异常,请检测网络状态";
+            e.printStackTrace();
         } else if (e instanceof IOException) {
             error = "Please check your network status\n" + e.getMessage();
             e.printStackTrace();

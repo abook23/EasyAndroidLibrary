@@ -11,7 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import java.security.MessageDigest;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  *  2019/12/09
  */
 public class RoundedCornersFitStart extends BitmapTransformation {

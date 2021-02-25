@@ -118,13 +118,13 @@ class CacheSub2Activity : BaseAppCompatActivity() {
     fun deleteCache() {
         if (checkAll) {
             App.getDaoSession().cacheVideoBeanDao.deleteAll()
-            AndroidUtils.deleteFiles(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES))
+            AndroidUtils.deleteDirectory(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES))
         } else {
             checkSet.forEach {
                 val cacheVideoBean = it
                 App.getDaoSession().cacheVideoBeanDao.delete(cacheVideoBean)
                 val videoPath = DownloadVideoManager.getCacheLocalPath(context, cacheVideoBean.url)
-                AndroidUtils.deleteFiles(File(videoPath))
+                AndroidUtils.deleteDirectory(File(videoPath))
             }
         }
         loadRequestData()
@@ -174,7 +174,7 @@ class CacheSub2Activity : BaseAppCompatActivity() {
                     buttonProgress.text = "完成"
                 }
 
-                override fun onProgress(progress: Long, max: Long) {
+                override fun onProgress(progress: Long, max: Long,bytes:Long) {
                     runOnUiThread {
                         text1.text = "已缓存${getRate(progress.toFloat(), max.toFloat())}"
                         buttonProgress.setMax(item.download_max)
@@ -210,5 +210,10 @@ class CacheSub2Activity : BaseAppCompatActivity() {
             }
             return "0.00%"
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cacheVideoService?.clearListener()
     }
 }

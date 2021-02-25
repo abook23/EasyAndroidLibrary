@@ -22,9 +22,9 @@ public class DateUtils {
      * yyyy-MM-dd HH:mm:ss
      */
     @SuppressLint("SimpleDateFormat")
-    public static String getDate(long dataTime) {
+    public static String getDate(long dateTime) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return format.format(dataTime);
+        return format.format(dateTime);
     }
 
     /**
@@ -38,13 +38,13 @@ public class DateUtils {
     }
 
     /**
-     * @param dataTime
+     * @param dateTime
      * @return
      */
     @SuppressLint("SimpleDateFormat")
-    public static String getYMDDate(long dataTime) {
+    public static String getYMDDate(long dateTime) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return format.format(dataTime);
+        return format.format(dateTime);
     }
 
     /**
@@ -62,9 +62,9 @@ public class DateUtils {
      * @return
      */
     @SuppressLint("SimpleDateFormat")
-    public static String getDate(String dateType, long dataTime) {
+    public static String getDate(String dateType, long dateTime) {
         SimpleDateFormat format = new SimpleDateFormat(dateType);
-        return format.format(dataTime);
+        return format.format(dateTime);
     }
 
 

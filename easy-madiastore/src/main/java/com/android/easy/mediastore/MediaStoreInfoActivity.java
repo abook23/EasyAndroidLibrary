@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.android.easy.madiastore.R;
+import com.android.easy.mediastore.R;
 import com.android.easy.mediastore.utils.LocalMedia;
 import com.android.easy.mediastore.widget.CustPagerTransformer;
 import com.bumptech.glide.Glide;

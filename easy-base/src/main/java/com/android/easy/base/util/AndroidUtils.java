@@ -55,7 +55,18 @@ public class AndroidUtils {
     }
 
     @RequiresPermission(value = "android.permission.REQUEST_INSTALL_PACKAGES")
-    public static boolean install(Context con, String filePath) {
+    public static boolean install(Context context, String filePath) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            boolean installAllowed = context.getPackageManager().canRequestPackageInstalls();
+            if (!installAllowed) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + context.getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                install(context, filePath);
+            }
+        }
+
         try {
             if (TextUtils.isEmpty(filePath))
                 return false;
@@ -68,8 +79,8 @@ public class AndroidUtils {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//增加读写权限
             }
-            intent.setDataAndType(getPathUri(con, filePath), "application/vnd.android.package-archive");
-            con.startActivity(intent);
+            intent.setDataAndType(getPathUri(context, filePath), "application/vnd.android.package-archive");
+            context.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -370,28 +381,28 @@ public class AndroidUtils {
         context.startActivity(intent);
     }
 
-    public static synchronized String selectCacheSize(Context context, boolean clear) {
+    public static synchronized String selectCacheSize(Context context, boolean del) {
         long checkFileSize = 0;
-        checkFileSize += selectFile(context.getExternalCacheDir(), clear);
-        checkFileSize += selectFile(context.getCacheDir(), clear);
+        checkFileSize += countDirFileSize(context.getExternalCacheDir(), del);
+        checkFileSize += countDirFileSize(context.getCacheDir(), del);
         return Formatter.formatFileSize(context, checkFileSize);
     }
 
-    public static void deleteFiles(File directory) {
-        selectFile(directory, true);
+    public static void deleteDirectory(File directory) {
+        countDirFileSize(directory, true);
     }
 
-    public static long selectFile(File file, boolean clear) {
+    public static long countDirFileSize(File file, boolean del) {
         long fileSize = 0;
         if (file.isDirectory()) {
             File[] sub_files = file.listFiles();
             for (File sub_file : sub_files) {
-                long length = selectFile(sub_file, clear);
+                long length = countDirFileSize(sub_file, del);
                 fileSize += length;
             }
         } else {
             fileSize += file.length();
-            if (clear && file.isFile() && file.exists()) {
+            if (del && file.isFile() && file.exists()) {
                 file.delete();
             }
         }

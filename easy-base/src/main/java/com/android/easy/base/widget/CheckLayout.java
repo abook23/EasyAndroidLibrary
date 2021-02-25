@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  *
- * @author abook23
+ * author abook23
  * 2015/12/28
  */
 public class CheckLayout extends LinearLayout implements Checkable {

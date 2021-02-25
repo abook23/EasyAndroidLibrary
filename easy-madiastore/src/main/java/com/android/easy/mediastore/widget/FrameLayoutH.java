@@ -8,8 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * @author abook23@163.com
- * @date 2020/04/30
+ * author abook23@163.com
+ * date 2020/04/30
  */
 public class FrameLayoutH extends FrameLayout {
     public FrameLayoutH(@NonNull Context context) {

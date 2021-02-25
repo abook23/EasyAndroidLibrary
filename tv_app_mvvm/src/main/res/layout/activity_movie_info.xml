@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="movieBen"
+            type="com.abook23.tv.ben.MovieBen" />
+
+        <variable
+            name="viewModel"
+            type="com.abook23.tv.ui.movieinfo.MovieInfoViewModel" />
+    </data>
+
+    <com.abook23.tv.widget.NestedLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_video_info"
+        android:orientation="vertical"
+        tools:context=".ui.MovieInfoActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical"
+            android:paddingEnd="8dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.abook23.tv.widget.ImageViewV
+                    android:id="@+id/imageView"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/test_image"
+                    app:image_url="@{movieBen.v_pic}"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="绝地武士"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:text="@{movieBen.v_name}"
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+                <TextView
+                    android:id="@+id/score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="9.0"
+                    android:textColor="@color/color_blue"
+                    app:layout_constraintStart_toStartOf="@+id/name"
+                    app:layout_constraintTop_toBottomOf="@+id/name"
+                    app:text="@{String.format(@string/precision_1f,Float.valueOf(movieBen.v_score))}" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="2019/美国/科幻"
+                    android:textColor="@color/color_d4"
+                    app:layout_constraintStart_toEndOf="@+id/score"
+                    app:layout_constraintTop_toTopOf="@+id/score"
+                    app:text="@{String.format(@string/movie_type,movieBen.v_publishyear,movieBen.v_publisharea,movieBen.tname)}" />
+
+                <TextView
+                    android:id="@+id/v_actor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:text="布鲁斯·邓恩 米歇尔·哈里逊 埃米尔·赫斯基 朴敏庆 莱克西·科尔克 "
+                    android:textColor="@color/color_d4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/score"
+                    app:layout_constraintTop_toBottomOf="@+id/score"
+                    app:text="@{movieBen.v_actor}" />
+
+                <TextView
+                    android:id="@+id/content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:lines="2"
+                    android:minLines="2"
+                    android:text="布鲁斯·邓恩 米歇尔·哈里逊 埃米尔·赫斯基 朴敏庆 莱克西·科尔克 "
+                    android:textColor="@color/color_d4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/v_actor"
+                    app:layout_constraintTop_toBottomOf="@+id/v_actor"
+                    app:text="@{movieBen.body}" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="58dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="@+id/content"
+                    app:layout_constraintTop_toBottomOf="@+id/content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_text_01"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:text="简介"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_text_01"
+                        android:onClick="onCollectClick">
+
+                        <ImageView
+                            android:id="@+id/collectImageView"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@mipmap/icon_collect"
+                            app:image_url="@{viewModel.collectRes}" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" 收藏"
+                            android:textColor="@color/white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_text_01"
+                        android:onClick="onCacheClick">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@mipmap/icon_cache" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" 缓存"
+                            android:textColor="@color/white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="8dp"
+                    android:text="选集"
+                    android:textColor="@color/color_d4"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/todCountText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="10集"
+                    android:textColor="@color/color_d4"
+                    app:text="@{String.format(@string/movie_tod_size,viewModel.todLiveData.size())}" />
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_tod"
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:orientation="horizontal"
+                app:item="@{viewModel.todLiveData}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_tod" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="12dp"
+                android:text="推荐"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/easy_app_bg_dialog_02"
+                app:item="@{viewModel.movieBenLiveData}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_movie_1_2" />
+        </LinearLayout>
+
+
+    </com.abook23.tv.widget.NestedLayout>
+</layout>

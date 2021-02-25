@@ -3,6 +3,7 @@ package com.abook23.tv.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.abook23.tv.App
 import com.abook23.tv.R
@@ -44,7 +45,9 @@ class PlayActivity : BaseAppCompatActivity() {
             }
 
             override fun onSettingVisibilityView(b: Boolean) {
-
+                if (!b) {
+                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                }
             }
         })
         supportFragmentManager.beginTransaction().add(R.id.playFrame, videoFragment).commit()

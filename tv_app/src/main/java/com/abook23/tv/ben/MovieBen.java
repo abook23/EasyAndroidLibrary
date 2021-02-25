@@ -7,7 +7,7 @@ import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
- * @author abook23@163.com
+ * author abook23@163.com
  *  2019/12/05
  */
 @Entity

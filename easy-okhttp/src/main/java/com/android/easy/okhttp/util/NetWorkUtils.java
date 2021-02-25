@@ -8,7 +8,7 @@ import android.net.NetworkInfo;
 /**
  * Created on 16-5-3.
  *
- * @author guoning
+ * author guoning
  */
 public class NetWorkUtils {
 

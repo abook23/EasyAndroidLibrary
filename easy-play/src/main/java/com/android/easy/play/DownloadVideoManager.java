@@ -3,8 +3,13 @@ package com.android.easy.play;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.format.Formatter;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,8 +23,10 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,18 +49,20 @@ public class DownloadVideoManager {
     private static final String TYPE_M3U8 = ".m3u8";
     private static final String TYPE_COMPLETE = "Complete";
 
+    private static final DownloadVideoManager sDownloadVideoManager = new DownloadVideoManager();
+    public final static String VIDEO_CACHE_SHARED_PREFERENCES = "video_download_size_shared_preferences";
+    public static DownloadVideoManager getInstance() {
+        return sDownloadVideoManager;
+    }
+
     private ExecutorService executorService;
     private ScheduledExecutorService mScheduledExecutorService;
     private ConcurrentHashMap<String, HttpURLConnection> downloadConnection = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, Boolean> downloadURL = new ConcurrentHashMap<>();//主要针对 m3u8 文件
-    private static DownloadVideoManager sDownloadVideoManager = new DownloadVideoManager();
 
-    public final static String VIDEO_CACHE_SHARED_PREFERENCES = "video_cache_shared_preferences";
     private SharedPreferences mSharedPreferences;
 
-    public static DownloadVideoManager getInstance() {
-        return sDownloadVideoManager;
-    }
+
 
     public void newInstanceExecutorService() {
 //        executorService = Executors.newSingleThreadExecutor();
@@ -158,7 +167,7 @@ public class DownloadVideoManager {
     public void downloadFile(Context context, String url, Call call) {
         String savePath = getCacheLocalPath(context, url);
         mSharedPreferences = getSharedPreferences(context);
-        if (downloadURL.get(url) != null && downloadURL.get(url)) {
+        if (downloadURL.get(url) != null && downloadURL.get(url)) {//真正下载了
             return;
         }
         if (url.endsWith(TYPE_M3U8)) {
@@ -168,6 +177,9 @@ public class DownloadVideoManager {
         }
     }
 
+    private boolean isComplete(String url) {
+        return TYPE_COMPLETE.equals(mSharedPreferences.getString(url, "0000"));
+    }
 
     private void downloadFile(String savePath, String url, Call call) {
         executorService.execute(new Runnable() {
@@ -193,7 +205,7 @@ public class DownloadVideoManager {
                             countBytes += bytes;
                             if (callBackProgress) {//1 s 回调一次
                                 callBackProgress = false;
-                                Log.d("DownloadVideoManager","bytes:"+countBytes+"--->"+url);
+                                Log.d("DownloadVideoManager", "bytes:" + countBytes + "--->" + url);
                                 call.onProgress(progress, max, countBytes);
                                 countBytes = 0;
 //                                call.onProgress(progress, max, bytes);
@@ -220,10 +232,6 @@ public class DownloadVideoManager {
                 }
             };
         });
-    }
-
-    private boolean isComplete(String url) {
-        return TYPE_COMPLETE.equals(mSharedPreferences.getString(url, "0000"));
     }
 
 
@@ -255,7 +263,7 @@ public class DownloadVideoManager {
                     String tsBaseURL = basePath + m3u8UrlPath;
                     long m3u8FileSize = tsList.size();
                     call.onStart(file, m3u8FileSize);
-                    int start = mSharedPreferences.getInt(url, 0);
+                    int start = mSharedPreferences.getInt(url, 0);//下载进度
                     mScheduledFuture = mScheduledExecutorService.scheduleAtFixedRate(mRunnable, 0, 1000, TimeUnit.MILLISECONDS);
                     for (int i = start; i < tsList.size(); i++) {
                         long m3u8Progress = i + 1;
@@ -271,7 +279,7 @@ public class DownloadVideoManager {
                                 countBytes += bytes;
                                 if (callBackProgress) {//1 s 回调一次
                                     callBackProgress = false;
-                                    Log.d("DownloadVideoManager","bytes:"+countBytes+"--->"+url);
+                                    Log.d("DownloadVideoManager", "bytes:" + countBytes + "--->" + url);
                                     call.onProgress(m3u8Progress, m3u8FileSize, countBytes);
 //                                    call.onProgress(m3u8Progress, m3u8FileSize, bytes);
                                     countBytes = 0;
@@ -284,6 +292,9 @@ public class DownloadVideoManager {
                             }
                         });
                         mSharedPreferences.edit().putInt(url, i + 1).apply();
+                        /**
+                         * 暂停 ,取消下载
+                         */
                         if (downloadURL.get(url) == null || !downloadURL.get(url)) {
                             return;
                         }
@@ -316,7 +327,7 @@ public class DownloadVideoManager {
         }
     }
 
-    public void shutdownNow() {
+    public void stopAll() {
         downloadURL.clear();
         for (Map.Entry<String, HttpURLConnection> entry : downloadConnection.entrySet()) {
             HttpURLConnection connection = entry.getValue();

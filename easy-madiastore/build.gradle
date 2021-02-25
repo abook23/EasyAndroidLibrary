@@ -43,4 +43,7 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     implementation 'com.sprylab.android.texturevideoview:texturevideoview:1.2.1'
+
 }
+
+apply from: "../bintrayUpload.gradle"
