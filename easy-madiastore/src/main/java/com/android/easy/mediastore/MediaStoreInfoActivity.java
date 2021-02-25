@@ -13,11 +13,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
-import com.android.easy.mediastore.R;
 import com.android.easy.mediastore.utils.LocalMedia;
 import com.android.easy.mediastore.widget.CustPagerTransformer;
+import com.android.easy.mediastore.widget.PhotoViewPager;
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 
@@ -34,7 +33,7 @@ public class MediaStoreInfoActivity extends AppCompatActivity {
 
     public static String PATHS = "paths";
     public static String POSITION = "position";
-    private ViewPager viewPager;
+    private PhotoViewPager viewPager;
     private List<String> paths = new ArrayList<>();
     private int position = 0;
 
