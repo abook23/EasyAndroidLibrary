@@ -19,7 +19,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
             android:onClick="onBackClick"
-            android:src="@mipmap/close" />
+            android:src="@mipmap/esay_md_close" />
 
         <TextView
             android:id="@+id/mediaStoreFolder"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="40dp"
-            android:background="@drawable/bg_text"
+            android:background="@drawable/esay_md_bg_text"
             android:text="图片和视频"
             android:textColor="#ffffff" />
 
@@ -37,7 +37,7 @@
             android:layout_height="34dp"
             android:layout_gravity="end|center_vertical"
             android:layout_margin="8dp"
-            android:background="@drawable/bg_success"
+            android:background="@drawable/esay_md_bg_success"
             android:text="完成"
             android:textColor="#ffffff" />
     </FrameLayout>
@@ -51,7 +51,7 @@
         app:layout_constraintTop_toBottomOf="@id/appBar"
         app:spanCount="3"
         tools:itemCount="10"
-        tools:listitem="@layout/item_media" />
+        tools:listitem="@layout/esay_md_item_media" />
 
 
     <FrameLayout
@@ -74,7 +74,7 @@
             android:paddingBottom="4dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="12"
-            tools:listitem="@layout/item_media_gallery" />
+            tools:listitem="@layout/esay_md_item_media_gallery" />
     </FrameLayout>
 
     <FrameLayout

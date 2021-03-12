@@ -6,7 +6,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.android.easy.R;
-import com.android.easy.app.HttpCall;
+import com.android.easy.retrofit.HttpCall;
 import com.android.easy.app.base.BaseAppCompatActivity;
 import com.android.easy.base.widget.ButtonProgress;
 import com.android.easy.retrofit.RetrofitHttp;

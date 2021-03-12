@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import com.android.easy.R;
-import com.android.easy.app.HttpCall;
+import com.android.easy.retrofit.HttpCall;
 import com.android.easy.app.base.BaseAppCompatActivity;
 import com.android.easy.data.ResponseBean;
 import com.android.easy.retrofit.ApiService;

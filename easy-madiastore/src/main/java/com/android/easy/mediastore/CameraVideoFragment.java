@@ -5,12 +5,6 @@ import android.Manifest;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -20,8 +14,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Environment;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
@@ -39,8 +31,6 @@ import androidx.fragment.app.Fragment;
 import com.android.easy.camera.CameraManager;
 import com.android.easy.camera.CameraView;
 import com.android.easy.camera.OnCameraListener;
-import com.android.easy.mediastore.R;
-import com.android.easy.mediastore.utils.AutoFocusManager;
 import com.android.easy.mediastore.utils.PermissionUtil;
 import com.android.easy.mediastore.widget.VideoProgress;
 import com.bumptech.glide.Glide;
@@ -48,7 +38,6 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.sprylab.android.widget.TextureVideoView;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 public class CameraVideoFragment extends Fragment implements OnClickListener {
     private static String[] PERMISSIONS_CAMERA = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -101,15 +90,15 @@ public class CameraVideoFragment extends Fragment implements OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle bundle) {
-        View view = inflater.inflate(R.layout.fragment_camera_video, viewGroup, false);
+        View view = inflater.inflate(R.layout.esay_md_fragment_camera_video, viewGroup, false);
         initView(view);
         initDisplayMetrics();
         context = getContext();
         mVideoProgress.setOnCameraVideoListener(new ClickListener());
         if (mDefinition == Definition.HD) {
-            iVvHd.setBackgroundResource(R.mipmap.gb_gallery_hd);
+            iVvHd.setBackgroundResource(R.mipmap.esay_md_gb_gallery_hd);
         } else {
-            iVvHd.setBackgroundResource(R.mipmap.gb_gallery_hd_off);
+            iVvHd.setBackgroundResource(R.mipmap.esay_md_gb_gallery_hd_off);
         }
         mCameraManager = mCameraView.getCameraManager();
         initCountDownTimer();
@@ -213,10 +202,10 @@ public class CameraVideoFragment extends Fragment implements OnClickListener {
         if (viewId == R.id.iv_hd) {//高清
             if (mDefinition == Definition.SD) {
                 mDefinition = Definition.HD;
-                iVvHd.setBackgroundResource(R.mipmap.gb_gallery_hd);
+                iVvHd.setBackgroundResource(R.mipmap.esay_md_gb_gallery_hd);
             } else {
                 mDefinition = Definition.SD;
-                iVvHd.setBackgroundResource(R.mipmap.gb_gallery_hd_off);
+                iVvHd.setBackgroundResource(R.mipmap.esay_md_gb_gallery_hd_off);
             }
             openCamera();
         } else if (viewId == R.id.iv_camera_transform) {//前后摄像头切换

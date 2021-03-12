@@ -5,7 +5,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.android.easy.app.HttpCall;
+import com.android.easy.retrofit.HttpCall;
 import com.android.easy.retrofit.ApiService;
 
 import java.util.Map;

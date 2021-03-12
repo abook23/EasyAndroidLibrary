@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 9
-        versionName "1.1.11"
+        versionCode 13
+        versionName "1.1.13"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -33,8 +33,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
 
-    api 'io.reactivex.rxjava2:rxjava:2.1.7'
-    api 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    api 'io.reactivex.rxjava2:rxjava:2.2.6'
+    api 'io.reactivex.rxjava2:rxandroid:2.1.0'
 
     api 'com.squareup.retrofit2:retrofit:2.4.0'
     api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
@@ -47,4 +47,4 @@ dependencies {
 //gradlew install
 //gradlew bintrayUpload
 //apply from: "https://raw.githubusercontent.com/xiaopansky/android-library-publish-to-jcenter/master/bintrayUpload.gradle"
-//apply from: "../bintrayUpload.gradle"
+apply from: "../bintrayUpload.gradle"

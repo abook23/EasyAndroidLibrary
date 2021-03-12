@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@mipmap/camera_t"
+            android:src="@mipmap/esay_md_camera_t"
             android:visibility="gone" />
 
         <ImageView
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:padding="8dp"
-            android:src="@mipmap/check" />
+            android:src="@mipmap/esay_md_check" />
 
         <LinearLayout
             android:id="@+id/audioView"
@@ -42,7 +42,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
-                android:src="@mipmap/audio" />
+                android:src="@mipmap/esay_md_audio" />
 
             <com.android.easy.mediastore.widget.TextViewMarquee
                 android:id="@+id/audioName"
@@ -62,7 +62,7 @@
             android:layout_height="18dp"
             android:layout_gravity="bottom"
             android:layout_margin="8dp"
-            android:src="@mipmap/video" />
+            android:src="@mipmap/esay_md_video" />
 
         <TextView
             android:id="@+id/videoTime"

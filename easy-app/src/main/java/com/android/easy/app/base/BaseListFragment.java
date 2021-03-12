@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.easy.app.HttpCall;
+import com.android.easy.retrofit.HttpCall;
 import com.android.easy.app.R;
 import com.android.easy.retrofit.listener.Call;
 import com.chad.library.adapter.base.BaseQuickAdapter;

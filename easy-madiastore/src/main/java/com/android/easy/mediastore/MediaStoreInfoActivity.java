@@ -20,6 +20,7 @@ import com.android.easy.mediastore.widget.PhotoViewPager;
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class MediaStoreInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gallery_activity_image_info);
+        setContentView(R.layout.esay_md_gallery_activity_image_info);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); // 设置全屏
         initView();
         initData();
@@ -83,19 +84,26 @@ public class MediaStoreInfoActivity extends AppCompatActivity {
         viewPager.setCurrentItem(position);
     }
 
-    private Fragment getFragment(int position){
+    private Fragment getFragment(int position) {
         List<LocalMedia> localMediaList = MediaStoreActivity.getCheckMediaList();
-        if (localMediaList.size()>0){
-           LocalMedia localMedia =  localMediaList.get(position);
-           if (localMedia.getMimeType().equals(MediaStoreConfig.MIME_TYPE_VIDEO)){
-               return getVideoPlayFragment("视频", localMedia.getPath());
-           }else if (localMedia.getMimeType().equals(MediaStoreConfig.MIME_TYPE_AUDIO)){
-               return FragmentImage.newInstance(localMedia.getPath());
-           }else {
-               return FragmentImage.newInstance(localMedia.getPath());
-           }
-        }else {
-            return FragmentImage.newInstance(paths.get(position));
+        if (localMediaList.size() > 0) {
+            LocalMedia localMedia = localMediaList.get(position);
+            if (localMedia.getMimeType().equals(MediaStoreConfig.MIME_TYPE_VIDEO)) {
+                return getVideoPlayFragment("视频", localMedia.getPath());
+            } else if (localMedia.getMimeType().equals(MediaStoreConfig.MIME_TYPE_AUDIO)) {
+                return FragmentImage.newInstance(localMedia.getPath());
+            } else {
+                return FragmentImage.newInstance(localMedia.getPath());
+            }
+        } else {
+            File file = new File(paths.get(position));
+            String name = file.getName();
+            String type = name.substring(name.lastIndexOf(".") + 1);
+            if (type.equals("mp3") || type.equals("mp4")) {
+                return getVideoPlayFragment(name, file.getPath());
+            } else {
+                return FragmentImage.newInstance(file.getPath());
+            }
         }
     }
 
@@ -131,7 +139,7 @@ public class MediaStoreInfoActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_photo, container, false);
+            return inflater.inflate(R.layout.esay_md_fragment_photo, container, false);
         }
 
         @Override

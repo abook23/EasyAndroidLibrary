@@ -10,5 +10,5 @@
         android:id="@+id/playFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_video" />
+        tools:layout="@layout/easy_play_fragment_video" />
 </FrameLayout>

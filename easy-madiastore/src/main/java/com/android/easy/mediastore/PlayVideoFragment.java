@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
-import com.android.easy.mediastore.R;
 import com.android.easy.play.VideoFragment;
 
 public class PlayVideoFragment extends Fragment {
@@ -28,7 +27,7 @@ public class PlayVideoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_play_video, container, false);
+        return inflater.inflate(R.layout.esay_md_fragment_play_video, container, false);
     }
 
     @Override

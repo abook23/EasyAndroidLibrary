@@ -1,4 +1,4 @@
-package com.android.easy.app;
+package com.android.easy.retrofit;
 
 
 import com.android.easy.retrofit.listener.Call;

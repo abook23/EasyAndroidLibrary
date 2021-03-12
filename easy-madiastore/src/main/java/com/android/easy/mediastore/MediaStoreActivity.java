@@ -27,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.android.easy.mediastore.R;
 import com.android.easy.mediastore.utils.LocalMedia;
 import com.android.easy.mediastore.utils.LocalMediaFolder;
 import com.android.easy.mediastore.utils.LocalMediaLoader;
@@ -86,7 +85,7 @@ public class MediaStoreActivity extends AppCompatActivity implements LocalMediaL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_media_store);
+        setContentView(R.layout.esay_md_activity_media_store);
         context = this;
         initView();
         addListener();
@@ -294,7 +293,7 @@ public class MediaStoreActivity extends AppCompatActivity implements LocalMediaL
      * @param showAsView
      */
     private void showFolderPopupWindow(View showAsView) {
-        View mView = LayoutInflater.from(context).inflate(R.layout.fragment_folder_media_store, null, false);
+        View mView = LayoutInflater.from(context).inflate(R.layout.esay_md_fragment_folder_media_store, null, false);
         mView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 200));
         ScaleAnimation scaleAnimation = new ScaleAnimation(1, 1, 0, 1, Animation.RELATIVE_TO_SELF, 1f, Animation.RELATIVE_TO_SELF, 0f);
         scaleAnimation.setDuration(250);
@@ -326,7 +325,7 @@ public class MediaStoreActivity extends AppCompatActivity implements LocalMediaL
         @Override
         public MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             mContext = parent.getContext();
-            return new MediaViewHolder(View.inflate(mContext, R.layout.item_media, null));
+            return new MediaViewHolder(View.inflate(mContext, R.layout.esay_md_item_media, null));
         }
 
         @Override

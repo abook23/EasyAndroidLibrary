@@ -5,9 +5,9 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.easy.app.HttpCall;
 import com.android.easy.retrofit.ApiService;
 import com.android.easy.retrofit.FileService;
+import com.android.easy.retrofit.HttpCall;
 import com.android.easy.retrofit.RetrofitHttp;
 
 import java.io.File;

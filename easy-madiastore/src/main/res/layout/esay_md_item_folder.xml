@@ -42,5 +42,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginRight="8dp"
-        android:src="@mipmap/check" />
+        android:src="@mipmap/esay_md_check" />
 </LinearLayout>

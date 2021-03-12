@@ -4,10 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PointF;
-import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -143,7 +139,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (rootView == null) {
-            rootView = inflater.inflate(R.layout.fragment_video, container, false);
+            rootView = inflater.inflate(R.layout.easy_play_fragment_video, container, false);
             mProgressBar = rootView.findViewById(R.id.progressBar);
             mSeekBar = rootView.findViewById(R.id.seekBar);
             positionTime = rootView.findViewById(R.id.positionTime);
@@ -238,7 +234,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         if (!isLockView) {//是否锁屏
             //seekBarLinearLayout
             setVisibilityView(b, pauseView/*暂停*/, appBarLinearLayout/*标题等*/, positionTime/*播放时间*/, durationTime/*片长时间*/, screenOrientationView/*横屏按钮*/, seekBarBottomView);
-            mOnVideoFragmentListener.onSettingVisibilityView(b);
+            if (mOnVideoFragmentListener != null)
+                mOnVideoFragmentListener.onSettingVisibilityView(b);
         }
         setVisibilityView(b, mSeekBar/*播放进度*/, lockView/*锁屏按钮*/);
         if (b) {
@@ -742,7 +739,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         @NonNull
         @Override
         public TodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tod_01, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.easy_play_item_tod_01, parent, false);
             return new TodViewHolder(view);
         }
 

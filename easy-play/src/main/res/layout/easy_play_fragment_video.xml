@@ -174,7 +174,7 @@
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="4"
                 tools:itemCount="10"
-                tools:listitem="@layout/item_tod_01" />
+                tools:listitem="@layout/easy_play_item_tod_01" />
         </LinearLayout>
 
     </FrameLayout>

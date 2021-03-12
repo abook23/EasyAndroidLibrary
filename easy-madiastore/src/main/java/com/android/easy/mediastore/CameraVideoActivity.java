@@ -6,14 +6,12 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.easy.mediastore.R;
-
 public class CameraVideoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera_video);
+        setContentView(R.layout.esay_md_activity_camera_video);
         CameraVideoFragment cameraVideoFragment = CameraVideoFragment.newInstance();
         cameraVideoFragment.setOnCameraVideoListener(new CameraVideoFragment.OnCameraVideoListener() {
             @Override

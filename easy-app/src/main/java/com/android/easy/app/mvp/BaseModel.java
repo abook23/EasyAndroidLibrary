@@ -1,6 +1,6 @@
 package com.android.easy.app.mvp;
 
-import com.android.easy.app.HttpCall;
+import com.android.easy.retrofit.HttpCall;
 import com.android.easy.retrofit.ApiService;
 
 import java.util.Map;

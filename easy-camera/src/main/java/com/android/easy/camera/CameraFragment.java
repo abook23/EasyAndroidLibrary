@@ -1,6 +1,5 @@
 package com.android.easy.camera;
 
-import android.graphics.Camera;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,7 +30,7 @@ public class CameraFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_camera, container, false);
+        return inflater.inflate(R.layout.esay_camera_fragment_camera, container, false);
     }
 
     @Override

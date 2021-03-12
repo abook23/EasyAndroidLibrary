@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.easy.mediastore.R;
 import com.android.easy.mediastore.utils.LocalMedia;
 import com.bumptech.glide.Glide;
 
@@ -33,7 +32,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     @Override
     public GalleryViewHold onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         mContext = parent.getContext();
-        return new GalleryViewHold(View.inflate(mContext, R.layout.item_media_gallery, null));
+        return new GalleryViewHold(View.inflate(mContext, R.layout.esay_md_item_media_gallery, null));
     }
 
     @Override
@@ -45,11 +44,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         visibilityView(View.GONE, holder.iconVideo);
         if (localMedia.getMimeType().equals(MediaStoreConfig.MIME_TYPE_VIDEO)) {
             visibilityView(View.VISIBLE, holder.iconVideo);
-            holder.iconVideo.setImageResource(R.mipmap.video);
+            holder.iconVideo.setImageResource(R.mipmap.esay_md_video);
         }
         if (localMedia.getMimeType().equals(MediaStoreConfig.MIME_TYPE_AUDIO)) {
             visibilityView(View.VISIBLE, holder.iconVideo);
-            holder.iconVideo.setImageResource(R.mipmap.audio);
+            holder.iconVideo.setImageResource(R.mipmap.esay_md_audio);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
