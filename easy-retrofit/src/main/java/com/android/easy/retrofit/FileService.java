@@ -16,7 +16,7 @@ import com.android.easy.retrofit.util.MultipartUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -47,14 +47,15 @@ public class FileService {
     public static long READ_TIMEOUT_SECONDS = 600;
     public static long WRITE_TIMEOUT_SECONDS = 600;
 
+    private List<Interceptor> interceptorList = new ArrayList<>();
+
     public static FileService init(Context applicationContext, String baseUrl) {
         sFileService = new FileService();
         sFileService.baseUrl = baseUrl;
         AppUtils.initial(applicationContext);
         return sFileService;
     }
-
-    public static FileService getInit() {
+    public static FileService getInstance() {
         if (sFileService == null) {
             init(AppUtils.getApplicationContext(), AppUtils.getBaseUrl());
         }
@@ -67,7 +68,9 @@ public class FileService {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create());
     }
-
+    public void addInterceptor(Interceptor interceptor) {
+        interceptorList.add(interceptor);
+    }
 
     public <T> T create(Class<T> tClass) {
         OkHttpClient.Builder builder = getOkHttpBuilder();
@@ -124,6 +127,9 @@ public class FileService {
     private OkHttpClient.Builder getOkHttpBuilder() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         setTimeOut(builder);
+        for (Interceptor interceptor : interceptorList) {
+            builder.addInterceptor(interceptor);
+        }
         return builder;
     }
 
@@ -136,11 +142,11 @@ public class FileService {
 
     public Observable<File> download(String url) {
         final String fileName = url.substring(url.lastIndexOf("/") + 1);
-        return getInit().create(Api.class).download(url).map(new Function<ResponseBody, File>() {
+        return getInstance().create(Api.class).download(url).map(new Function<ResponseBody, File>() {
 
             @Override
             public File apply(@NonNull ResponseBody responseBody) throws Exception {
-                return FileUtils.saveFile(responseBody.byteStream(), FileUtils.getDowloadDir(AppUtils.getApplicationContext()), fileName);
+                return FileUtils.saveFile(responseBody.byteStream(), FileUtils.getDownloadDir(AppUtils.getApplicationContext()), fileName);
             }
         }).compose(RxJavaUtils.<File>defaultSchedulers());
     }
@@ -150,7 +156,7 @@ public class FileService {
     }
 
     public Observable<String> upload(String url, String name, List<File> files) {
-        return getInit().create(Api.class)
+        return getInstance().create(Api.class)
                 .uploading(url, MultipartUtils.filesToMultipartBody(name, files))
                 .compose(RxJavaUtils.<ResponseBody>defaultSchedulers())
                 .map(new Function<ResponseBody, String>() {
@@ -162,7 +168,7 @@ public class FileService {
     }
 
     public <T> void upload(String url, String name, List<File> files, Call<T> call) {
-        getInit().create(Api.class)
+        getInstance().create(Api.class)
                 .uploading(url, MultipartUtils.filesToMultipartBody(name, files))
                 .compose(RxJavaUtils.<ResponseBody>defaultSchedulers())
                 .subscribe(call);

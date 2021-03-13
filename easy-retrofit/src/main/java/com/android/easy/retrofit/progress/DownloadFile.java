@@ -14,6 +14,9 @@ import com.android.easy.retrofit.util.AppUtils;
 import com.android.easy.retrofit.util.FileUtils;
 
 import java.io.File;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
@@ -27,33 +30,42 @@ import okhttp3.ResponseBody;
 
 public class DownloadFile {
 
-    private Call mCall;
+    private final ScheduledFuture<?> mScheduledFuture;
+    private final Call mCall;
     private boolean mPause;
     private boolean cancel;
     private static final int KEY_SIZE = 0x02;
+    private static final int KEY_BYTES = 0x03;
 
-    private Handler mHandler = new Handler(Looper.getMainLooper()) {
+    private final Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case KEY_SIZE:
-                    if (mCall != null)
-                        mCall.onSize(msg.arg1, msg.arg2);
+                    mCall.onSize(msg.arg1, msg.arg2);
+                    break;
+                case KEY_BYTES:
+                    mCall.onBytes((Long) msg.obj);
                     break;
             }
         }
     };
+    public Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            isUpdateBytes = true;
+        }
+    };
+    private boolean isUpdateBytes;
 
     public DownloadFile(String url, Call call) {
         mCall = call;
-        if (mCall != null) {
-            mCall.onStart();
-        }
-        final String parent = FileUtils.getDowloadDir(AppUtils.getApplicationContext());
+        mScheduledFuture = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(mRunnable, 0, 1000, TimeUnit.MILLISECONDS);
+        final String parent = FileUtils.getDownloadDir(AppUtils.getApplicationContext());
         final String fileName = url.substring(url.lastIndexOf("/") + 1);
         //.download(mUrl,"bytes=" + startByte + "-");断点续传
-        FileService.getInit().create(Api.class, mOnDownloadListener).download(url)
+        FileService.getInstance().create(Api.class, mOnDownloadListener).download(url)
                 .map(new Function<ResponseBody, File>() {
                     @Override
                     public File apply(ResponseBody responseBody) throws Exception {
@@ -66,14 +78,15 @@ public class DownloadFile {
                 .subscribe(new ObserverBaseWeb<File>() {
                     @Override
                     public void onNext(File file) {
-                        if (mCall != null)
-                            mCall.onSuccess(file);
+                        mScheduledFuture.cancel(true);
+                        mCall.onSuccess(file);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
-                        if (!cancel && mCall != null)
+                        mScheduledFuture.cancel(true);
+                        if (!cancel)
                             mCall.onFail(e);
                         String filePath = parent + File.separator + fileName;
                         File file = new File(filePath);
@@ -90,24 +103,24 @@ public class DownloadFile {
 
     public void pause() {
         mPause = true;
-        if (mCall != null)
-            mCall.onPause();
+        mCall.onPause();
     }
 
     public void resume() {
         mPause = false;
-        if (mCall != null)
-            mCall.onResume();
+
+        mCall.onResume();
     }
 
     public void cancel() {
         cancel = true;
         mPause = false;
-        if (mCall != null)
-            mCall.onCancel();
+        mCall.onCancel();
     }
 
-    private OnDownloadListener mOnDownloadListener = new OnDownloadListener() {
+    private final OnDownloadListener mOnDownloadListener = new OnDownloadListener() {
+        long byteSize = 0L;
+
         @Override
         public void onProgress(long bytesRead, long contentLength, boolean done) {
             while (mPause) {
@@ -119,6 +132,11 @@ public class DownloadFile {
             }
             if (cancel) {
                 throw new ResponseCodeError("cancel");
+            }
+            if (isUpdateBytes) {
+                isUpdateBytes = false;
+                mHandler.obtainMessage(KEY_BYTES, bytesRead - byteSize).sendToTarget();
+                byteSize = bytesRead;
             }
             mHandler.obtainMessage(KEY_SIZE, (int) bytesRead, (int) contentLength).sendToTarget();
         }

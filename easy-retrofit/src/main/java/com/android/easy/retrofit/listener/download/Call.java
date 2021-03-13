@@ -20,6 +20,7 @@ public interface Call {
      */
     void onResume();
 
+    void onBytes(long bytes);
     /**
      * 当前现在量
      *

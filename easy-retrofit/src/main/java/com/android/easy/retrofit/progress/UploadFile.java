@@ -13,9 +13,11 @@ import com.android.easy.retrofit.rxjava.ResponseCodeError;
 import com.android.easy.retrofit.util.MultipartUtils;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -34,8 +36,10 @@ public class UploadFile {
     private boolean cancel;
     private boolean isStart;
 
-    private static final int KEY_START = 0x01;
     private static final int KEY_SIZE = 0x02;
+    private static final int KEY_BYTES = 0x03;
+    private boolean isUpdateBytes;
+    private ScheduledFuture<?> mScheduledFuture;
 
     public UploadFile(String url, String name, File file, Call call) {
         upload(url, MultipartUtils.filesToMultipartBody(name, file), call);
@@ -57,19 +61,21 @@ public class UploadFile {
 
     private void upload(String url, MultipartBody multipartBody, Call call) {
         mCall = call;
-        if (mCall != null) {
-            mCall.onStart();
-            isStart = true;
-        }
-        FileService.getInit().create(Api.class, new OnUploadingListener() {
+        mCall.onStart();
+        isStart = true;
+        mScheduledFuture = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(mRunnable, 0, 1000, TimeUnit.MILLISECONDS);
+        FileService.getInstance().create(Api.class, new OnUploadingListener() {
+            long byteSize = 0L;
+
             @Override
             public void onProgress(long bytesRead, long contentLength, boolean done) {
-                if (!isStart && mCall != null) {
-                    isStart = true;
-                    mHandler.obtainMessage(KEY_START).sendToTarget();
+                if (isUpdateBytes) {
+                    isUpdateBytes = false;
+                    mHandler.obtainMessage(KEY_BYTES, bytesRead - byteSize).sendToTarget();
+                    byteSize = bytesRead;
                 }
-                if (mCall != null)
-                    mHandler.obtainMessage(KEY_SIZE, new long[]{bytesRead, contentLength}).sendToTarget();
+                mHandler.obtainMessage(KEY_SIZE, new long[]{bytesRead, contentLength}).sendToTarget();
+
                 while (pause) {
                     try {
                         Thread.sleep(500);
@@ -88,12 +94,14 @@ public class UploadFile {
 
                                @Override
                                public void onNext(ResponseBody responseBody) {
+                                   mScheduledFuture.cancel(true);
                                    mCall.onSuccess(responseBody);
                                }
 
                                @Override
                                public void onError(Throwable e) {
                                    super.onError(e);
+                                   mScheduledFuture.cancel(true);
                                    if (!cancel && mCall != null) {
                                        mCall.onFail(e);
                                    }
@@ -102,6 +110,13 @@ public class UploadFile {
 
                 );
     }
+
+    public Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            isUpdateBytes = true;
+        }
+    };
 
     public boolean isPause() {
         return pause;
@@ -128,12 +143,12 @@ public class UploadFile {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case KEY_START:
-                    mCall.onStart();
-                    break;
                 case KEY_SIZE:
                     long[] values = (long[]) msg.obj;
                     mCall.onSize(values[0], values[1]);
+                    break;
+                case KEY_BYTES:
+                    mCall.onBytes((Long) msg.obj);
                     break;
             }
         }

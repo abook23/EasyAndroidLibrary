@@ -18,7 +18,6 @@ import com.android.easy.retrofit.util.FileUtils;
 import com.android.easy.retrofit.util.MultipartUtils;
 
 import java.io.File;
-import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +29,6 @@ import javax.net.ssl.SSLSocketFactory;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import okhttp3.Cache;
-import okhttp3.CertificatePinner;
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -38,8 +36,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import static com.android.easy.retrofit.util.FileUtils.getDiskCacheDir;
 
 
 /**
@@ -85,8 +81,9 @@ public class ApiService {
                 .connectTimeout(connectTimeOut, timeUnit)
                 .cookieJar(new CookieManger(AppUtils.getApplicationContext()));//cookie session 长链
         if (CACHE) {//缓存
+            String cachePath = FileUtils.getDiskCacheDir(AppUtils.getApplicationContext());
             builder.addNetworkInterceptor(new CommonInterceptor())
-                    .cache(new Cache(new File(getDiskCacheDir(AppUtils.getApplicationContext()), "httpCache"), 10 * 1024 * 1024));//缓存,可用不用
+                    .cache(new Cache(new File(cachePath, "httpCache"), 10 * 1024 * 1024));//缓存,可用不用
         }
         if (DEBUG) {//日志监听
             builder.addNetworkInterceptor(new LoggingInterceptor(DEBUG, LoggingInterceptor.LogModel.CONCISE));
@@ -100,7 +97,7 @@ public class ApiService {
         for (Interceptor interceptor : interceptorList) {
             builder.addInterceptor(interceptor);
         }
-//        builder.certificatePinner(new CertificatePinner.Builder().add("https://www.abook23.com","sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=").build());
+//        builder.certificatePinner(new CertificatePinner.Builder().add("https://www.baidu.com","sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=").build());
         return builder;
     }
 
@@ -179,7 +176,7 @@ public class ApiService {
                 .subscribe(call);
     }
 
-    public static <T> void post(String url, Map<String, Object> params,Lifecycle lifecycle, Call<T> call) {
+    public static <T> void post(String url, Map<String, Object> params, Lifecycle lifecycle, Call<T> call) {
         FormBody.Builder builder = new FormBody.Builder();
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             if (entry.getValue() != null) {
@@ -206,7 +203,7 @@ public class ApiService {
                 .map(new Function<ResponseBody, File>() {
                     @Override
                     public File apply(ResponseBody responseBody) throws Exception {
-                        return FileUtils.saveFile(responseBody.byteStream(), FileUtils.getDowloadDir(AppUtils.getApplicationContext()), fileName);
+                        return FileUtils.saveFile(responseBody.byteStream(), FileUtils.getDownloadDir(AppUtils.getApplicationContext()), fileName);
                     }
                 }).compose(RxJavaUtils.<File>defaultSchedulers());
     }
@@ -214,6 +211,7 @@ public class ApiService {
 
     /**
      * 文件上传
+     *
      * @param url
      * @param params
      * @param call
@@ -225,6 +223,7 @@ public class ApiService {
 
     /**
      * 文件下载
+     *
      * @param url
      * @param call
      * @return

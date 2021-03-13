@@ -38,7 +38,7 @@ public class FileUtils {
         return cachePath;
     }
 
-    public static String getDowloadDir(Context context) {
+    public static String getDownloadDir(Context context) {
         return getSDPath(context) + File.separator + "Download";
     }
 
