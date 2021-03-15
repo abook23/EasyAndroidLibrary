@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 14
-        versionName "1.1.14"
+        versionCode 18
+        versionName "1.1.18"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -36,8 +36,8 @@ dependencies {
     api 'androidx.recyclerview:recyclerview:1.1.0'
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.49'
 
-    api 'com.abook23:easy-base:1.1.2'
-    api 'com.abook23:easy-retrofit:1.1.13'
+    api 'com.abook23:easy-base:1.1.5'
+    api 'com.abook23:easy-retrofit:1.1.15'
 //    api project(path: ':easy-base')
 //    api project(path: ':easy-retrofit')
 }

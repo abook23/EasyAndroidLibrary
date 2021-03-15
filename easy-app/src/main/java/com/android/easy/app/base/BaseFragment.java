@@ -28,8 +28,6 @@ public abstract class BaseFragment extends HttpFragment {
     protected abstract void initView(@NonNull View rootView);
 
 
-    protected abstract void onOneLoadData();
-
     protected abstract void onVisibleLoadData();
 
     @Nullable
@@ -65,6 +63,10 @@ public abstract class BaseFragment extends HttpFragment {
             isDataInitiated = true;
             onOneLoadData();
         }
+    }
+
+    public void onOneLoadData(){
+
     }
 
     @Override

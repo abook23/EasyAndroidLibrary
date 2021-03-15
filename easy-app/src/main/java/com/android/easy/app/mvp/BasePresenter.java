@@ -4,9 +4,8 @@ package com.android.easy.app.mvp;
 import java.lang.ref.WeakReference;
 
 public abstract class BasePresenter<M extends BaseModel, V extends BaseView> {
-    private WeakReference<V> mView;
+    protected WeakReference<V> mView;
     protected M mModel;
-
 
     public BasePresenter(M model) {
         mModel = model;

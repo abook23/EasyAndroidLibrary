@@ -12,7 +12,7 @@ public abstract class BaseMVPFragment<P extends BasePresenter> extends BaseFragm
 
     protected P mPresenter;
 
-    abstract P initPresenter();
+    public abstract P initPresenter();
 
 
     @Override
