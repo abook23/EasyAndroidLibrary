@@ -7,19 +7,31 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.android.easy.app.base.BaseAppCompatActivity;
+import com.android.easy.app.util.GenericTypesUtils;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 
 public abstract class BaseMVPActivity<P extends BasePresenter> extends BaseAppCompatActivity implements BaseView {
 
     protected P mPresenter;
 
-    public abstract P initPresenter();
+//    public abstract P initPresenter();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = initPresenter();
-        mPresenter.attachView(this);
+        try {
+//          mPresenter = initPresenter();
+            mPresenter = GenericTypesUtils.newInstancePresenter(getClass());//反映射实例化 Presenter
+            if (mPresenter != null){
+                mPresenter.attachView(this);
+            }
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -49,4 +61,6 @@ public abstract class BaseMVPActivity<P extends BasePresenter> extends BaseAppCo
     public Context getContext() {
         return this;
     }
+
+
 }

@@ -1,14 +1,21 @@
 package com.android.easy.app.mvp;
 
 
+import com.android.easy.app.util.GenericTypesUtils;
+
 import java.lang.ref.WeakReference;
 
 public abstract class BasePresenter<M extends BaseModel, V extends BaseView> {
     protected WeakReference<V> mView;
     protected M mModel;
 
-    public BasePresenter(M model) {
-        mModel = model;
+    public BasePresenter(){
+        try {
+            //自动实例化 model
+            mModel = GenericTypesUtils.newInstancePresenter(getClass());
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public void attachView(V view) {

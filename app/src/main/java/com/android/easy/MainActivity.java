@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.easy.mediastore.MediaStoreActivity;
+import com.android.easy.mvp.MainMvpActivity;
 import com.android.easy.ui.DownloadActivity;
 import com.android.easy.ui.GridAdapter;
 import com.android.easy.ui.ListActivity;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 {"LoginActivity", LoginActivity.class},
                 {"ListViewActivity", ListViewActivity.class},
                 {"EasyDialog", DialogActivity.class},
+                {"MVP", MainMvpActivity.class},
         };
 
         recyclerView.setAdapter(mGridAdapter = new GridAdapter(data));

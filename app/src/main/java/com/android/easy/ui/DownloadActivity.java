@@ -11,6 +11,7 @@ import com.android.easy.app.base.BaseAppCompatActivity;
 import com.android.easy.base.widget.ButtonProgress;
 import com.android.easy.retrofit.RetrofitHttp;
 import com.android.easy.retrofit.listener.download.Call;
+import com.android.easy.retrofit.listener.download.DownloadCall;
 import com.android.easy.retrofit.progress.DownloadFile;
 import com.android.easy.retrofit.progress.UploadFile;
 import com.android.easy.retrofit.rxjava.ObserverBaseWeb;
@@ -65,7 +66,7 @@ public class DownloadActivity extends BaseAppCompatActivity {
     }
 
     public void downloadProgress(ButtonProgress view) {
-        DownloadFile downloadFile = RetrofitHttp.download("", new Call() {
+        DownloadFile downloadFile = RetrofitHttp.download("", new DownloadCall() {
             @Override
             public void onStart() {
 
@@ -78,6 +79,11 @@ public class DownloadActivity extends BaseAppCompatActivity {
 
             @Override
             public void onResume() {
+
+            }
+
+            @Override
+            public void onBytes(long bytes) {
 
             }
 
@@ -119,6 +125,11 @@ public class DownloadActivity extends BaseAppCompatActivity {
 
             @Override
             public void onResume() {
+
+            }
+
+            @Override
+            public void onBytes(long bytes) {
 
             }
 

@@ -11,21 +11,16 @@ class MainMvpActivity : BaseMVPActivity<MainPresenter>(),MainView {
         setContentView(R.layout.activity_main_mvp)
     }
 
-    override fun initPresenter(): MainPresenter {
-        return MainPresenter()
-    }
-
-
     fun onLoginClick(view:View){
         mPresenter.toLong("zhangsan","zhangsan")
 //        mPresenter.toLong("zhangsan","zhangsan1")
     }
 
     override fun loginSuccess() {
-
+        showToast("成功")
     }
 
     override fun loginError() {
-
+        showToast("失败")
     }
 }

@@ -14,20 +14,15 @@ import com.android.easy.app.mvp.BasePresenter;
  */
 public class MainPresenter extends BasePresenter<MainModel, MainView> {
 
-
-    public MainPresenter() {
-        super(new MainModel());
-    }
-
     public void toLong(String userName, String password) {
         showLoading();
         boolean b = mModel.toLogin(userName, password);
         dismissLoading();
         if (b) {
-            showToast("登录成功");
+//            showToast("登录成功");
             getView().loginSuccess();
         } else {
-            showToast("登录失败");
+//            showToast("登录失败");
             getView().loginError();
         }
     }

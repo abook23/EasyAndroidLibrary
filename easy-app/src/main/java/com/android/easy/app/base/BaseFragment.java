@@ -65,7 +65,7 @@ public abstract class BaseFragment extends HttpFragment {
         }
     }
 
-    public void onOneLoadData(){
+    protected void onOneLoadData(){
 
     }
 
