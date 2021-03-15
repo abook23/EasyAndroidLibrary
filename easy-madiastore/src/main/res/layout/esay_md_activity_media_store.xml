@@ -31,11 +31,13 @@
             android:text="图片和视频"
             android:textColor="#ffffff" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/mediaStoreSuccess"
             android:layout_width="wrap_content"
+            android:minWidth="80dp"
             android:layout_height="34dp"
             android:layout_gravity="end|center_vertical"
+            android:gravity="center"
             android:layout_margin="8dp"
             android:background="@drawable/esay_md_bg_success"
             android:text="完成"

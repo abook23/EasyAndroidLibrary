@@ -149,29 +149,16 @@ public class LocalMediaLoader implements Handler.Callback {
                         if (count > 0) {
                             data.moveToFirst();
                             do {
-                                long id = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION[0]));
-
-                                String path = isAndroidQ ? getRealPathAndroid_Q(id) : data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION[1]));
-
-                                String mimeType = data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION[2]));
-
-                                int w = data.getInt
-                                        (data.getColumnIndexOrThrow(PROJECTION[3]));
-
-                                int h = data.getInt
-                                        (data.getColumnIndexOrThrow(PROJECTION[4]));
-
-                                long duration = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION[5]));
-
-                                long size = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION[6]));
-
-                                String folderName = data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION[7]));
+                                long id = data.getLong(data.getColumnIndexOrThrow(PROJECTION[0]));
+//                                String path = isAndroidQ ? getRealPathAndroid_Q(id) : data.getString
+//                                        (data.getColumnIndexOrThrow(PROJECTION[1]));
+                                String path = data.getString(data.getColumnIndexOrThrow(PROJECTION[1]));
+                                String mimeType = data.getString(data.getColumnIndexOrThrow(PROJECTION[2]));
+                                int w = data.getInt(data.getColumnIndexOrThrow(PROJECTION[3]));
+                                int h = data.getInt(data.getColumnIndexOrThrow(PROJECTION[4]));
+                                long duration = data.getLong(data.getColumnIndexOrThrow(PROJECTION[5]));
+                                long size = data.getLong(data.getColumnIndexOrThrow(PROJECTION[6]));
+                                String folderName = data.getString(data.getColumnIndexOrThrow(PROJECTION[7]));
 
                                 if (config.filterFileSize > 0) {
                                     if (size > config.filterFileSize * FILE_SIZE_UNIT) {
