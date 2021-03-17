@@ -3,6 +3,7 @@ package com.android.easy.play;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,6 +40,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
 
     private View rootView;
     private IjkMediaPlayer mMediaPlayer;
+    public static int PLAY_COMPLETION = -1;
 
     /**
      * 播放url
@@ -68,7 +70,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
      * 暂停按钮
      */
     private ImageView pauseView;
-    private View screenOrientationView, seekBarBottomView;
+    private View seekBarBottomView;
     /**
      * 锁屏按钮
      */
@@ -107,6 +109,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
     private int mOrientation;
     private OrientationEventListener mOrientationEventListener;
     private boolean isStartTrackingSeekBar;
+    private int videoWidth, videoHeight;
+    private boolean isResume;
 
     public VideoFragment() {
     }
@@ -209,15 +213,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
                 }
             });
             seekBarBottomView = rootView.findViewById(R.id.seekBarBottomView);
-            screenOrientationView = rootView.findViewById(R.id.screenOrientationView);
-            screenOrientationView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onScreenOrientationClickListener != null) {
-                        onScreenOrientationClickListener.onClick(v);
-                    }
-                }
-            });
             addOrientationEventListener();
             setOnTouchListener(rootView);
         }
@@ -233,7 +228,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
     private void showSettingView(boolean b) {
         if (!isLockView) {//是否锁屏
             //seekBarLinearLayout
-            setVisibilityView(b, pauseView/*暂停*/, appBarLinearLayout/*标题等*/, positionTime/*播放时间*/, durationTime/*片长时间*/, screenOrientationView/*横屏按钮*/, seekBarBottomView);
+            setVisibilityView(b, pauseView/*暂停*/, appBarLinearLayout/*标题等*/, positionTime/*播放时间*/, durationTime/*片长时间*/, seekBarBottomView);
             if (mOnVideoFragmentListener != null)
                 mOnVideoFragmentListener.onSettingVisibilityView(b);
         }
@@ -254,16 +249,34 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        mSurfaceHolder = holder;
-        if (isPause) {
-            mMediaPlayer.setDisplay(mSurfaceHolder);
-            start();
-        } else {
-            View videoParentFrameLayout = rootView.findViewById(R.id.videoParentFrameLayout);
-            videoParentViewWidth = videoParentFrameLayout.getWidth();//获取父view 的高度
-            videoParentViewHeight = videoParentFrameLayout.getHeight();
+    public void onResume() {
+        super.onResume();
+        isResume= true;
+        if (mSurfaceHolder != null){
             play("", playUrl);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        changedSurfaceViewSize(videoWidth, videoHeight);
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+
+        View videoParentFrameLayout = rootView.findViewById(R.id.videoParentFrameLayout);
+        videoParentViewWidth = videoParentFrameLayout.getWidth();//获取父view 的高度
+        videoParentViewHeight = videoParentFrameLayout.getHeight();
+
+        mSurfaceHolder = holder;
+        if (mMediaPlayer != null)
+            mMediaPlayer.setDisplay(mSurfaceHolder);
+        if (mMediaPlayer == null && isResume)
+            play("", playUrl);
+        if (isPause) {
+            start();
         }
     }
 
@@ -362,6 +375,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
          */
         mMediaPlayer.setOnVideoSizeChangedListener((iMediaPlayer, width, height, sarNum, sarDen) -> {
             log("VideoSizeChanged" + width + "----" + height + "----" + sarNum + "----" + sarDen + "----");
+            videoWidth = width;
+            videoHeight = height;
             changedSurfaceViewSize(width, height);
         });
 
@@ -473,7 +488,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
         if (mMediaPlayer != null) {
             isPause = true;
             pauseView.setImageResource(R.mipmap.icon_start);
-            saveCurrentPosition();
+            getSharedPreferences(getContext()).edit().putLong(playUrl, PLAY_COMPLETION).apply();
             if (mTimer != null) {
                 mTimer.cancel();
             }
@@ -623,14 +638,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
                                 }
                                 int progress = mSeekBar.getProgress() + currentPosition;
                                 mSeekBar.setProgress(progress);
-                                mMediaPlayer.seekTo(mSeekBar.getProgress());
+                                if (mMediaPlayer != null)
+                                    mMediaPlayer.seekTo(mSeekBar.getProgress());
                             }
                         }
                         break;
                     case MotionEvent.ACTION_UP:
                         if (isSetSpeed) {
                             isSetSpeed = false;
-                            mMediaPlayer.setSpeed(1.0f);//恢复正常播放
+                            if (mMediaPlayer != null)
+                                mMediaPlayer.setSpeed(1.0f);//恢复正常播放
                         }
                         break;
                 }
@@ -641,7 +658,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
             @Override
             public boolean onLongClick(View v) {
                 isSetSpeed = true;
-                mMediaPlayer.setSpeed(2.0f);//2倍数播放
+                if (mMediaPlayer != null)
+                    mMediaPlayer.setSpeed(2.0f);//2倍数播放
                 return false;
             }
         });
@@ -659,7 +677,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
                     if (orientation != mOrientation) {
                         mOrientation = orientation;
                         try {
-                            if (mOrientation == 90) {
+                            if (mOrientation == 0) {
+                                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                            } else if (mOrientation == 90) {
                                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
                             } else if (mOrientation == 270) {
                                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -700,9 +720,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback, V
             showSettingView(false);
             isLockView = !isLockView;
             if (isLockView) {
-                lockView.setImageResource(R.mipmap.icon_lock_0);
+                lockView.setImageResource(R.mipmap.easy_play_icon_unlock);
             } else {
-                lockView.setImageResource(R.mipmap.icon_lock_1);
+                lockView.setImageResource(R.mipmap.easy_play_icon_lock);
             }
             //弹框
         } else if (id == R.id.dialogFrameLayout) {

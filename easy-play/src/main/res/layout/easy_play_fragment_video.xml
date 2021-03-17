@@ -74,11 +74,11 @@
 
     <ImageView
         android:id="@+id/lockView"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:layout_gravity="center_vertical"
         android:padding="8dp"
-        android:src="@mipmap/icon_lock_1" />
+        android:src="@mipmap/easy_play_icon_lock" />
 
     <ImageView
         android:id="@+id/pauseView"
@@ -130,11 +130,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00"
+            android:layout_marginEnd="16dp"
             android:textColor="@color/white" />
 
         <ImageView
             android:id="@+id/screenOrientationView"
             android:layout_width="48dp"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:src="@mipmap/horizontal" />
     </LinearLayout>

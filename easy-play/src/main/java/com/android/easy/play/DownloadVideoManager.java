@@ -3,13 +3,8 @@ package com.android.easy.play;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.text.format.Formatter;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,11 +17,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
