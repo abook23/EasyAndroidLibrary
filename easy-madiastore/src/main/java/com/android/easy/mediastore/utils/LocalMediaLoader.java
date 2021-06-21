@@ -1,7 +1,9 @@
 package com.android.easy.mediastore.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -10,6 +12,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -28,7 +31,7 @@ import java.util.Locale;
 public class LocalMediaLoader implements Handler.Callback {
     private static final int MSG_QUERY_MEDIA_SUCCESS = 0;
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
-    private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
+    private static final String ORDER_BY = MediaStore.Files.FileColumns.DATE_MODIFIED+ " DESC";
     private static final String NOT_GIF = "!='image/gif'";
     /**
      * 过滤掉小于500毫秒的录音
@@ -53,7 +56,10 @@ public class LocalMediaLoader implements Handler.Callback {
             MediaStore.MediaColumns.HEIGHT,
             MediaStore.MediaColumns.DURATION,
             MediaStore.MediaColumns.SIZE,
-            MediaStore.MediaColumns.BUCKET_DISPLAY_NAME};
+            MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
+            MediaStore.MediaColumns.DATE_MODIFIED,//最后修改时间
+            MediaStore.MediaColumns.DATE_TAKEN,//拍摄时间
+    };
 
     /**
      * 图片
@@ -139,7 +145,9 @@ public class LocalMediaLoader implements Handler.Callback {
         AsyncTask.SERIAL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
+                long t = System.currentTimeMillis();
                 Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, getSelection(), getSelectionArgs(), ORDER_BY);
+                Log.d("LocalMediaLoader","共"+data.getCount()+"张图片 "+(System.currentTimeMillis()-t)+"ms");
                 try {
                     List<LocalMediaFolder> imageFolders = new ArrayList<>();
 //                    LocalMediaFolder allImageFolder = new LocalMediaFolder();
@@ -159,6 +167,8 @@ public class LocalMediaLoader implements Handler.Callback {
                                 long duration = data.getLong(data.getColumnIndexOrThrow(PROJECTION[5]));
                                 long size = data.getLong(data.getColumnIndexOrThrow(PROJECTION[6]));
                                 String folderName = data.getString(data.getColumnIndexOrThrow(PROJECTION[7]));
+                                long dateModified = data.getLong(data.getColumnIndexOrThrow(PROJECTION[8]));
+                                long dateTaken = data.getLong(data.getColumnIndexOrThrow(PROJECTION[9]));
 
                                 if (config.filterFileSize > 0) {
                                     if (size > config.filterFileSize * FILE_SIZE_UNIT) {
@@ -195,7 +205,7 @@ public class LocalMediaLoader implements Handler.Callback {
                                     }
                                 }
 
-                                LocalMedia image = new LocalMedia(path, duration, config.mediaMode, mimeType, w, h, size);
+                                LocalMedia image = new LocalMedia(path, duration, config.mediaMode, mimeType, w, h, size,dateModified,dateTaken);
                                 LocalMediaFolder folder = getImageFolder(path, folderName, imageFolders);
                                 List<LocalMedia> images = folder.getImages();
                                 images.add(image);
@@ -205,7 +215,10 @@ public class LocalMediaLoader implements Handler.Callback {
 //                                allImageFolder.setImageNum(imageNum + 1);
 
                             } while (data.moveToNext());
-                            sortFolder(imageFolders);
+                            data.close();
+
+//                            sortFolder(imageFolders);//排序
+
 //                            if (latelyImages.size() > 0) {
 //                                imageFolders.add(0, allImageFolder);
 //                                allImageFolder.setFirstImagePath(latelyImages.get(0).getPath());
@@ -215,6 +228,7 @@ public class LocalMediaLoader implements Handler.Callback {
 //                            }
                         }
                         // 线程切换
+                        Log.d("LocalMediaLoader",(System.currentTimeMillis()-t)+"ms");
                         mHandler.sendMessage(mHandler.obtainMessage(MSG_QUERY_MEDIA_SUCCESS, imageFolders));
                     }
                 } catch (Exception e) {

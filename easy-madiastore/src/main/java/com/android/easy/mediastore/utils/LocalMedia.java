@@ -67,6 +67,8 @@ public class LocalMedia implements Serializable {
      * file size
      */
     private long size;
+    private long dateModified;
+    private long dateTaken;
 
     public LocalMedia() {
 
@@ -79,7 +81,7 @@ public class LocalMedia implements Serializable {
         this.mimeType = mimeType;
     }
 
-    public LocalMedia(String path, long duration, MediaMode mediaMode, String mimeType, int width, int height, long size) {
+    public LocalMedia(String path, long duration, MediaMode mediaMode, String mimeType, int width, int height, long size, long dateModified, long dateTaken) {
         this.path = path;
         this.duration = duration;
         this.mediaMode = mediaMode;
@@ -87,6 +89,8 @@ public class LocalMedia implements Serializable {
         this.width = width;
         this.height = height;
         this.size = size;
+        this.dateModified = dateModified;
+        this.dateTaken = dateTaken;
     }
 
     public LocalMedia(String path, long duration,int position, int num, MediaMode mediaMode) {
@@ -199,5 +203,21 @@ public class LocalMedia implements Serializable {
 
     public void setSize(long size) {
         this.size = size;
+    }
+
+    public long getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(long dateModified) {
+        this.dateModified = dateModified;
+    }
+
+    public long getDateTaken() {
+        return dateTaken;
+    }
+
+    public void setDateTaken(long dateTaken) {
+        this.dateTaken = dateTaken;
     }
 }

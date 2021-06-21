@@ -3,13 +3,15 @@
     package="com.android.easy.mediastore">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application>
-        <activity android:name="com.android.easy.mediastore.CameraVideoActivity"/>
+        <activity android:name="com.android.easy.mediastore.CameraVideoActivity" />
         <activity android:name="com.android.easy.mediastore.MediaStoreActivity" />
-        <activity android:name="com.android.easy.mediastore.MediaStoreInfoActivity" />
+        <activity
+            android:name="com.android.easy.mediastore.MediaStoreInfoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
     </application>
 
 </manifest>

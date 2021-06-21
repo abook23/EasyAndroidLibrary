@@ -46,6 +46,7 @@ import java.util.TimeZone;
 public class MediaStoreActivity extends AppCompatActivity implements LocalMediaLoader.LocalMediaLoadListener {
 
     public static String CHECK_MAX = "checkCount";//能选中多少张
+    public static String CHECK_URL = "checkUrl";//被选的
     public static String DATA = "data";//返回值
     private final String CAMERA_PATH = "CAMERA_PATH";
     private static MediaStoreConfig mediaStoreConfig;
@@ -56,6 +57,7 @@ public class MediaStoreActivity extends AppCompatActivity implements LocalMediaL
     private GalleryAdapter mGalleryAdapter;
     private RecyclerView mGalleryRecyclerView;
     public static List<LocalMedia> mCheckMediaList = new ArrayList<>();//选择的
+    public static ArrayList<String> mCheckUrlList;//选择的
     private List<LocalMediaFolder> mLocalMediaFolders;
 
     private Button mediaStoreSuccessButton;
@@ -65,20 +67,21 @@ public class MediaStoreActivity extends AppCompatActivity implements LocalMediaL
     private MediaStoreFolderFragment mMediaStoreFolderFragment;
     private int CAMERA_VIDEO_CODE = 0x01;
 
-    public static void startActivityForResult(Activity ac, int checkMax, int resultCode) {
-        startActivityForResult(ac, checkMax, MediaMode.TYPE_IMAGE_VIDEO, resultCode);
+    public static void startActivityForResult(Activity ac, int checkMax, ArrayList<String> checkList, int resultCode) {
+        startActivityForResult(ac, checkMax, checkList, MediaMode.TYPE_IMAGE_VIDEO, resultCode);
     }
 
-    public static void startActivityForResult(Activity ac, int checkMax, MediaMode mediaMode, int resultCode) {
+    public static void startActivityForResult(Activity ac, int checkMax, ArrayList<String> checkList, MediaMode mediaMode, int resultCode) {
         mediaStoreConfig = new MediaStoreConfig();
         mediaStoreConfig.mediaMode = mediaMode;
-        startActivityForResult(ac, checkMax, mediaStoreConfig, resultCode);
+        mediaStoreConfig.selectMaxCount = checkMax;
+        startActivityForResult(ac, checkList, mediaStoreConfig, resultCode);
     }
 
-    public static void startActivityForResult(Activity ac, int checkMax, MediaStoreConfig cf, int resultCode) {
+    public static void startActivityForResult(Activity ac, ArrayList<String> checkList, MediaStoreConfig cf, int resultCode) {
         mediaStoreConfig = cf;
         Intent intent = new Intent(ac, MediaStoreActivity.class);
-        intent.putExtra(CHECK_MAX, checkMax);
+        intent.putStringArrayListExtra(CHECK_URL, checkList);
         ac.startActivityForResult(intent, resultCode);
     }
 
@@ -86,6 +89,10 @@ public class MediaStoreActivity extends AppCompatActivity implements LocalMediaL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.esay_md_activity_media_store);
+        mCheckUrlList = getIntent().getStringArrayListExtra(CHECK_URL);
+        if (mCheckUrlList==null){
+            mCheckUrlList = new ArrayList<>();
+        }
         context = this;
         initView();
         addListener();
@@ -255,15 +262,16 @@ public class MediaStoreActivity extends AppCompatActivity implements LocalMediaL
     }
 
     private void checkLocalMediaSelect(List<LocalMedia> localMediaList) {
-        List<String> checkList = getCheckMediaPathList();
+        List<String> checkList = mCheckUrlList;
         if (checkList.size() > 0) {
             for (LocalMedia localMedia : localMediaList) {
                 int index = checkList.indexOf(localMedia.getPath());
                 if (index > -1) {
-                    mCheckMediaList.set(index,localMedia);
+                    mCheckMediaList.add(localMedia);
                 }
             }
         }
+        notifyDataGalleryRecyclerView();
     }
 
 
@@ -353,12 +361,15 @@ public class MediaStoreActivity extends AppCompatActivity implements LocalMediaL
                 holder.itemView.setOnClickListener(new View.OnClickListener() {//选中图片或者取消选择
                     @Override
                     public void onClick(View v) {
+
                         if (holder.iconChecked.isShown()) {
                             getCheckMediaList().remove(localMedia);
                             holder.iconChecked.setVisibility(View.GONE);
                         } else {
-                            getCheckMediaList().add(localMedia);
-                            holder.iconChecked.setVisibility(View.VISIBLE);
+                            if (getCheckMediaList().size() < mediaStoreConfig.selectMaxCount) {
+                                getCheckMediaList().add(localMedia);
+                                holder.iconChecked.setVisibility(View.VISIBLE);
+                            }
                         }
                         notifyDataGalleryRecyclerView();
                     }
