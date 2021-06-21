@@ -1,4 +1,4 @@
-package com.android.easy.base.image;
+package com.android.easy.base.util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,15 +12,18 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.ExifInterface;
+import android.media.MediaScannerConnection;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- *
  * author abook23
  * 2014/9/23
- *
+ * <p>
  * version 1.0
  */
 public class BitmapUtils {
@@ -264,5 +267,56 @@ public class BitmapUtils {
         return options;
     }
 
+
+    public static File saveBitmap(Context context,String fileName, Bitmap bitmap) {
+        File file = context.getExternalFilesDir(Environment.DIRECTORY_DCIM);
+        return saveBitmap(context, new File(file,fileName), bitmap);
+    }
+
+    public static File saveBitmap(Context context, File file, Bitmap bitmap) {
+        try {
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(file);
+            String Type = file.getName().substring(file.getName().lastIndexOf(".") + 1).toUpperCase();
+            if ("PNG".equals(Type)) {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            } else {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+            }
+            fos.flush();
+            fos.close();
+            scannerFile(context, file.getPath());
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void scannerFile(Context context, String... filePath) {
+        MediaScannerConnection.scanFile(context, filePath, null, null);
+    }
+
+    /**
+     * 从手机或者sd卡获取Bitmap 大图片用 BitmapUtils.getSmallBitmap 防止OOM
+     *
+     * @return
+     */
+    public static Bitmap getBitmap(String pathName) {
+        return BitmapFactory.decodeFile(pathName);
+    }
+
+
+    public static File getResourceFile(Context context, String fileName, int resourcesId, int inSampleSize) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = inSampleSize;
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourcesId, options);
+        File file = saveBitmap(context, new File(context.getExternalCacheDir(), fileName), bitmap);
+        scannerFile(context, file.getPath());
+        return file;
+    }
 
 }

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
@@ -15,9 +16,11 @@ import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.annotation.RequiresPermission;
@@ -407,6 +410,24 @@ public class AndroidUtils {
             }
         }
         return fileSize;
+    }
+
+    public static String getUriPath(Context context, Uri uri) {
+        String path;
+        if (!android.text.TextUtils.isEmpty(uri.getAuthority())) {
+            Cursor cursor = context.getContentResolver().query(uri,
+                    new String[]{MediaStore.Images.Media.DATA}, null, null, null);
+            if (null == cursor) {
+                Toast.makeText(context, "图片没找到", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            cursor.moveToFirst();
+            path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            cursor.close();
+        } else {
+            path = uri.getPath();
+        }
+        return path;
     }
 
 }

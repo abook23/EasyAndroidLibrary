@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 19
-        versionName "1.1.19"
+        versionCode 22
+        versionName "1.1.22"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -36,10 +36,10 @@ dependencies {
     api 'androidx.recyclerview:recyclerview:1.1.0'
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.49'
 
-    api 'com.abook23:easy-base:1.1.5'
-    api 'com.abook23:easy-retrofit:1.1.15'
+    api 'com.abook23:easy-base:1.1.6'
+//    api 'com.abook23:easy-retrofit:1.1.16'
 //    api project(path: ':easy-base')
-//    api project(path: ':easy-retrofit')
+    api project(path: ':easy-retrofit')
 }
 
 apply from: "../bintrayUpload.gradle"

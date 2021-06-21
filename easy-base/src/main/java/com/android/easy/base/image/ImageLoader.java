@@ -10,6 +10,7 @@ import android.util.LruCache;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.android.easy.base.util.BitmapUtils;
 import com.android.easy.base.util.Encode;
 import com.android.easy.base.util.FileUtils;
 

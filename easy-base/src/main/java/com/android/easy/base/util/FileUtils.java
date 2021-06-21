@@ -6,7 +6,11 @@ import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.os.Environment;
 
+import com.android.easy.base.net.NetworkManager;
+
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +21,9 @@ import java.io.OutputStream;
  * author abook23
  * 2014/9/22
  * /cache_data/[packageName]
+ * @deprecated See {@link FileUtils2}.
  */
+@Deprecated
 public class FileUtils {
 
     private Context context;
@@ -375,4 +381,26 @@ public class FileUtils {
         }
         return false;
     }
+
+    public static String readFileToString(String filePath){
+        try {
+            FileInputStream fis=new FileInputStream(filePath);
+            BufferedInputStream bis=new BufferedInputStream(fis);
+            StringBuilder content= null;
+            //自定义缓冲区
+            byte[] buffer=new byte[4*1024];
+            int flag=0;
+            while((flag=bis.read(buffer))!=-1){
+                content.append(new String(buffer, 0, flag));
+            }
+            System.out.println(content);
+            //关闭的时候只需要关闭最外层的流就行了
+            bis.close();
+            return content.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

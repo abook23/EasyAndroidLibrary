@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 4
-        versionName "1.1.2"
+        versionCode 6
+        versionName "1.1.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -35,4 +35,4 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 }
 
-//apply from: "../bintrayUpload.gradle"
+apply from: "../bintrayUpload.gradle"
