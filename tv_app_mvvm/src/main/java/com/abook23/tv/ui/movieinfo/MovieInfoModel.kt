@@ -1,14 +1,13 @@
 package com.abook23.tv.ui.movieinfo
 
 import androidx.lifecycle.MutableLiveData
-import com.abook23.tv.App
 import com.abook23.tv.URL
 import com.abook23.tv.ben.MovieBen
 import com.abook23.tv.ben.MovieDataBody
 import com.abook23.tv.ben.ResponseBen
 import com.abook23.tv.util.SeaDataUtils
-import com.android.easy.app.HttpCall
 import com.android.easy.app.mvp.BaseModel
+import com.android.easy.retrofit.HttpCall
 
 /**
  * description:    描述
