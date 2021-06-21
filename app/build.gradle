@@ -18,14 +18,16 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
             buildConfigField("String", "BaseURL", "\"https:xxxx.com\"")
+            manifestPlaceholders = [APP_NAME:"EasyApp"]
         }
         debug {
+            applicationIdSuffix ".debug"
             buildConfigField("String", "BaseURL", "\"http://192.168.9.128:8081\"")
             buildConfigField("String", "BaseURL_localhost", "\"http://localhost\"")
+            manifestPlaceholders = [APP_NAME:"EasyAppDubug"]
 
 //            <meta-data android:name="JPUSH_APPKEY" android:value="${jpush_appkey}"/>
 //            manifestPlaceholders = [

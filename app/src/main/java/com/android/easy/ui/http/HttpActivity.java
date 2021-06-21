@@ -12,6 +12,8 @@ import com.android.easy.retrofit.ApiService;
 import com.android.easy.retrofit.rxjava.ObserverBaseWeb;
 import com.android.easy.retrofit.rxjava.RxJavaUtils;
 
+import java.util.HashMap;
+
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -41,6 +43,15 @@ public class HttpActivity extends BaseAppCompatActivity {
 
             }
         });
+
+//        Observable<HttpCall<UserInfo>> observable =  ApiService.get("",new HashMap<>());
+//        observable.subscribe(new HttpCall<HttpCall<UserInfo>>() {
+//
+//            @Override
+//            public void onSuccess(@NonNull HttpCall<UserInfo> userInfoHttpCall) {
+//
+//            }
+//        })
 
     }
 
