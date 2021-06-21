@@ -125,7 +125,8 @@ public class FileService {
     }
 
     private OkHttpClient.Builder getOkHttpBuilder() {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        OkHttpClient.Builder builder = RetrofitHttp.getInitOkHttpClientBuilder();//集成来着 RetrofitHttp 里的设置
+//        OkHttpClient.Builder builder = new OkHttpClient.Builder();
         setTimeOut(builder);
         for (Interceptor interceptor : interceptorList) {
             builder.addInterceptor(interceptor);

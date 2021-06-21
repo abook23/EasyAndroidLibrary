@@ -27,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLSocketFactory;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import okhttp3.Cache;
 import okhttp3.FormBody;
@@ -73,6 +75,11 @@ public class ApiService {
             }
         }
         return mRetrofit;
+    }
+
+
+    public static OkHttpClient.Builder getInitOkHttpClientBuilder() {
+        return sApiService.getOkHttpClientBuilder();
     }
 
     private OkHttpClient.Builder getOkHttpClientBuilder() {
@@ -155,6 +162,24 @@ public class ApiService {
                 .subscribe(call);
     }
 
+    public static <T> Observable<HttpCall<T>> get(String url, Map<String, Object> params) {
+        return getApi()
+                .get(url, params)
+                .flatMap(new Function<ResponseBody, ObservableSource<HttpCall<T>>>() {
+                    @Override
+                    public ObservableSource<HttpCall<T>> apply(@NonNull ResponseBody responseBody) {
+                        HttpCall<T> call = new HttpCall<T>() {
+                            @Override
+                            public void onSuccess(@androidx.annotation.NonNull T t) {
+
+                            }
+                        };
+                        call.onNext(responseBody);
+                        return Observable.just(call);
+                    }
+                }).compose(RxJavaUtils.<HttpCall<T>>defaultSchedulers());
+    }
+
     public static <T> void get(String url, Map<String, Object> params, Lifecycle lifecycle, Call<T> call) {
         getApi()
                 .get(url, params)
@@ -174,6 +199,30 @@ public class ApiService {
                 .post(url, builder.build())
                 .compose(RxJavaUtils.<ResponseBody>defaultSchedulers())
                 .subscribe(call);
+    }
+
+    public static <T> Observable<HttpCall<T>> post(String url, Map<String, Object> params) {
+        FormBody.Builder builder = new FormBody.Builder();
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            if (entry.getValue() != null) {
+                builder.add(entry.getKey(), String.valueOf(entry.getValue()));
+            }
+        }
+        return getApi()
+                .post(url, builder.build())
+                .flatMap(new Function<ResponseBody, ObservableSource<HttpCall<T>>>() {
+                    @Override
+                    public ObservableSource<HttpCall<T>> apply(@NonNull ResponseBody responseBody) {
+                        HttpCall<T> call = new HttpCall<T>() {
+                            @Override
+                            public void onSuccess(@androidx.annotation.NonNull T t) {
+
+                            }
+                        };
+                        call.onNext(responseBody);
+                        return Observable.just(call);
+                    }
+                }).compose(RxJavaUtils.<HttpCall<T>>defaultSchedulers());
     }
 
     public static <T> void post(String url, Map<String, Object> params, Lifecycle lifecycle, Call<T> call) {
