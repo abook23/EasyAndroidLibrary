@@ -30,20 +30,27 @@ public class OkHttpUrlLoader implements ModelLoader<GlideUrl, InputStream> {
         private static volatile okhttp3.Call.Factory internalClient;
         private okhttp3.Call.Factory client;
 
-        private static okhttp3.Call.Factory getInternalClient() {
-            if(internalClient == null) {
-                synchronized(OkHttpUrlLoader.Factory.class) {
-                    if(internalClient == null) {
-                        internalClient = new OkHttpClient();
+        private static okhttp3.Call.Factory getInternalClient(OkHttpClient okHttpClient) {
+            if (internalClient == null) {
+                synchronized (OkHttpUrlLoader.Factory.class) {
+                    if (internalClient == null) {
+                        if (okHttpClient==null){
+                            internalClient = new OkHttpClient();
+                        }else {
+                            internalClient = okHttpClient;
+                        }
                     }
                 }
             }
-
             return internalClient;
         }
 
         public Factory() {
-            this(getInternalClient());
+            this(getInternalClient(null));
+        }
+
+        public Factory(OkHttpClient okHttpClient) {
+            this(getInternalClient(okHttpClient));
         }
 
         public Factory(okhttp3.Call.Factory client) {

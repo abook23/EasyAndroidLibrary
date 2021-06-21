@@ -27,5 +27,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
     implementation 'com.github.bumptech.glide:glide:4.10.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.14.8'
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
 }
