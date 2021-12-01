@@ -23,7 +23,7 @@
             android:drawableEnd="@mipmap/easy_app_ic_next_gray"
             android:text="标题"
             android:textColor="@color/text_color"
-            app:text="@{typeMovie.typeName}"
+            binding_text="@{typeMovie.typeName}"
             android:textSize="22sp" />
 
         <androidx.recyclerview.widget.RecyclerView

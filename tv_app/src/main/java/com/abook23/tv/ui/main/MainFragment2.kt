@@ -13,7 +13,7 @@ import com.abook23.tv.ben.TypeMovie
 import com.abook23.tv.ui.MovieInfoActivity
 import com.abook23.tv.ui.SearchActivity
 import com.abook23.tv.util.RoundedCornersFitStart
-import com.android.easy.app.HttpCall
+import com.android.easy.retrofit.HttpCall
 import com.android.easy.app.base.BaseFragment
 import com.android.easy.base.util.L
 import com.android.easy.retrofit.ApiService

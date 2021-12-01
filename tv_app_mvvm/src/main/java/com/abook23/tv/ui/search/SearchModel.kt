@@ -6,8 +6,8 @@ import com.abook23.tv.URL
 import com.abook23.tv.ben.MovieBen
 import com.abook23.tv.ben.ResponseBen
 import com.abook23.tv.dao.MovieBenDao
-import com.android.easy.app.HttpCall
 import com.android.easy.app.mvp.BaseModel
+import com.android.easy.retrofit.HttpCall
 
 /**
  * description:    描述

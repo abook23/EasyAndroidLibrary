@@ -1,5 +1,7 @@
 package com.android.easy.base.util;
 
+import android.os.Build;
+
 import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
@@ -47,7 +49,9 @@ public class AESCipher {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         // SHA1PRNG 强随机种子算法, 要区别4.2以上版本的调用方法
         SecureRandom sr;
-        if (android.os.Build.VERSION.SDK_INT >= 17) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
         } else {
             sr = SecureRandom.getInstance("SHA1PRNG");

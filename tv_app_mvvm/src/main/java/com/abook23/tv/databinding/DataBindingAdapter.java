@@ -36,7 +36,7 @@ public class DataBindingAdapter {
      * @param textView
      * @param text
      */
-    @BindingAdapter(value = {"app:text"})
+    @BindingAdapter(value = {"binding_text"})
     public static void text(TextView textView, String text) {
         textView.setText(text);
     }
@@ -48,7 +48,7 @@ public class DataBindingAdapter {
      * @param imageView
      * @param url
      */
-    @BindingAdapter(value = {"app:image_url"}, requireAll = false)
+    @BindingAdapter(value = {"binding_image_url"}, requireAll = false)
     public static void imageView(ImageView imageView, Object url) {
         Glide.with(imageView.getContext())
                 .load(url)
@@ -63,7 +63,7 @@ public class DataBindingAdapter {
      * @param items        数据
      * @param page         当前是请求第几页数据
      */
-    @BindingAdapter(value = {"app:item", "app:page"}, requireAll = false)
+    @BindingAdapter(value = {"binding_item", "binding_page"}, requireAll = false)
     public static void bindAdapterItem(RecyclerView recyclerView, List<?> items, int page) {
         if (items != null) {
             BaseQuickAdapter adapter = (BaseQuickAdapter) recyclerView.getAdapter();

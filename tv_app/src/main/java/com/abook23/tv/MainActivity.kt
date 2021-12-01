@@ -11,7 +11,7 @@ import com.abook23.tv.ben.ResponseBen
 import com.abook23.tv.ui.main.MainFragment1
 import com.abook23.tv.ui.main.MainFragment2
 import com.abook23.tv.ui.main.MainFragment3
-import com.android.easy.app.HttpCall
+import com.android.easy.retrofit.HttpCall
 import com.android.easy.app.base.BaseAppCompatActivity
 import com.android.easy.app.fragment.TabLayoutFragment
 import com.android.easy.app.fragment.UpgradeAppDialogFragment

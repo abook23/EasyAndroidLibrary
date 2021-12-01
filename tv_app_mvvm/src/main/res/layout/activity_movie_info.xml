@@ -39,7 +39,7 @@
                     android:layout_marginTop="20dp"
                     android:scaleType="centerCrop"
                     android:src="@mipmap/test_image"
-                    app:image_url="@{movieBen.v_pic}"
+                    binding_image_url="@{movieBen.v_pic}"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,7 +52,7 @@
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    app:text="@{movieBen.v_name}"
+                    binding_text="@{movieBen.v_name}"
                     app:layout_constraintStart_toEndOf="@+id/imageView"
                     app:layout_constraintTop_toTopOf="@+id/imageView" />
 
@@ -65,7 +65,7 @@
                     android:textColor="@color/color_blue"
                     app:layout_constraintStart_toStartOf="@+id/name"
                     app:layout_constraintTop_toBottomOf="@+id/name"
-                    app:text="@{String.format(@string/precision_1f,Float.valueOf(movieBen.v_score))}" />
+                    binding_text="@{String.format(@string/precision_1f,Float.valueOf(movieBen.v_score))}" />
 
                 <TextView
                     android:id="@+id/textView2"
@@ -76,7 +76,7 @@
                     android:textColor="@color/color_d4"
                     app:layout_constraintStart_toEndOf="@+id/score"
                     app:layout_constraintTop_toTopOf="@+id/score"
-                    app:text="@{String.format(@string/movie_type,movieBen.v_publishyear,movieBen.v_publisharea,movieBen.tname)}" />
+                    binding_text="@{String.format(@string/movie_type,movieBen.v_publishyear,movieBen.v_publisharea,movieBen.tname)}" />
 
                 <TextView
                     android:id="@+id/v_actor"
@@ -90,7 +90,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/score"
                     app:layout_constraintTop_toBottomOf="@+id/score"
-                    app:text="@{movieBen.v_actor}" />
+                    binding_text="@{movieBen.v_actor}" />
 
                 <TextView
                     android:id="@+id/content"
@@ -105,7 +105,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/v_actor"
                     app:layout_constraintTop_toBottomOf="@+id/v_actor"
-                    app:text="@{movieBen.body}" />
+                    binding_text="@{movieBen.body}" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -139,7 +139,7 @@
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@mipmap/icon_collect"
-                            app:image_url="@{viewModel.collectRes}" />
+                            binding_image_url="@{viewModel.collectRes}" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -192,7 +192,7 @@
                     android:gravity="center_vertical"
                     android:text="10集"
                     android:textColor="@color/color_d4"
-                    app:text="@{String.format(@string/movie_tod_size,viewModel.todLiveData.size())}" />
+                    binding_text="@{String.format(@string/movie_tod_size,viewModel.todLiveData.size())}" />
             </LinearLayout>
 
 
@@ -201,7 +201,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="68dp"
                 android:orientation="horizontal"
-                app:item="@{viewModel.todLiveData}"
+                binding_item="@{viewModel.todLiveData}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_tod" />
         </LinearLayout>
@@ -230,7 +230,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/easy_app_bg_dialog_02"
-                app:item="@{viewModel.movieBenLiveData}"
+                binding_item="@{viewModel.movieBenLiveData}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_movie_1_2" />
         </LinearLayout>

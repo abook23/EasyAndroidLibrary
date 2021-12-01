@@ -37,10 +37,10 @@ dependencies {
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.49'
 
     api 'com.abook23:easy-base:1.1.6'
-//    api 'com.abook23:easy-retrofit:1.1.16'
+    api 'com.eelot:easy-retrofit:1.1.18'
 //    api project(path: ':easy-base')
-    api project(path: ':easy-retrofit')
+//    api project(path: ':easy-retrofit')
 }
 
-apply from: "../bintrayUpload.gradle"
+//apply from: "../bintrayUpload.gradle"
 

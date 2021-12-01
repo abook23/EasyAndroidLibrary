@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/test_image"
-                app:image_url="@{movie.v_pic}" />
+                binding_image_url="@{movie.v_pic}" />
 
             <TextView
                 android:id="@+id/score"
@@ -39,7 +39,7 @@
                 android:paddingStart="2dp"
                 android:paddingEnd="2dp"
                 android:text="9.0分"
-                app:text="@{String.format(@string/movie_v_score, Float.valueOf(movie.v_score))}"
+                binding_text="@{String.format(@string/movie_v_score, Float.valueOf(movie.v_score))}"
                 android:textColor="@color/white"
                 android:textSize="10sp" />
         </FrameLayout>
@@ -52,7 +52,7 @@
             android:text="变形金刚"
             android:textColor="@color/text_color"
             android:textSize="16sp"
-            app:text="@{movie.v_name}" />
+            binding_text="@{movie.v_name}" />
 
         <TextView
             android:id="@+id/text"
@@ -64,7 +64,7 @@
             android:lines="2"
             android:text="@string/movie_content"
             android:textSize="12sp"
-            app:text="@{movie.body}" />
+            binding_text="@{movie.body}" />
 
     </LinearLayout>
 </layout>

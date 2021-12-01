@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.abook23.tv.ben.MovieBen
 import com.abook23.tv.ben.ResponseBen
-import com.android.easy.app.HttpCall
+import com.android.easy.retrofit.HttpCall
 
 /**
  * description:    描述
@@ -32,7 +32,7 @@ class SearchViewModel : ViewModel() {
         mPage= page
         model.requestNetworkData(page, tid, searchVal, object : HttpCall<ResponseBen<List<MovieBen>>>() {
             override fun onSuccess(t: ResponseBen<List<MovieBen>>) {
-                item.value = t.data//会自动更新  @BindingAdapter(value = {"app:item"
+                item.value = t.data//会自动更新  @BindingAdapter(value = {"binding_item"
                 mPage++
             }
 

@@ -15,7 +15,7 @@ import com.abook23.tv.URL
 import com.abook23.tv.ben.MovieBen
 import com.abook23.tv.ben.ResponseBen
 import com.abook23.tv.dao.MovieBenDao
-import com.android.easy.app.HttpCall
+import com.android.easy.retrofit.HttpCall
 import com.android.easy.app.base.BaseAppCompatActivity
 import com.android.easy.base.util.SoftInputMethodUtils
 import com.bumptech.glide.Glide

@@ -17,7 +17,7 @@ import com.abook23.tv.ben.ResponseBen
 import com.abook23.tv.ui.cache.AddCacheDialogFragment
 import com.abook23.tv.util.RoundedCornersFitStart
 import com.abook23.tv.util.SeaDataUtils
-import com.android.easy.app.HttpCall
+import com.android.easy.retrofit.HttpCall
 import com.android.easy.app.base.BaseAppCompatActivity
 import com.android.easy.play.MovieInfo
 import com.android.easy.play.VideoFragment

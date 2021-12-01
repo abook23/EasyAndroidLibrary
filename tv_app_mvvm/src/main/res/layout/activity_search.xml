@@ -52,8 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:item="@{viewMode.item}"
-            app:page="@{viewMode.page}"
+            binding_item="@{viewMode.item}"
+            binding_page="@{viewMode.page}"
             tools:listitem="@layout/item_movie_1_2" />
 
     </LinearLayout>

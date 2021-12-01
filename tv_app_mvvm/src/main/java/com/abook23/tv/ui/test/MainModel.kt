@@ -7,7 +7,7 @@ import com.abook23.tv.ben.AppConfig
 import com.abook23.tv.ben.AppVersion
 import com.abook23.tv.ben.ResponseBen
 import com.abook23.tv.ben.User
-import com.android.easy.app.HttpCall
+import com.android.easy.retrofit.HttpCall
 import com.android.easy.app.mvp.BaseModel
 import com.android.easy.base.spf.SharedPreferencesUtils
 import com.android.easy.base.util.AndroidUtils

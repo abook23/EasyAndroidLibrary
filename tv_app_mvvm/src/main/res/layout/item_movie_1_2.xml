@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
             android:src="@mipmap/test_image"
-            app:image_url="@{movieBen.v_pic}" />
+            binding_image_url="@{movieBen.v_pic}" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                 android:textColor="@color/text_color"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:text="@{movieBen.v_name}" />
+                binding_text="@{movieBen.v_name}" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -63,14 +63,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
                     android:text="9.0"
-                    app:text="@{String.format(@string/movie_v_score,Float.valueOf(movieBen.v_score))}"
+                    binding_text="@{String.format(@string/movie_v_score,Float.valueOf(movieBen.v_score))}"
                     android:textColor="@color/blue" />
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:text="@{String.format(@string/movie_type,movieBen.v_publishyear,movieBen.v_publisharea,movieBen.tname)}"
+                    binding_text="@{String.format(@string/movie_type,movieBen.v_publishyear,movieBen.v_publisharea,movieBen.tname)}"
                     android:text="2019/美国/科幻" />
             </LinearLayout>
 
@@ -82,7 +82,7 @@
                 android:ellipsize="end"
                 android:lines="1"
                 android:text="布鲁斯·邓恩 米歇尔·哈里逊 埃米尔·赫斯基 朴敏庆 莱克西·科尔克 "
-                app:text="@{movieBen.v_actor}" />
+                binding_text="@{movieBen.v_actor}" />
 
             <TextView
                 android:id="@+id/content"
@@ -92,7 +92,7 @@
                 android:lines="2"
                 android:maxLines="2"
                 android:text="·赫斯基 朴敏庆 莱克西·科尔克 "
-                app:text="@{movieBen.body}" />
+                binding_text="@{movieBen.body}" />
         </LinearLayout>
 
     </LinearLayout>

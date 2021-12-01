@@ -201,13 +201,11 @@ public class RSAUtlis {
         // 解密私钥
         byte[] keyBytes = Base64.decode(privateKey.getBytes(), Base64.DEFAULT);
         // 构造PKCS8EncodedKeySpec对象
-        PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(
-                keyBytes);
+        PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(keyBytes);
         // 指定加密算法
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
         // 取私钥匙对象
-        PrivateKey privateKey2 = keyFactory
-                .generatePrivate(pkcs8EncodedKeySpec);
+        PrivateKey privateKey2 = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
         // 用私钥对信息生成数字签名
         Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
         signature.initSign(privateKey2);

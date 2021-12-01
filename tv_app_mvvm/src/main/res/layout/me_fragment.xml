@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            app:item="@{viewModel.typeArray}"
+            binding_item="@{viewModel.typeArray}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="4"
             tools:itemCount="8"
@@ -61,7 +61,7 @@
             android:id="@+id/recyclerView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:item="@{viewModel.listHistoryData}"
+            binding_item="@{viewModel.listHistoryData}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_movie_1_2" />
     </LinearLayout>
